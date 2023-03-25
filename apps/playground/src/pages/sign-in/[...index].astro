@@ -1,0 +1,20 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import SignIn from "../../react/SignIn";
+import { getAuth } from "../../clerk";
+
+const auth = await getAuth({ client: Astro });
+
+if(auth instanceof Response) {
+  return auth;
+}
+if (auth.userId) {
+  return Astro.redirect("/", 307);
+}
+---
+
+<Layout title="Sign in with Clerk" showHeader={false}>
+  <div class="flex w-full h-full min-h-screen justify-center items-center p-5">
+    <SignIn client:only="react" />
+  </div>
+</Layout>
