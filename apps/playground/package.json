@@ -12,7 +12,7 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/node": "5.1.0",
+    "@astrojs/vercel": "^3.2.1",
     "@astrojs/react": "^2.1.0",
     "@clerk/backend": "^0.13.5",
     "@clerk/clerk-js": "^4.32.6",
