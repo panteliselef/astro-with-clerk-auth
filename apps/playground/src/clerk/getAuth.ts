@@ -22,7 +22,8 @@ export const getAuth = async ({
       headers: {
         "content-type": "text/html",
         [constants.Headers.AuthMessage]: requestState.message,
-        [constants.Headers.AuthStatus]: requestState.status,
+        [constants.Headers.AuthReason]: requestState.reason || '',
+        [constants.Headers.AuthStatus]: requestState.status || '',
       },
     }) as unknown as GetAuthReturn;
   }
