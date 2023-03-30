@@ -7,10 +7,12 @@ import type { GetAuthReturn } from "./types";
 
 export const getAuth = async ({
   client,
+  server,
 }: {
-  client: AstroGlobal;
+  client?: AstroGlobal;
+  server?: Request;
 }): Promise<Response | Awaited<GetAuthReturn>> => {
-  const requestState = await authenticateRequest({ client });
+  const requestState = await authenticateRequest({ client, server });
 
   if (requestState.isInterstitial || requestState.isUnknown) {
     const interstitialHtml = clerkClient.localInterstitial({
@@ -22,8 +24,8 @@ export const getAuth = async ({
       headers: {
         "content-type": "text/html",
         [constants.Headers.AuthMessage]: requestState.message,
-        [constants.Headers.AuthReason]: requestState.reason || '',
-        [constants.Headers.AuthStatus]: requestState.status || '',
+        [constants.Headers.AuthReason]: requestState.reason || "",
+        [constants.Headers.AuthStatus]: requestState.status || "",
       },
     }) as unknown as GetAuthReturn;
   }

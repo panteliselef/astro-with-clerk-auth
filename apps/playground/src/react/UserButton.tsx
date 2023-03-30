@@ -8,7 +8,7 @@ import {
 const UserButton = () => {
   return (
     <ClerkProvider publishableKey={publishableKey} Clerk={clerkJSInstance}>
-      <ClerkUserButton />
+      <ClerkUserButton afterSignOutUrl="/" />
     </ClerkProvider>
   );
 };
