@@ -12,11 +12,12 @@
     "astro": "astro"
   },
   "dependencies": {
+    "astro-clerk-auth": "*",
     "@astrojs/vercel": "^3.2.1",
     "@astrojs/react": "^2.1.0",
-    "@clerk/backend": "^0.13.5",
-    "@clerk/clerk-js": "^4.32.6",
-    "@clerk/clerk-react": "^4.12.8",
+    "@clerk/backend": "^0.16.1",
+    "@clerk/clerk-js": "^4.37.0",
+    "@clerk/clerk-react": "^4.14.2",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.10",
     "astro": "^2.1.3",

@@ -1,4 +1,4 @@
-import { publishableKey } from "../clerk";
+import { publishableKey } from "astro-clerk-auth";
 import {
   SignIn as ClerkSignIn,
   ClerkProvider,
