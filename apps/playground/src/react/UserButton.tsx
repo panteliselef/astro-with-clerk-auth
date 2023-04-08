@@ -1,4 +1,4 @@
-import { publishableKey } from "../clerk";
+import { publishableKey } from "astro-clerk-auth";
 import { clerkJSInstance } from "../clerk/js/clerkJSInstance";
 import {
   UserButton as ClerkUserButton,
@@ -6,6 +6,7 @@ import {
 } from "@clerk/clerk-react";
 
 const UserButton = () => {
+  clerkJSInstance.load()
   return (
     <ClerkProvider publishableKey={publishableKey} Clerk={clerkJSInstance}>
       <ClerkUserButton afterSignOutUrl="/" />

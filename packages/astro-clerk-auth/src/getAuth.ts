@@ -6,9 +6,9 @@ import { clerkClient } from "./clerkClient";
 import type { GetAuthReturn } from "./types";
 
 export const getAuth = async ({
-  client,
-  server,
-}: {
+                                client,
+                                server
+                              }: {
   client?: AstroGlobal;
   server?: Request;
 }): Promise<Response | Awaited<GetAuthReturn>> => {
@@ -17,7 +17,7 @@ export const getAuth = async ({
   if (requestState.isInterstitial || requestState.isUnknown) {
     const interstitialHtml = clerkClient.localInterstitial({
       frontendApi,
-      publishableKey,
+      publishableKey
     });
     return new Response(`<!DOCTYPE html><html${interstitialHtml}</html>`, {
       status: 401,
@@ -25,8 +25,8 @@ export const getAuth = async ({
         "content-type": "text/html",
         [constants.Headers.AuthMessage]: requestState.message,
         [constants.Headers.AuthReason]: requestState.reason || "",
-        [constants.Headers.AuthStatus]: requestState.status || "",
-      },
+        [constants.Headers.AuthStatus]: requestState.status || ""
+      }
     }) as unknown as GetAuthReturn;
   }
 
