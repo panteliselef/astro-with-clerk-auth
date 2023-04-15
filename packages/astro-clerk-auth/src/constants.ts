@@ -8,9 +8,20 @@ const apiUrl = import.meta.env.CLERK_API_URL || "https://api.clerk.dev";
 
 const frontendApi = import.meta.env.PUBLIC_ASTRO_APP_CLERK_FRONTEND_API || "";
 
-const publishableKey = import.meta.env.PUBLIC_ASTRO_APP_CLERK_PUBLISHABLE_KEY || "";
+const publishableKey =
+  import.meta.env.PUBLIC_ASTRO_APP_CLERK_PUBLISHABLE_KEY || "";
 
 const jwtKey = import.meta.env.CLERK_JWT_KEY || "";
 
+const jsVersion = import.meta.env.CLERK_JS_VERSION || "";
 
-export { secretKey, apiKey, apiUrl, apiVersion, frontendApi, publishableKey, jwtKey };
+export {
+  secretKey,
+  apiKey,
+  apiUrl,
+  apiVersion,
+  frontendApi,
+  publishableKey,
+  jwtKey,
+  jsVersion
+};
