@@ -1,0 +1,109 @@
+---
+import { SEO } from "astro-seo";
+export interface Props {
+  title: string;
+  showHeader?: boolean;
+}
+
+const { title } = Astro.props;
+
+const previewUrl = new URL("/preview.jpg", Astro.request.url).href;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="dark:bg-[#111010] dark:text-white">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="/avatar.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <meta name="generator" content={Astro.generator} />
+
+    <SEO
+      title={title}
+      titleTemplate="%s middleware - Software Enginner at Clerk"
+      description="Developer, designer"
+      openGraph={{
+        basic: {
+          title: "Pantelis Eleftheriadis | Software Enginner at Clerk",
+          type: "website",
+          image: previewUrl,
+        },
+      }}
+      twitter={{
+        title: "Pantelis Eleftheriadis | Software Enginner at Clerk",
+        card: "summary_large_image",
+        image: previewUrl,
+        creator: "@elefcodes",
+      }}
+    />
+
+    <script>
+      import { Gradient } from "../Gradient";
+      const gradient = new Gradient();
+
+      // Call `initGradient` with the selector to your canvas
+      gradient.initGradient("#gradient-canvas");
+    </script>
+  </head>
+  <body>
+    <canvas id="gradient-canvas" data-transition-in></canvas>
+    <div id="gradient-canvas-overlay"></div>
+    <slot />
+    <style is:global>
+      :root {
+        --accent: 124, 58, 237;
+        --accent-gradient: linear-gradient(
+          45deg,
+          rgb(var(--accent)),
+          #da62c4 30%,
+          white 60%
+        );
+      }
+      html {
+        font-family: system-ui, sans-serif;
+        background-color: #f6f6f6;
+      }
+      code {
+        font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
+          DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+      }
+
+      #gradient-canvas {
+        position: absolute;
+        z-index: -2;
+        width: 100%;
+        height: 100%;
+        --gradient-color-1: #1f9ea3;
+        --gradient-color-2: #f8bd97;
+        --gradient-color-3: #9e5428;
+        --gradient-color-4: #3b0102;
+      }
+
+      #gradient-canvas-overlay {
+        position: absolute;
+        z-index: -1;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        #gradient-canvas-overlay {
+          background: rgba(0, 0, 0, 0.8);
+        }
+      }
+
+      @media (prefers-color-scheme: light) {
+        #gradient-canvas-overlay {
+          background: rgba(255, 255, 255, 0.5);
+        }
+      }
+    </style>
+  </body>
+</html>

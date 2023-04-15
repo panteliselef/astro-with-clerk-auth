@@ -5,7 +5,7 @@ import {
   frontendApi,
   jwtKey,
   publishableKey,
-  secretKey
+  secretKey,
 } from "./constants";
 
 function assertClientOrServer(value: {
@@ -30,9 +30,7 @@ const parseCookie = (str: string) => {
         },
         v
       ) => {
-        acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(
-          v[1].trim()
-        );
+        acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
         return acc;
       },
       {}
@@ -43,9 +41,9 @@ const parseCookie = (str: string) => {
  * @internal
  */
 export async function authenticateRequest({
-                                            client,
-                                            server
-                                          }: {
+  client,
+  server,
+}: {
   client?: AstroGlobal | undefined;
   server?: Request | undefined;
 }) {
@@ -79,6 +77,6 @@ export async function authenticateRequest({
     forwardedPort: headers.get("x-forwarded-port") as string,
     forwardedHost: headers.get("x-forwarded-host") as string,
     referrer: headers.get("referer") || "",
-    userAgent: headers.get("user-agent") as string
+    userAgent: headers.get("user-agent") as string,
   });
 }
