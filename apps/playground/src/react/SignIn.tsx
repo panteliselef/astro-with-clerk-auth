@@ -1,14 +1,10 @@
-import { publishableKey } from "astro-clerk-auth";
-import {
-  SignIn as ClerkSignIn,
-  ClerkProvider,
-  ClerkLoading,
-  ClerkLoaded,
-} from "@clerk/clerk-react";
+import { publishableKey } from 'astro-clerk-auth';
+import { SignIn as ClerkSignIn, ClerkProvider, ClerkLoading, ClerkLoaded } from '@clerk/clerk-react';
+import { clerkAppearance } from '../utils';
 
 const SignIn = () => {
   return (
-    <ClerkProvider publishableKey={publishableKey}>
+    <ClerkProvider publishableKey={publishableKey} appearance={clerkAppearance}>
       <ClerkLoading>
         <div role="status">
           <svg
