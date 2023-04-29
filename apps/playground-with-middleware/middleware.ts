@@ -1,6 +1,22 @@
+import { next } from "@vercel/edge";
+
 // import { withClerkMiddleware } from "astro-clerk-auth";
 // Stop Middleware running on static files and public folder
-export const config = { matcher: "/" };
+// export const config = { matcher: "/" };
+
+export const config = {
+  matcher: ["/((?!api|_next/static|favicon.ico).*)", "/", "/guestbook"],
+};
+
+export default function middleware(request: Request) {
+  console.log("wow");
+  const url = new URL(request.url);
+  // You can retrieve IP location or cookies here.
+  if (url.pathname === "/guestbook") {
+    return Response.redirect("https://google.com");
+  }
+  return next(request);
+}
 
 // export default function middleware(request: ) {
 //   const url = new URL(request.url);
@@ -29,13 +45,12 @@ export const config = { matcher: "/" };
 //   return new Response();
 // });
 
-
-export default function middleware(request: Request) {
-  console.log("middeware");
-  // const url = new URL(request.url);
-  // // You can retrieve IP location or cookies here.
-  // if (url.pathname === "/admin") {
-  //   url.pathname = "/"
-  // }
-  return Response.redirect("/wowo");
-}
+// export default function middleware(request: Request) {
+//   console.log("middeware");
+//   // const url = new URL(request.url);
+//   // // You can retrieve IP location or cookies here.
+//   // if (url.pathname === "/admin") {
+//   //   url.pathname = "/"
+//   // }
+//   return Response.redirect("/wowo");
+// }
