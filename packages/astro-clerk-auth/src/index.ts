@@ -1,4 +1,4 @@
-export * from "./getAuth";
-export * from "./clerkClient";
-export * from "./constants";
-export { withClerkMiddleware } from "./middleware";
+export * from './getAuth';
+export * from './checkAuth';
+export * from './clerkClient';
+export * from './constants';

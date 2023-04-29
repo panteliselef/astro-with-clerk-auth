@@ -72,8 +72,7 @@ export function getHeader(
   // If no header has been determined for IncomingMessage case, check if available within private `socket` headers
   // When deployed to vercel, req.headers for API routes is a `IncomingHttpHeaders` key-val object which does not follow
   // the Headers spec so the name is no longer case-insensitive.
-  // @ts-expect-error
-  return req.headers[name] || req.headers[name.toLowerCase()];
+  return req.headers.get(name) || req.headers.get(name.toLowerCase());
 }
 
 export const parseCookie = (str: string) => {

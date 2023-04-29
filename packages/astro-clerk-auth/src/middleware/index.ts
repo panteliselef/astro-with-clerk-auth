@@ -1,3 +1,4 @@
 // export * from './clerk';
-// export * from './getAuth';
+export { redirect } from './redirect';
+export * from './getAuth';
 export * from './withClerkMiddleware';
