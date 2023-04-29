@@ -1,54 +1,26 @@
-import type { AuthStatus, RequestState } from "@clerk/backend";
-import { constants, debugRequestState } from "@clerk/backend";
-import { clerkClient } from "./clerk";
-// import { missingDomainAndProxy, missingSignInUrlInDev, unsupportedRelativePathProxyUrl } from './errors';
-import type { WithAuthOptions } from "./types";
+import type { AuthStatus, RequestState } from '@clerk/backend';
+import { constants, debugRequestState } from '@clerk/backend';
+import { next } from '@vercel/edge';
+import { API_KEY, FRONTEND_API, PUBLISHABLE_KEY, SECRET_KEY, clerkClient } from './clerk';
+import type { WithAuthOptions } from './types';
 import {
   getCookie,
-  // handleValueOrFn,
-  // isDevelopmentFromApiKey,
-  // isHttpOrHttps,
-  setCustomAttributeOnRequest
-} from "./utils";
-import {
-  apiKey,
-  frontendApi,
-  publishableKey,
-  secretKey,
-  jsVersion
-} from "../constants";
+  setCustomAttributeOnRequest,
+} from './utils';
+import { isRedirect } from './redirect';
 
 type MiddlewareResult = Response | null | undefined | void;
-type Middleware = (
-  request: Request
-) => MiddlewareResult | Promise<MiddlewareResult>;
+type Middleware = (request: Request) => MiddlewareResult | Promise<MiddlewareResult>;
 
-export const decorateResponseWithObservabilityHeaders = (
-  res: Response,
-  requestState: RequestState
-) => {
-  requestState.message &&
-  res.headers.set(
-    constants.Headers.AuthMessage,
-    encodeURIComponent(requestState.message)
-  );
-  requestState.reason &&
-  res.headers.set(
-    constants.Headers.AuthReason,
-    encodeURIComponent(requestState.reason)
-  );
-  requestState.status &&
-  res.headers.set(
-    constants.Headers.AuthStatus,
-    encodeURIComponent(requestState.status)
-  );
+export const decorateResponseWithObservabilityHeaders = (res: Response, requestState: RequestState) => {
+  requestState.message && res.headers.set(constants.Headers.AuthMessage, encodeURIComponent(requestState.message));
+  requestState.reason && res.headers.set(constants.Headers.AuthReason, encodeURIComponent(requestState.reason));
+  requestState.status && res.headers.set(constants.Headers.AuthStatus, encodeURIComponent(requestState.status));
 };
 
 export const withClerkMiddleware = (...args: unknown[]) => {
   const noop = () => undefined;
-  const [handler = noop, opts = {}] = args as
-    | [Middleware, WithAuthOptions]
-    | [];
+  const [handler = noop, opts = {}] = args as [Middleware, WithAuthOptions] | [];
   // const proxyUrl = opts?.proxyUrl || PROXY_URL;
 
   // if (!!proxyUrl && !isHttpOrHttps(proxyUrl)) {
@@ -72,90 +44,71 @@ export const withClerkMiddleware = (...args: unknown[]) => {
 
     // get auth state, check if we need to return an interstitial
     const cookieToken = getCookie(req, constants.Cookies.Session);
-    const headerToken = headers.get("authorization")?.replace("Bearer ", "");
+    const headerToken = headers.get('authorization')?.replace('Bearer ', '');
     const requestState = await clerkClient.authenticateRequest({
       ...opts,
-      apiKey: opts.apiKey || apiKey,
-      secretKey: opts.secretKey || secretKey,
-      frontendApi: opts.frontendApi || frontendApi,
-      publishableKey: opts.publishableKey || publishableKey,
+      apiKey: opts.apiKey || API_KEY,
+      secretKey: opts.secretKey || SECRET_KEY,
+      frontendApi: opts.frontendApi || FRONTEND_API,
+      publishableKey: opts.publishableKey || PUBLISHABLE_KEY,
       cookieToken,
       headerToken,
       clientUat: getCookie(req, constants.Cookies.ClientUat),
-      origin: headers.get("origin") || undefined,
-      host: headers.get("host") as string,
-      forwardedPort: headers.get("x-forwarded-port") || undefined,
-      forwardedHost: headers.get("x-forwarded-host") || undefined,
-      referrer: headers.get("referer") || undefined,
-      userAgent: headers.get("user-agent") || undefined,
-      proxyUrl: "",
+      origin: headers.get('origin') || undefined,
+      host: headers.get('host') as string,
+      forwardedPort: headers.get('x-forwarded-port') || undefined,
+      forwardedHost: headers.get('x-forwarded-host') || undefined,
+      referrer: headers.get('referer') || undefined,
+      userAgent: headers.get('user-agent') || undefined,
+      proxyUrl: '',
       isSatellite: false,
-      domain: "",
+      domain: '',
       searchParams: new URL(req.url).searchParams,
-      signInUrl: ""
+      signInUrl: '',
     });
 
-    console.log(requestState);
+    // console.log(requestState);
 
     // Interstitial case
     // Note: there is currently no way to rewrite to a protected endpoint
     // Therefore we have to resort to a public interstitial endpoint
     if (requestState.isInterstitial || requestState.isUnknown) {
       const interstitialHtml = clerkClient.localInterstitial({
-        pkgVersion: jsVersion,
-        frontendApi,
-        publishableKey,
-        debugData: debugRequestState(requestState)
+        pkgVersion: '',
+        frontendApi: '',
+        publishableKey: 'pk_test_aW50ZXJuYWwtamF2ZWxpbi05Mi5jbGVyay5hY2NvdW50cy5kZXYk',
+        debugData: debugRequestState(requestState),
       });
-      const response = new Response(
-        `<!DOCTYPE html><html${interstitialHtml}</html>`,
-        {
-          status: 401,
-          headers: {
-            "content-type": "text/html",
-            [constants.Headers.AuthMessage]: requestState.message,
-            [constants.Headers.AuthReason]: requestState.reason || "",
-            [constants.Headers.AuthStatus]: requestState.status || ""
-          }
-        }
-      );
+      const response = new Response(`<!DOCTYPE html><html${interstitialHtml}</html>`, {
+        status: 401,
+        headers: {
+          'content-type': 'text/html',
+          [constants.Headers.AuthMessage]: requestState.message,
+          [constants.Headers.AuthReason]: requestState.reason || '',
+          [constants.Headers.AuthStatus]: requestState.status || '',
+        },
+      });
 
       decorateResponseWithObservabilityHeaders(response, requestState);
       return response;
     }
 
     // Set auth result on request in a private property so that middleware can read it too
-    setCustomAttributeOnRequest(
-      req,
-      constants.Attributes.AuthStatus,
-      requestState.status
-    );
-    setCustomAttributeOnRequest(
-      req,
-      constants.Attributes.AuthMessage,
-      requestState.message || ""
-    );
-    setCustomAttributeOnRequest(
-      req,
-      constants.Attributes.AuthReason,
-      requestState.reason || ""
-    );
+    setCustomAttributeOnRequest(req, constants.Attributes.AuthStatus, requestState.status);
+    setCustomAttributeOnRequest(req, constants.Attributes.AuthMessage, requestState.message || '');
+    setCustomAttributeOnRequest(req, constants.Attributes.AuthReason, requestState.reason || '');
 
     // get result from provided handler
     const res = await handler(req);
 
-    const {
-      status: authStatus,
-      reason: authReason,
-      message: authMessage
-    } = requestState;
+    const { status: authStatus, reason: authReason, message: authMessage } = requestState;
 
     return handleMiddlewareResult({
       req,
       res,
       authStatus,
       authReason,
-      authMessage
+      authMessage,
     });
   };
 };
@@ -170,21 +123,21 @@ type HandleMiddlewareResultProps = {
 
 // Auth result will be set as both a query param & header when applicable
 export function handleMiddlewareResult({
-                                         // req,
-                                         res,
-                                         authStatus,
-                                         authMessage,
-                                         authReason
-                                       }: HandleMiddlewareResultProps): MiddlewareResult {
+  // req,
+  res,
+  authStatus,
+  authMessage,
+  authReason,
+}: HandleMiddlewareResultProps): MiddlewareResult {
   // pass-through case, convert to next()
   if (!res) {
-    res = new Response();
+    res = next();
   }
 
   // redirect() case, return early
-  // if (res.headers.get(nextConstants.Headers.NextRedirect)) {
-  //   return res;
-  // }
+  if (isRedirect(res)) {
+    return res;
+  }
 
   // let rewriteURL;
 
@@ -219,8 +172,8 @@ export function handleMiddlewareResult({
   //     });
   //   } else {
   res.headers.set(constants.Headers.AuthStatus, authStatus);
-  res.headers.set(constants.Headers.AuthMessage, authMessage || "");
-  res.headers.set(constants.Headers.AuthReason, authReason || "");
+  res.headers.set(constants.Headers.AuthMessage, authMessage || '');
+  res.headers.set(constants.Headers.AuthReason, authReason || '');
   // rewriteURL.searchParams.set(constants.SearchParams.AuthStatus, authStatus);
   // rewriteURL.searchParams.set(constants.Headers.AuthMessage, authMessage || '');
   // rewriteURL.searchParams.set(constants.Headers.AuthReason, authReason || '');

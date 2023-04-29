@@ -1,35 +1,27 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import { getAuth } from "astro-clerk-auth";
-import UserButton from "../react/UserButton";
-import { queryBuilder } from "../db/planetscale";
+import Layout from '../layouts/Layout.astro';
+import UserButton from '../react/UserButton';
+import { queryBuilder } from '../db/planetscale';
+import { GuestbookForm } from '../components/GuestbookForm';
+import { Entry, entriesStore } from '../atoms/enties';
+import { Signatures } from '../components/Signatures';
 
-if (import.meta.env.FLAG_GUESTBOOK !== "true") {
+if (import.meta.env.FLAG_GUESTBOOK !== 'true') {
   return Astro.redirect(`/`, 307);
-}
-
-const auth = await getAuth({ client: Astro });
-
-if (auth instanceof Response) {
-  return auth;
-}
-
-if (!auth.userId) {
-  return Astro.redirect(`/sign-in?redirect_url=${Astro.request.url}`, 307);
 }
 
 async function getGuestbook() {
   const data = await queryBuilder
-    .selectFrom("guestbook")
-    .select(["id", "message", "created_by"])
-    .orderBy("updatedAt", "desc")
+    .selectFrom('guestbook')
+    .select(['id', 'message', 'created_by'])
+    .orderBy('updatedAt', 'desc')
     .limit(100)
     .execute();
 
-  return data;
+  return data as Entry[];
 }
 
-let entries;
+let entries: Entry[];
 let error = false;
 
 try {
@@ -38,93 +30,31 @@ try {
   error = true;
   entries = [];
 }
+
+entriesStore.set(entries);
 ---
 
 <Layout title="Protected by clerk">
-  <main>
-    <h1>Only visible to members</h1>
-    <UserButton client:only />
-
-    <button id="add">Add</button>
-
-    {
-      error && (
-        <p class="text-neutral-600 dark:text-neutral-400 mr-1 text-center p-4">
-          We failed to load entries 😩
-        </p>
-      )
-    }
-
-    {
-      entries.map((entry) => (
-        <div class="flex flex-col space-y-1 mb-4">
-          <div class="w-full text-sm break-words">
-            <span class="text-neutral-600 dark:text-neutral-400 mr-1">
-              {entry.created_by}:
-            </span>
-            {entry.message}
-          </div>
+  <div class="invisible" style="height:0;" id="ssr_data">{JSON.stringify(entries)}</div>
+  <main class="w-full flex justify-center lg:pt-10">
+    <div class="w-full p-5 max-w-lg flex flex-col gap-2">
+      <div class="flex flex-col">
+        <a class="text-sm pt-4" href="/">Portfolio</a>
+        <div class="flex flex-row justify-between items-center">
+          <h1 class="text-4xl font-serif">Guestbook</h1>
+          <UserButton client:only />
         </div>
-      ))
-    }
+        <p class="flex items-center gap-3 gtext-sm leading-8">✍️</p>
+      </div>
+      <GuestbookForm client:load />
+      {error && <p class="text-neutral-600 dark:text-neutral-400 mr-1 text-center p-4">We failed to load entries 😩</p>}
+      <Signatures client:load />
+    </div>
   </main>
 </Layout>
 
 <script>
-  document.getElementById("add")?.addEventListener("click", async () => {
-    await fetch("/api/guestbook", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        message: "This is a test",
-      }),
-    });
-  });
-</script>
+  import { entriesStore } from '../atoms/enties';
 
-<style>
-  main {
-    margin: auto;
-    padding: 1.5rem;
-    max-width: 60ch;
-  }
-  h1 {
-    font-size: 3rem;
-    font-weight: 800;
-    margin: 0;
-  }
-  .text-gradient {
-    background-image: var(--accent-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-size: 400%;
-    background-position: 0%;
-  }
-  .instructions {
-    line-height: 1.6;
-    margin: 1rem 0;
-    border: 1px solid rgba(var(--accent), 25%);
-    background-color: white;
-    padding: 1rem;
-    border-radius: 0.4rem;
-  }
-  .instructions code {
-    font-size: 0.875em;
-    font-weight: bold;
-    background: rgba(var(--accent), 12%);
-    color: rgb(var(--accent));
-    border-radius: 4px;
-    padding: 0.3em 0.45em;
-  }
-  .instructions strong {
-    color: rgb(var(--accent));
-  }
-  .link-card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
-    gap: 1rem;
-    padding: 0;
-  }
-</style>
+  entriesStore.set(JSON.parse(document.getElementById('ssr_data')!.textContent || '{}'));
+</script>
