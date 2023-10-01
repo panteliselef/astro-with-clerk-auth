@@ -1,5 +1,5 @@
-import { Generated, Kysely } from "kysely";
-import { PlanetScaleDialect } from "kysely-planetscale";
+import { type Generated, Kysely } from 'kysely';
+import { PlanetScaleDialect } from 'kysely-planetscale';
 
 interface GuestbookTable {
   id: Generated<number>;
@@ -16,6 +16,6 @@ interface Database {
 
 export const queryBuilder = new Kysely<Database>({
   dialect: new PlanetScaleDialect({
-    url: import.meta.env.DATABASE_URL || "",
+    url: import.meta.env.DATABASE_URL || '',
   }),
 });

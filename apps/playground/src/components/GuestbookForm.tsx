@@ -1,6 +1,7 @@
-import { FC, useState } from 'react';
-import { Entry, entriesStore } from '../atoms/enties';
-import { getGuestbook } from '../utils';
+import type { FC } from 'react';
+import { useState } from 'react';
+import type { Entry } from '../atoms/enties';
+import { entriesStore } from '../atoms/enties';
 
 const createEntry = async (message: string) => {
   await fetch('/api/guestbook', {
