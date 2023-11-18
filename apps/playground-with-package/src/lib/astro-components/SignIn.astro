@@ -1,0 +1,10 @@
+---
+---
+
+<div id="sign-in"></div>
+
+<script>
+  import { clerkJSInstance } from '../clerkJSInstance';
+  await clerkJSInstance.load();
+  clerkJSInstance.mountSignIn(document.getElementById('sign-in') as HTMLDivElement)
+</script>
