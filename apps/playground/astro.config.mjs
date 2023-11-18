@@ -9,5 +9,12 @@ import tailwind from "@astrojs/tailwind";
 export default defineConfig({
   integrations: [react(), tailwind()],
   output: 'server',
-  adapter: vercel({analytics: true}),
+  adapter: vercel({
+    webAnalytics: {
+      enabled: true,
+    },
+    speedInsights: {
+      enabled: true,
+    },
+  }),
 });

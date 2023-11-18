@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { useStore } from '@nanostores/react';
 import { entriesStore } from '../atoms/enties';
 

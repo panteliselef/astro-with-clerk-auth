@@ -23,7 +23,7 @@ export const post: APIRoute = async ({ request }) => {
       if (!primaryEmailAddressId) throw new Error('Email not found');
       if (!username) throw new Error('username not found');
 
-      const result = await queryBuilder
+      await queryBuilder
         .insertInto('guestbook')
         .values({
           email: primaryEmailAddressId,
@@ -58,7 +58,7 @@ export const post: APIRoute = async ({ request }) => {
   );
 };
 
-export const get: APIRoute = async ({ request }) => {
+export const get: APIRoute = async () => {
   try {
     const result = await getGuestbook();
 
