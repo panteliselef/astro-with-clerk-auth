@@ -1,0 +1,20 @@
+---
+import type { UserButtonProps } from "@clerk/types";
+interface Props extends UserButtonProps {}
+---
+
+<div id="user-button"></div>
+
+<script is:inline define:vars={{ props: Astro.props }}>
+  USER_BUTTON_PROPS = props;
+</script>
+
+<script>
+  import { mountClerkComponent } from "../mountClerkComponent";
+
+  mountClerkComponent({
+    el: document.getElementById("user-button") as HTMLDivElement,
+    mountFn: "mountUserButton",
+    props: USER_BUTTON_PROPS,
+  });
+</script>

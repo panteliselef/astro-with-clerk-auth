@@ -1,0 +1,13 @@
+---
+
+---
+
+<script>
+  import { $state } from "../lib/clerkJSInstance";
+  console.log("mounted");
+
+  $state.subscribe(({ user, session }) => {
+    console.log("User", user);
+    console.log("Session", session);
+  });
+</script>
