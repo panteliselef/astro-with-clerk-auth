@@ -10,10 +10,24 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^3.5.5",
+    "@astrojs/check": "^0.3.1",
+    "@astrojs/react": "^3.0.6",
     "@astrojs/tailwind": "^5.0.2",
     "@astrojs/vercel": "^5.2.0",
+    "@clerk/backend": "1.0.0-alpha-v5.2",
     "@clerk/clerk-js": "5.0.0-alpha-v5.2",
-    "@clerk/backend": "1.0.0-alpha-v5.2"
+    "@clerk/shared": "^2.0.0-alpha-v5.2",
+    "@clerk/types": "^4.0.0-alpha-v5.2",
+    "@nanostores/react": "github:nanostores/react",
+    "astro": "^3.5.5",
+    "astro-clerk-auth": "*",
+    "nanostores": "^0.9.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.3.2"
+  },
+  "devDependencies": {
+    "prettier": "^3.1.0",
+    "prettier-plugin-astro": "^0.12.2"
   }
 }
