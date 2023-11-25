@@ -1,6 +1,14 @@
 import React, { createElement } from "react";
 import { withClerk, type WithClerkProp } from "./utils";
-import type { SignInProps } from "@clerk/types";
+import type {
+  OrganizationListProps,
+  OrganizationProfileProps,
+  OrganizationSwitcherProps,
+  SignInProps,
+  SignUpProps,
+  UserButtonProps,
+  UserProfileProps,
+} from "@clerk/types";
 
 export interface MountProps {
   mount?: (node: HTMLDivElement, props: any) => void;
@@ -54,13 +62,99 @@ class Portal extends React.PureComponent<MountProps> {
 export const SignIn = withClerk(
   ({ clerk, ...props }: WithClerkProp<SignInProps>) => {
     return (
+      <>
+        <Portal
+          mount={clerk?.mountSignIn}
+          unmount={clerk?.unmountSignIn}
+          updateProps={(clerk as any)?.__unstable__updateProps}
+          props={props}
+        />
+      </>
+    );
+  },
+  "SignIn",
+);
+
+export const SignUp = withClerk(
+  ({ clerk, ...props }: WithClerkProp<SignUpProps>) => {
+    return (
       <Portal
-        mount={clerk?.mountSignIn}
-        unmount={clerk?.unmountSignIn}
+        mount={clerk?.mountSignUp}
+        unmount={clerk?.unmountSignUp}
         updateProps={(clerk as any)?.__unstable__updateProps}
         props={props}
       />
     );
   },
-  "SignIn",
+  "SignUp",
+);
+
+export const UserButton = withClerk(
+  ({ clerk, ...props }: WithClerkProp<UserButtonProps>) => {
+    return (
+      <Portal
+        mount={clerk?.mountUserButton}
+        unmount={clerk?.unmountUserButton}
+        updateProps={(clerk as any)?.__unstable__updateProps}
+        props={props}
+      />
+    );
+  },
+  "UserButton",
+);
+
+export const UserProfile = withClerk(
+  ({ clerk, ...props }: WithClerkProp<UserProfileProps>) => {
+    return (
+      <Portal
+        mount={clerk?.mountUserProfile}
+        unmount={clerk?.unmountUserProfile}
+        updateProps={(clerk as any)?.__unstable__updateProps}
+        props={props}
+      />
+    );
+  },
+  "UserProfile",
+);
+
+export const OrganizationProfile = withClerk(
+  ({ clerk, ...props }: WithClerkProp<OrganizationProfileProps>) => {
+    return (
+      <Portal
+        mount={clerk?.mountOrganizationProfile}
+        unmount={clerk?.unmountOrganizationProfile}
+        updateProps={(clerk as any)?.__unstable__updateProps}
+        props={props}
+      />
+    );
+  },
+  "OrganizationProfile",
+);
+
+export const OrganizationSwitcher = withClerk(
+  ({ clerk, ...props }: WithClerkProp<OrganizationSwitcherProps>) => {
+    return (
+      <Portal
+        mount={clerk?.mountOrganizationSwitcher}
+        unmount={clerk?.unmountOrganizationSwitcher}
+        updateProps={(clerk as any)?.__unstable__updateProps}
+        props={props}
+      />
+    );
+  },
+  "OrganizationSwitcher",
+);
+
+export const OrganizationList = withClerk(
+  ({ clerk, ...props }: WithClerkProp<OrganizationListProps>) => {
+    return (
+      <Portal
+        mount={clerk?.mountOrganizationList}
+        unmount={clerk?.unmountOrganizationList}
+        updateProps={(clerk as any)?.__unstable__updateProps}
+        props={props}
+      />
+    );
+  },
+  "OrganizationList",
 );

@@ -17,7 +17,7 @@ if (protectedPage) {
   _ssrState=ssrState
 }
 ---
-<div class="invisible" style="height:0;" id="ssr_data">{JSON.stringify(_ssrState)}</div>
+<div style="height:0;visibility:hidden;width:0;overflow:hidden;" id="ssr_data">{JSON.stringify(_ssrState)}</div>
 <slot />
 <script>
   import { $ssrState } from "../lib/clerkJSInstance";

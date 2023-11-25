@@ -1,0 +1,20 @@
+---
+import { signUpUrl } from "astro-clerk-auth";
+import Layout from "../../layouts/Layout.astro";
+import ClerkLayout from "../../layouts/ClerkLayout.astro";
+import { SignIn } from "../../lib/react";
+---
+
+<Layout title="Welcome to Astro.">
+  <ClerkLayout>
+    <div class="w-full flex justify-center">
+      <SignIn
+        client:load
+        signUpUrl={signUpUrl}
+        client:load
+        path="/sign-in"
+        routing="path"
+      />
+    </div>
+  </ClerkLayout>
+</Layout>

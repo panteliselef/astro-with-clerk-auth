@@ -1,0 +1,13 @@
+---
+import { UserProfile } from "../../lib/react";
+import ClerkLayout from "../../layouts/ClerkLayout.astro";
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Welcome to Astro.">
+  <ClerkLayout>
+    <div class="w-full flex justify-center">
+      <UserProfile client:load path="/user" routing="path" />
+    </div>
+  </ClerkLayout>
+</Layout>
