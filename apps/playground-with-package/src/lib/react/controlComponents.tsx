@@ -3,7 +3,16 @@ import { useStore } from "@nanostores/react";
 import { $derivedState } from "../clerkJSInstance";
 import React from "react";
 
-export default function SignedIn(props: PropsWithChildren) {
+export function SignedOut(props: PropsWithChildren) {
+  const { userId } = useStore($derivedState);
+
+  if (userId) {
+    return null;
+  }
+  return props.children;
+}
+
+export function SignedIn(props: PropsWithChildren) {
   const { userId } = useStore($derivedState);
   return (
     <>
