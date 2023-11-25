@@ -4,7 +4,7 @@ import { computed } from "nanostores";
 import { $clerk, $state } from "../clerkJSInstance";
 import React from "react";
 
-export const withClerk = <P extends { clerk: LoadedClerk }>(
+export const withClerk = <P extends { clerk: LoadedClerk | undefined | null }>(
   Component: React.ComponentType<P>,
   displayName?: string,
 ) => {

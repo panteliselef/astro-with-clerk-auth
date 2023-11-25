@@ -1,0 +1,13 @@
+---
+import ClerkLayout from "../layouts/ClerkLayout.astro";
+import { OrganizationList } from "../lib/react";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Welcome to Astro.">
+  <ClerkLayout>
+    <div class="w-full flex justify-center">
+      <OrganizationList client:load />
+    </div>
+  </ClerkLayout>
+</Layout>
