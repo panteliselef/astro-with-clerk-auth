@@ -14,9 +14,15 @@ export function deriveState(
   initialState: InitialState | undefined,
 ) {
   if (!clerkLoaded && initialState)
-    return deriveFromSsrInitialState(initialState);
+    return {
+      ...deriveFromSsrInitialState(initialState),
+      clerkLoaded,
+    };
 
-  return deriveFromClientSideState(state);
+  return {
+    ...deriveFromClientSideState(state),
+    clerkLoaded,
+  };
 }
 
 function deriveFromSsrInitialState(initialState: InitialState) {
@@ -40,8 +46,6 @@ function deriveFromSsrInitialState(initialState: InitialState) {
     orgRole,
     orgSlug,
     actor,
-    lastOrganizationInvitation: null,
-    lastOrganizationMember: null,
   };
 }
 

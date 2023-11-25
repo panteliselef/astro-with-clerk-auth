@@ -4,8 +4,9 @@ import Card from "../components/Card.astro";
 import ClerkLayout from "../layouts/ClerkLayout.astro";
 import LogComponent from "../components/LogComponent.astro";
 import UserButton from "../lib/astro-components/UserButton.astro";
-import SignedIn from "../lib/control-components/SignedIn.tsx";
 import SignOutButton from "../lib/astro-components/SignOutButton.astro";
+// import SignIn from "../lib/astro-components/SignIn.astro";
+import { SignIn, SignedIn, SignedOut } from "../lib/react";
 ---
 
 <Layout title="Welcome to Astro.">
@@ -49,6 +50,11 @@ import SignOutButton from "../lib/astro-components/SignOutButton.astro";
       <SignedIn client:load>
         <SignOutButton />
       </SignedIn>
+
+      <SignedOut client:load>
+        <SignIn client:load />
+      </SignedOut>
+
       <p class="instructions">
         To get started, open the directory <code>src/pages</code> in your
         project.<br />

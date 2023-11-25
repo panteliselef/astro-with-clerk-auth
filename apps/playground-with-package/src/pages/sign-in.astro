@@ -1,8 +1,8 @@
 ---
-import SignIn from "../lib/astro-components/SignIn.astro";
+import { SignIn } from "../lib/react";
 import ClerkLayout from "../layouts/ClerkLayout.astro";
 ---
 
 <ClerkLayout>
-  <SignIn />
+  <SignIn client:load />
 </ClerkLayout>
