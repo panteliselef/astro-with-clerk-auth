@@ -1,13 +1,9 @@
 import type { AuthStatus, RequestState } from "@clerk/backend";
 import { constants, debugRequestState } from "@clerk/backend";
 import { clerkClient } from "./clerk";
-// import { missingDomainAndProxy, missingSignInUrlInDev, unsupportedRelativePathProxyUrl } from './errors';
 import type { WithAuthOptions } from "./types";
 import {
   getCookie,
-  // handleValueOrFn,
-  // isDevelopmentFromApiKey,
-  // isHttpOrHttps,
   setCustomAttributeOnRequest
 } from "./utils";
 import {
@@ -75,23 +71,16 @@ export const withClerkMiddleware = (...args: unknown[]) => {
     const headerToken = headers.get("authorization")?.replace("Bearer ", "");
     const requestState = await clerkClient.authenticateRequest({
       ...opts,
-      apiKey: opts.apiKey || apiKey,
       secretKey: opts.secretKey || secretKey,
-      frontendApi: opts.frontendApi || frontendApi,
       publishableKey: opts.publishableKey || publishableKey,
       cookieToken,
       headerToken,
       clientUat: getCookie(req, constants.Cookies.ClientUat),
-      origin: headers.get("origin") || undefined,
-      host: headers.get("host") as string,
-      forwardedPort: headers.get("x-forwarded-port") || undefined,
-      forwardedHost: headers.get("x-forwarded-host") || undefined,
-      referrer: headers.get("referer") || undefined,
+      request: req,
       userAgent: headers.get("user-agent") || undefined,
       proxyUrl: "",
       isSatellite: false,
       domain: "",
-      searchParams: new URL(req.url).searchParams,
       signInUrl: ""
     });
 
@@ -102,8 +91,7 @@ export const withClerkMiddleware = (...args: unknown[]) => {
     // Therefore we have to resort to a public interstitial endpoint
     if (requestState.isInterstitial || requestState.isUnknown) {
       const interstitialHtml = clerkClient.localInterstitial({
-        pkgVersion: jsVersion,
-        frontendApi,
+        clerkJSVersion: jsVersion,
         publishableKey,
         debugData: debugRequestState(requestState)
       });

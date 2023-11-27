@@ -1,6 +1,6 @@
 import { constants } from "@clerk/backend";
 import type { AstroGlobal } from "astro";
-import { frontendApi, publishableKey } from ".";
+import { publishableKey } from "./constants";
 import { authenticateRequest } from "./authenticateRequest";
 import { clerkClient } from "./clerkClient";
 import type { GetAuthReturn } from "./types";
@@ -16,7 +16,6 @@ export const getAuth = async ({
 
   if (requestState.isInterstitial || requestState.isUnknown) {
     const interstitialHtml = clerkClient.localInterstitial({
-      frontendApi,
       publishableKey
     });
     return new Response(`<!DOCTYPE html><html${interstitialHtml}</html>`, {

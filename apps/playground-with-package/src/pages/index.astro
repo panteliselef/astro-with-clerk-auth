@@ -5,12 +5,19 @@ import ClerkLayout from "../layouts/ClerkLayout.astro";
 // import UserButton from "../lib/astro-components/UserButton.astro";
 import SignOutButton from "../lib/astro-components/SignOutButton.astro";
 // import SignIn from "../lib/astro-components/SignIn.astro";
+// import {
+//   OrganizationSwitcher,
+//   SignedIn,
+//   SignedOut,
+//   UserButton,
+// } from "../lib/react";
+
 import {
-  OrganizationSwitcher,
   SignedIn,
   SignedOut,
   UserButton,
-} from "../lib/react";
+  OrganizationSwitcher,
+} from "astro-clerk-auth/client/react";
 ---
 
 <Layout title="Welcome to Astro.">

@@ -1,8 +1,6 @@
 import type { OptionalVerifyTokenOptions } from "@clerk/backend";
 import type {
-  MultiDomainAndOrProxy,
-  PublishableKeyOrFrontendApi,
-  SecretKeyOrApiKey,
+  MultiDomainAndOrProxy
 } from "@clerk/types";
 // import type { IncomingMessage } from "http";
 
@@ -15,9 +13,10 @@ import type {
 
 export type RequestLike = Request;
 
-export type WithAuthOptions = Partial<PublishableKeyOrFrontendApi> &
-  Partial<SecretKeyOrApiKey> &
+export type WithAuthOptions = 
   OptionalVerifyTokenOptions &
   MultiDomainAndOrProxy & {
+    publishableKey?: string;
+    secretKey?: string;
     signInUrl?: string;
   };

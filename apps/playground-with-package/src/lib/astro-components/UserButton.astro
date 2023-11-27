@@ -1,5 +1,6 @@
 ---
 import type { UserButtonProps } from "@clerk/types";
+// @ts-expect-error
 interface Props extends UserButtonProps {}
 ---
 
@@ -15,6 +16,7 @@ interface Props extends UserButtonProps {}
   mountClerkComponent({
     el: document.getElementById("user-button") as HTMLDivElement,
     mountFn: "mountUserButton",
+    // @ts-ignore
     props: USER_BUTTON_PROPS,
   });
 </script>

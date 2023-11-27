@@ -54,19 +54,18 @@ export async function authenticateRequest({
   const serverClientUat = parseCookie(server?.headers.get('cookie') ?? '')['__client_uat'] || '';
 
   return clerkClient.authenticateRequest({
-    apiKey,
     secretKey,
     jwtKey,
-    frontendApi,
     publishableKey,
     cookieToken: cookieToken || serverCookieToken,
     headerToken,
     clientUat: clientUat || serverClientUat,
-    origin: headers.get('origin') || '',
-    host: headers.get('host') as string,
-    forwardedPort: headers.get('x-forwarded-port') as string,
-    forwardedHost: headers.get('x-forwarded-host') as string,
-    referrer: headers.get('referer') || '',
+    request: client?.request || server as any,
+    // origin: headers.get('origin') || '',
+    // host: headers.get('host') as string,
+    // forwardedPort: headers.get('x-forwarded-port') as string,
+    // forwardedHost: headers.get('x-forwarded-host') as string,
+    // referrer: headers.get('referer') || '',
     userAgent: headers.get('user-agent') as string,
   });
 }

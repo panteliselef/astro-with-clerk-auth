@@ -1,5 +1,5 @@
-import type { Clerk } from '@clerk/clerk-js';
-import { $state, $clerk } from './clerkJSInstance';
+import type { Clerk } from "@clerk/clerk-js";
+import { $state, $clerk } from "./clerkJSInstance";
 
 export const mountClerkComponent = ({
   el,
@@ -8,7 +8,7 @@ export const mountClerkComponent = ({
   props,
 }: {
   el: HTMLDivElement;
-  mountFn: keyof Pick<Clerk, 'mountSignIn' | 'mountUserButton'>;
+  mountFn: keyof Pick<Clerk, "mountSignIn" | "mountUserButton">;
   //   unmountFn: (...args: any) => void;
   props?: Record<string, any>;
 }) => {
