@@ -20,10 +20,13 @@ interface Props extends SignOutOptions {
 
   button?.addEventListener("click", (e) => {
     e.preventDefault();
-    console.log('wwowoww')
+
+    // @ts-ignore
     $clerk.get()?.signOut(SIGN_OUT_BUTTON_PROPS);
 
+    // @ts-ignore
     if (SIGN_OUT_BUTTON_PROPS.signOutUrl)
+      // @ts-ignore
       window.location.replace(SIGN_OUT_BUTTON_PROPS.signOutUrl);
   });
 </script>

@@ -1,10 +1,8 @@
 import {
-  buildRequestUrl,
   type OptionalVerifyTokenOptions,
   type RequestState,
   constants,
 } from "@clerk/backend";
-import { handleValueOrFn } from "@clerk/shared";
 import type { MultiDomainAndOrProxy } from "@clerk/types";
 import type { APIContext } from "astro";
 import {
@@ -119,7 +117,6 @@ export const handleInterstitialState = (
 ) => {
   const response = new Response(
     clerkClient.localInterstitial({
-      frontendApi: "",
       publishableKey: opts.publishableKey || publishableKey,
       clerkJSUrl: "",
       clerkJSVersion: "",
@@ -142,17 +139,17 @@ export const handleInterstitialState = (
 };
 
 export function decorateRequest(
-  locals: APIContext['locals'],
+  locals: APIContext["locals"],
   res: Response,
   requestState: RequestState,
 ): Response {
   const { reason, message, status } = requestState;
 
-  console.log('locals', locals)
-  locals.authStatus = status
-  locals.authMessage = message
-  locals.authReason = reason
-  console.log('locals', locals)
+  console.log("locals", locals);
+  locals.authStatus = status;
+  locals.authMessage = message;
+  locals.authReason = reason;
+  console.log("locals", locals);
 
   res.headers.set(constants.Headers.AuthStatus, status);
   res.headers.set(constants.Headers.AuthMessage, message || "");
@@ -165,26 +162,25 @@ export function decorateRequest(
 export const onRequest = defineMiddleware(async (context, next) => {
   const isApiRoute = createApiRoutes();
 
-  console.log('lowlwowo')
+  console.log("lowlwowo");
   const requestState = await authenticateRequest({ server: context.request });
-  console.log('lowlwowo', requestState.isUnknown, requestState.isInterstitial)
+  console.log("lowlwowo", requestState.isUnknown, requestState.isInterstitial);
 
   if (requestState.isUnknown) {
-    console.log('------ isUnknown')
+    console.log("------ isUnknown");
     return handleUnknownState(requestState);
   } else if (requestState.isInterstitial && isApiRoute(context.request)) {
-    console.log('------ WOWOW')
+    console.log("------ WOWOW");
     return handleUnknownState(requestState);
   } else if (requestState.isInterstitial) {
-    console.log('------ INTERSTITIALL')
+    console.log("------ INTERSTITIALL");
     const res = handleInterstitialState(requestState, {});
     return res;
   }
 
-  console.log('lo')
+  console.log("lo");
 
-
-  const finalRes = await next() as Response;
+  const finalRes = (await next()) as Response;
 
   // @ts-ignore
   return decorateRequest(context.locals, finalRes, requestState);
