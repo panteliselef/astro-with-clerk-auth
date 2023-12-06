@@ -9,13 +9,17 @@
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
+    "postbuild": "rm -rf ./astro-components && mkdir ./astro-components/  && cp  -r ./src/astro-components/* ./astro-components/",
     "lint": "eslint \"**/*.ts*\""
   },
   "files": [
     "dist",
     "client",
     "server",
-    "stores"
+    "stores",
+    "astro-components",
+    "client.d.ts",
+    "env.d.ts"
   ],
   "exports": {
     ".": {
@@ -34,6 +38,10 @@
       "types": "./dist/server/index.d.ts",
       "default": "./dist/server/index.js"
     },
+    "./client": "./client.d.ts",
+    "./env": "./env.d.ts",
+    "./astro-components": "./astro-components/index.ts",
+    "./astro-components/*": "./astro-components/*",
     "./package.json": "./package.json"
   },
   "dependencies": {
