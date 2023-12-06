@@ -1,5 +1,6 @@
 # build output
 dist/
+astro-components/
 .output/
 
 .vscode/
@@ -26,3 +27,4 @@ pnpm-debug.log*
 *.d.ts
 *.d.ts.map
 !env.d.ts
+!client.d.ts

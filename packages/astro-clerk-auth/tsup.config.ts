@@ -1,9 +1,8 @@
 import { defineConfig } from 'tsup';
 
-export default defineConfig((options) => {
+export default defineConfig(() => {
   return {
     clean: true,
-    // entry: ["","./src/*.{ts,tsx}"],
     entry: ['./src/index.ts', './src/client/react/index.ts', './src/stores/index.ts', './src/server/index.ts'],
     dts: true,
     onSuccess: 'tsc --emitDeclarationOnly --declaration',

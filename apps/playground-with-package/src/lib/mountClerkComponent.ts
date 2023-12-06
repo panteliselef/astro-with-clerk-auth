@@ -1,5 +1,5 @@
 import type { Clerk } from "@clerk/clerk-js";
-import { $state, $clerk } from "./clerkJSInstance";
+import { $state, $clerk } from "astro-clerk-auth/stores";
 
 export const mountClerkComponent = ({
   el,

@@ -1,7 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Card from "../components/Card.astro";
-import ClerkLayout from "../layouts/ClerkLayout.astro";
 // import UserButton from "../lib/astro-components/UserButton.astro";
 import SignOutButton from "../lib/astro-components/SignOutButton.astro";
 // import SignIn from "../lib/astro-components/SignIn.astro";
@@ -18,6 +17,7 @@ import {
   UserButton,
   OrganizationSwitcher,
 } from "astro-clerk-auth/client/react";
+import { ClerkLayout } from "astro-clerk-auth:components";
 ---
 
 <Layout title="Welcome to Astro.">
