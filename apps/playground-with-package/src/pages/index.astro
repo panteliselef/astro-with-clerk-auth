@@ -14,7 +14,6 @@ import SignOutButton from "../lib/astro-components/SignOutButton.astro";
 import {
   SignedIn,
   SignedOut,
-  UserButton,
   OrganizationSwitcher,
 } from "astro-clerk-auth/client/react";
 import { ClerkLayout } from "astro-clerk-auth/astro-components";
@@ -23,8 +22,14 @@ import { ClerkLayout } from "astro-clerk-auth/astro-components";
 <Layout title="Welcome to Astro.">
   <ClerkLayout protectedPage={true}>
     <h1>Welcome to <span class="text-gradient">Astro</span></h1>
-    <UserButton client:load afterSignOutUrl="/" />
-    <OrganizationSwitcher client:load />
+    <OrganizationSwitcher
+      client:load
+      appearance={{
+        elements: {
+          organizationSwitcherTrigger: "text-white",
+        },
+      }}
+    />
     <SignedIn client:load>
       <SignOutButton />
     </SignedIn>
