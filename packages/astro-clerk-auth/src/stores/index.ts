@@ -28,7 +28,6 @@ export const $ssrState = map<InitialState>();
 export const $clerk = atom<Clerk | null>(null);
 
 export const $derivedState = computed([$state, $ssrState], (state, ssrState) => {
-  console.log('computed', state, ssrState);
   return deriveState(
     state.isLoaded,
     {

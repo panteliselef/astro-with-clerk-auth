@@ -1,8 +1,8 @@
 ---
 import { signUpUrl } from "astro-clerk-auth";
 import Layout from "../../layouts/Layout.astro";
-import ClerkLayout from "../../layouts/ClerkLayout.astro";
 import { SignIn } from "astro-clerk-auth/client/react";
+import { ClerkLayout } from "astro-clerk-auth/astro-components";
 ---
 
 <Layout title="Welcome to Astro.">
@@ -11,7 +11,6 @@ import { SignIn } from "astro-clerk-auth/client/react";
       <SignIn
         client:load
         signUpUrl={signUpUrl}
-        client:load
         path="/sign-in"
         routing="path"
       />
