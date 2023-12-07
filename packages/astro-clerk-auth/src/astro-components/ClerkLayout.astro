@@ -1,0 +1,38 @@
+---
+interface Props {
+  protectedPage?: boolean;
+}
+
+const { protectedPage = false } = Astro.props;
+
+import { $ssrState } from "astro-clerk-auth/stores";
+import { getAuth } from "astro-clerk-auth/server";
+
+let _ssrState;
+if (protectedPage) {
+  const ssrStateNonSerializable = getAuth(Astro.request, Astro.locals);
+
+  const { experimental__has, getToken, ...ssrState } = ssrStateNonSerializable;
+  // @ts-expect-error TODO: fix this
+  $ssrState.set(ssrState);
+  _ssrState = ssrState;
+}
+---
+
+{protectedPage && <div style="height:0;visibility:hidden;width:0;overflow:hidden;" id="ssr_data">
+  {JSON.stringify(_ssrState)}
+</div>}
+<slot />
+<script>
+  import { $ssrState } from "astro-clerk-auth/stores";
+  import { createClerkInstance } from "astro-clerk-auth/client/react";
+
+  createClerkInstance();
+
+  const ssrDataContainer = document.getElementById("ssr_data")
+  if(ssrDataContainer) {
+    $ssrState.set(
+      JSON.parse(ssrDataContainer.textContent || "{}"),
+    );
+  } 
+</script>

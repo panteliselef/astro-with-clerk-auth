@@ -36,7 +36,6 @@ class Portal extends React.PureComponent<MountProps> {
 
   componentDidMount() {
     if (this.portalRef.current) {
-      console.log("mounting", this.props.mount);
       this.props.mount?.(this.portalRef.current, this.props.props);
     }
   }

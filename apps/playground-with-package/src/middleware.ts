@@ -10,6 +10,7 @@ import {
   publishableKey,
   authenticateRequest,
 } from "astro-clerk-auth";
+import { getAuth } from "astro-clerk-auth/server";
 import { defineMiddleware } from "astro:middleware";
 
 type WithAuthOptions = OptionalVerifyTokenOptions &
@@ -139,17 +140,17 @@ export const handleInterstitialState = (
 };
 
 export function decorateRequest(
+  req: Request,
   locals: APIContext["locals"],
   res: Response,
   requestState: RequestState,
 ): Response {
   const { reason, message, status } = requestState;
 
-  console.log("locals", locals);
   locals.authStatus = status;
   locals.authMessage = message;
   locals.authReason = reason;
-  console.log("locals", locals);
+  locals.auth = () => getAuth(req, locals)
 
   res.headers.set(constants.Headers.AuthStatus, status);
   res.headers.set(constants.Headers.AuthMessage, message || "");
@@ -162,26 +163,19 @@ export function decorateRequest(
 export const onRequest = defineMiddleware(async (context, next) => {
   const isApiRoute = createApiRoutes();
 
-  console.log("lowlwowo");
   const requestState = await authenticateRequest({ server: context.request });
-  console.log("lowlwowo", requestState.isUnknown, requestState.isInterstitial);
 
   if (requestState.isUnknown) {
-    console.log("------ isUnknown");
     return handleUnknownState(requestState);
   } else if (requestState.isInterstitial && isApiRoute(context.request)) {
-    console.log("------ WOWOW");
     return handleUnknownState(requestState);
   } else if (requestState.isInterstitial) {
-    console.log("------ INTERSTITIALL");
     const res = handleInterstitialState(requestState, {});
     return res;
   }
 
-  console.log("lo");
-
   const finalRes = (await next()) as Response;
 
   // @ts-ignore
-  return decorateRequest(context.locals, finalRes, requestState);
+  return decorateRequest(context.request, context.locals, finalRes, requestState);
 });

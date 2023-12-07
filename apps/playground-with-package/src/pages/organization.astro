@@ -1,11 +1,11 @@
 ---
-import ClerkLayout from "../layouts/ClerkLayout.astro";
 import { OrganizationProfile } from "astro-clerk-auth/client/react";
 import Layout from "../layouts/Layout.astro";
+import { ClerkLayout } from "astro-clerk-auth/astro-components";
 ---
 
 <Layout title="Welcome to Astro.">
-  <ClerkLayout>
+  <ClerkLayout protectedPage={true}>
     <div class="w-full flex justify-center">
       <OrganizationProfile client:load />
     </div>

@@ -1,13 +1,16 @@
 ---
 import { UserProfile } from "astro-clerk-auth/client/react";
-import ClerkLayout from "../../layouts/ClerkLayout.astro";
+import { ClerkLayout } from "astro-clerk-auth/astro-components";
 import Layout from "../../layouts/Layout.astro";
+import Protected from "../../layouts/Protected.astro";
 ---
 
 <Layout title="Welcome to Astro.">
-  <ClerkLayout>
-    <div class="w-full flex justify-center">
-      <UserProfile client:load path="/user" routing="path" />
-    </div>
-  </ClerkLayout>
+  <Protected>
+    <ClerkLayout protectedPage={true}>
+      <div class="w-full flex justify-center">
+        <UserProfile client:load path="/user" routing="path" />
+      </div>
+    </ClerkLayout>
+  </Protected>
 </Layout>
