@@ -1,0 +1,8 @@
+---
+import { Code } from "astro:components";
+// const user = await Astro.locals.currentUser();
+await new Promise((res) => setTimeout(res, 10000));
+const { userId } = await Astro.locals.auth();
+---
+
+<!-- <Code client:load code={JSON.stringify(userId)} lang={"json"} wrap /> -->
