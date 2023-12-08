@@ -4,6 +4,5 @@ declare namespace App {
     authMessage: string | null;
     authReason: string | null;
     auth: () => ReturnType<typeof import('astro-clerk-auth/server').getAuth>
-    currentUser: () => Promise<import('@clerk/backend').User | null>
   }
 }

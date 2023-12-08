@@ -6,7 +6,6 @@ import { clerkClient } from '../v0/clerkClient';
 import { publishableKey } from '../v0/constants';
 import { getAuth } from '.';
 import { authenticateRequest } from '../v0/authenticateRequest';
-import { createCurrentUser } from './current-user';
 
 type WithAuthOptions = OptionalVerifyTokenOptions &
   MultiDomainAndOrProxy & {
@@ -104,7 +103,6 @@ export function decorateRequest(
   locals.authMessage = message;
   locals.authReason = reason;
   locals.auth = () => getAuth(req, locals);
-  locals.currentUser = createCurrentUser(req, locals);
 
   res.headers.set(constants.Headers.AuthStatus, status);
   res.headers.set(constants.Headers.AuthMessage, message || '');
