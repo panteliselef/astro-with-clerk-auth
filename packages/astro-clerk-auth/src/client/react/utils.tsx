@@ -1,7 +1,7 @@
 import type { LoadedClerk } from "@clerk/types";
 import { useStore } from "@nanostores/react";
 import { computed } from "nanostores";
-import { $clerk, $state } from "../../stores";
+import { $clerk, $csrState } from "../../stores/internal";
 import React from "react";
 
 export const withClerk = <P extends { clerk: LoadedClerk | undefined | null }>(
@@ -13,7 +13,7 @@ export const withClerk = <P extends { clerk: LoadedClerk | undefined | null }>(
   Component.displayName = displayName;
   const HOC = (props: Omit<P, "clerk">) => {
     const clerk = useStore(
-      computed([$state, $clerk], (state, clerk) => {
+      computed([$csrState, $clerk], (state, clerk) => {
         return state.isLoaded ? clerk : null;
       }),
     );
