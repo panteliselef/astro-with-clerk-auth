@@ -1,5 +1,2 @@
-export * from './getAuth';
-export * from './clerkClient';
-export { authenticateRequest } from './authenticateRequest';
-export * from './constants';
-export { withClerkMiddleware } from './middleware';
+export { clerkClient, authenticateRequest } from './v0';
+export * from './v0/constants';

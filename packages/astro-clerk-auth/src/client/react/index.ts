@@ -1,6 +1,6 @@
 import { Clerk } from '@clerk/clerk-js';
 import { ClerkOptions } from '@clerk/types';
-import { publishableKey } from '../../constants';
+import { publishableKey } from '../../v0/constants';
 import { $clerk, $csrState } from '../../stores/internal';
 
 export * from './uiComponents';

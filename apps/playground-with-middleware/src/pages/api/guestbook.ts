@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { getAuth, clerkClient } from "astro-clerk-auth";
+import { getAuth, clerkClient } from "astro-clerk-auth/v0";
 import { queryBuilder } from "../../db/planetscale";
 
 export const post: APIRoute = async ({ request }) => {

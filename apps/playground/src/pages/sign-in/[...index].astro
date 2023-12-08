@@ -1,7 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import SignIn from "../../react/SignIn";
-import { getAuth } from "astro-clerk-auth";
+import { getAuth } from "astro-clerk-auth/v0";
 
 const auth = await getAuth({ client: Astro });
 
