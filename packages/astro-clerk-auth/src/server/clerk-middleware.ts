@@ -2,10 +2,10 @@ import { defineMiddleware } from 'astro/middleware';
 import { type OptionalVerifyTokenOptions, type RequestState, constants } from '@clerk/backend';
 import type { MultiDomainAndOrProxy } from '@clerk/types';
 import type { APIContext } from 'astro';
-import { clerkClient } from '../clerkClient';
-import { publishableKey } from '../constants';
+import { clerkClient } from '../v0/clerkClient';
+import { publishableKey } from '../v0/constants';
 import { getAuth } from '.';
-import { authenticateRequest } from '../authenticateRequest';
+import { authenticateRequest } from '../v0/authenticateRequest';
 
 type WithAuthOptions = OptionalVerifyTokenOptions &
   MultiDomainAndOrProxy & {

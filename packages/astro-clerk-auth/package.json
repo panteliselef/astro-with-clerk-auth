@@ -38,6 +38,10 @@
       "types": "./dist/server/index.d.ts",
       "default": "./dist/server/index.js"
     },
+    "./v0": {
+      "types": "./dist/v0/index.d.ts",
+      "default": "./dist/v0/index.js"
+    },
     "./client": "./client.d.ts",
     "./env": "./env.d.ts",
     "./astro-components": "./astro-components/index.ts",

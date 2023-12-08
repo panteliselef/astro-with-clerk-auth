@@ -8,7 +8,7 @@ import {
 } from '@clerk/backend';
 import type { APIContext } from 'astro';
 import { getAuthKeyFromRequest, parseJwt } from './utils';
-import { apiUrl, apiVersion, secretKey } from '../constants';
+import { apiUrl, apiVersion, secretKey } from '../v0/constants';
 
 type AuthObjectWithoutResources<T extends AuthObject> = Omit<T, 'user' | 'organization' | 'session'>;
 

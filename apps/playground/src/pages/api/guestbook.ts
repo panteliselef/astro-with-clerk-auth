@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getAuth, clerkClient } from 'astro-clerk-auth';
+import { getAuth, clerkClient } from 'astro-clerk-auth/v0';
 import { queryBuilder } from '../../db/planetscale';
 import { getGuestbook } from '../../utils';
 
@@ -18,7 +18,11 @@ export const post: APIRoute = async ({ request }) => {
         throw new Error('not logged in');
       }
 
-      const { primaryEmailAddressId, username } = await clerkClient.users.getUser(auth.userId);
+      const { data } = await clerkClient.users.getUser(auth.userId);
+
+      if (!data) throw new Error('Email not found');
+
+      const { primaryEmailAddressId, username } = data;
 
       if (!primaryEmailAddressId) throw new Error('Email not found');
       if (!username) throw new Error('username not found');

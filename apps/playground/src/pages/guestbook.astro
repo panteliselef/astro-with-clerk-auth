@@ -1,10 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getAuth } from 'astro-clerk-auth';
+import { getAuth } from 'astro-clerk-auth/v0';
 import UserButton from '../react/UserButton';
 import { queryBuilder } from '../db/planetscale';
 import { GuestbookForm } from '../components/GuestbookForm';
-import { Entry, entriesStore } from '../atoms/enties';
+import { type Entry, entriesStore } from '../atoms/enties';
 import { Signatures } from '../components/Signatures';
 
 if (import.meta.env.FLAG_GUESTBOOK !== 'true') {

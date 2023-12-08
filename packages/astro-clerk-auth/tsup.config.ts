@@ -3,7 +3,7 @@ import { defineConfig } from 'tsup';
 export default defineConfig(() => {
   return {
     clean: true,
-    entry: ['./src/index.ts', './src/client/react/index.ts', './src/stores/index.ts', './src/server/index.ts'],
+    entry: ['./src/index.ts', './src/client/react/index.ts', './src/stores/index.ts', './src/server/index.ts', './src/v0/index.ts'],
     dts: true,
     onSuccess: 'tsc --emitDeclarationOnly --declaration',
     minify: false,
