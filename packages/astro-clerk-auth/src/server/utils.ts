@@ -10,18 +10,6 @@ function getHeader(req: Request, name: string) {
   return req.headers.get(name);
 }
 
-// "exports": {
-//   ".": {
-//     "types": "./dist/index.d.ts",
-//     "default": "./dist/index.js"
-//   },
-//   "./react": {
-//     "types": "./dist/react/index.d.mts",
-//     "default": "./dist/react/index.mjs"
-//   },
-//   "./package.json": "./package.json"
-// },
-
 const parseCookie = (str: string) => {
   if (!str) return {};
   return str

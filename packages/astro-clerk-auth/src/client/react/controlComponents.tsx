@@ -1,9 +1,9 @@
-import type { PropsWithChildren } from "react";
-import { useStore } from "@nanostores/react";
-import { $derivedState } from "../../stores";
+import type { PropsWithChildren } from 'react';
+import { useStore } from '@nanostores/react';
+import { $authStore } from '../../stores';
 
 export function SignedOut(props: PropsWithChildren) {
-  const { userId } = useStore($derivedState);
+  const { userId } = useStore($authStore);
 
   if (userId) {
     return null;
@@ -12,7 +12,7 @@ export function SignedOut(props: PropsWithChildren) {
 }
 
 export function SignedIn(props: PropsWithChildren) {
-  const { userId } = useStore($derivedState);
+  const { userId } = useStore($authStore);
   if (!userId) {
     return null;
   }

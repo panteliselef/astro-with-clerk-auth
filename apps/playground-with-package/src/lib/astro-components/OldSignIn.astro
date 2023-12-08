@@ -9,11 +9,11 @@
    * Turns out that this script run even if a UI component above prevents it from rendering
    */
   import { mountClerkComponent } from "../mountClerkComponent";
-  import { $state } from "astro-clerk-auth/stores";
+  import { $csrState } from "astro-clerk-auth/stores";
 
   console.log("-------- CLIENT SIGNIN");
 
-  $state.listen(() => {
+  $csrState.listen(() => {
     console.log("-------- CLIENT TRIGGER", document.getElementById("sign-in"));
     mountClerkComponent({
       el: document.getElementById("sign-in") as HTMLDivElement,
