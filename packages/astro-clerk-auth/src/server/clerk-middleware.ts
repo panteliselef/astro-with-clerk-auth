@@ -108,6 +108,33 @@ export function decorateRequest(
   res.headers.set(constants.Headers.AuthMessage, message || '');
   res.headers.set(constants.Headers.AuthReason, reason || '');
 
+  /**
+   * Populate every page with the authObject. This allows for SSR to work properly 
+   * without the developer having to wrap manually each page with `ClerkLayout.astro`
+   * ^ ClerkLayout is still needed in order to populate the ssrState store, but it not responsible for passing the data to a page.
+   */
+  if (res.headers.get('content-type') === 'text/html') {
+    const reader = res.body?.getReader();
+    const stream = new ReadableStream({
+      async start(controller) {
+        controller.enqueue(`<script id="__CLERK_ASTRO_DATA__" type="application/json">${JSON.stringify(locals.auth())}</script>`);
+        let { value, done } = await reader!.read();
+        while (!done) {
+          controller.enqueue(value);
+          ({ value, done } = await reader!.read());
+        }
+        controller.close();
+      },
+    });
+
+    const modifiedResponse = new Response(stream, {
+      status: res.status,
+      statusText: res.statusText,
+      headers: res.headers,
+    });
+
+    return modifiedResponse;
+  }
   return res;
 }
 

@@ -17,6 +17,13 @@ import {
   OrganizationSwitcher,
 } from "astro-clerk-auth/client/react";
 import { ClerkLayout } from "astro-clerk-auth/astro-components";
+// import { clerkSSR } from "astro-clerk-auth/server";
+/**
+ * Replacement of `<ClerkLayout/>`
+ * Experimental pattern
+ */
+// This currently doesnt work because Astro middleware has not populated `Astro.local.auth`
+// clerkSSR(Astro)
 ---
 
 <Layout title="Welcome to Astro.">
