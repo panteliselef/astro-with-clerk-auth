@@ -7,9 +7,12 @@ export * from './uiComponents';
 export * from './controlComponents';
 
 export function createClerkInstance(options?: ClerkOptions) {
-  const clerkJSInstance = new Clerk(publishableKey);
-  $clerk.set(clerkJSInstance);
-  window.Clerk = clerkJSInstance;
+  let clerkJSInstance = window.Clerk as Clerk
+  if (!clerkJSInstance) {
+    clerkJSInstance = new Clerk(publishableKey)
+    $clerk.set(clerkJSInstance);
+    window.Clerk = clerkJSInstance;
+  }
   // window.$derivedState = $derivedState;
 
   return clerkJSInstance

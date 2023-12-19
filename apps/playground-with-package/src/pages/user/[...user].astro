@@ -3,6 +3,7 @@ import { UserProfile } from "astro-clerk-auth/client/react";
 import { ClerkLayout } from "astro-clerk-auth/astro-components";
 import Layout from "../../layouts/Layout.astro";
 import Protected from "../../layouts/Protected.astro";
+import UserJSON from "../../components/UserJSON.astro";
 ---
 
 <Layout title="Welcome to Astro.">
@@ -11,6 +12,7 @@ import Protected from "../../layouts/Protected.astro";
       <div class="w-full flex justify-center">
         <UserProfile client:load path="/user" routing="path" />
       </div>
+      <UserJSON />
     </ClerkLayout>
   </Protected>
 </Layout>
