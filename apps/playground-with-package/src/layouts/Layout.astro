@@ -7,7 +7,7 @@ const { title } = Astro.props;
 
 import { Image } from "astro:assets";
 import logo from "../assets/Clerk-Purple-Logo.png";
-import { SignedIn, SignedOut, UserButton } from "astro-clerk-auth/client/react";
+import { UserButton, SignedIn, SignedOut } from "astro-clerk-auth/astro-components";
 ---
 
 <!doctype html>
@@ -66,11 +66,11 @@ import { SignedIn, SignedOut, UserButton } from "astro-clerk-auth/client/react";
             </nav>
           </div>
 
-          <SignedIn client:load>
-            <UserButton client:load afterSignOutUrl="/" />
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" />
           </SignedIn>
 
-          <SignedOut client:load>
+          <SignedOut>
             <div class="flex items-center gap-4">
               <div class="sm:flex sm:gap-4">
                 <a

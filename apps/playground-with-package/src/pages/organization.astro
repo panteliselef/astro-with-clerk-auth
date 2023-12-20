@@ -1,11 +1,11 @@
 ---
-import {
-  OrganizationProfile,
-  OrganizationSwitcher,
-} from "astro-clerk-auth/client/react";
 import Layout from "../layouts/Layout.astro";
 import Streaming from "../layouts/Streaming.astro";
-import { ClerkLayout } from "astro-clerk-auth/astro-components";
+import {
+  ClerkLayout,
+  OrganizationProfile,
+  OrganizationSwitcher,
+} from "astro-clerk-auth/astro-components";
 ---
 
 <Layout title="Welcome to Astro.">
@@ -13,14 +13,13 @@ import { ClerkLayout } from "astro-clerk-auth/astro-components";
     <Streaming />
     <div class="w-full flex justify-center flex-col">
       <OrganizationSwitcher
-        client:load
         appearance={{
           elements: {
             organizationSwitcherTrigger: "text-white",
           },
         }}
       />
-      <OrganizationProfile client:load />
+      <OrganizationProfile />
     </div>
   </ClerkLayout>
 </Layout>

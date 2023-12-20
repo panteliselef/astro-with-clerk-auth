@@ -1,0 +1,22 @@
+---
+import type { UserProfileProps } from "@clerk/types";
+type Props = UserProfileProps
+
+import type { AstroBuiltinProps } from 'astro';
+import { UserProfile as UserProfileReact } from "astro-clerk-auth/client/react";
+/**
+ * Weird bug with Astro locals not being populated in top level layouts
+ */
+// import { $ssrState } from "astro-clerk-auth/stores";
+// ts-expect-error TODO: fix this
+// $ssrState.set(Astro.locals.auth());
+
+const props = {
+  ...Astro.props,
+}
+---
+
+<UserProfileReact
+  client:load
+  {...props}
+/>

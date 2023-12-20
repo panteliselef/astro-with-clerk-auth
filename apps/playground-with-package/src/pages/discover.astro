@@ -1,13 +1,19 @@
 ---
-import { OrganizationList } from "astro-clerk-auth/client/react";
 import Layout from "../layouts/Layout.astro";
-import { ClerkLayout } from "astro-clerk-auth/astro-components";
+import {
+  ClerkLayout,
+  OrganizationList,
+} from "astro-clerk-auth/astro-components";
 ---
 
 <Layout title="Welcome to Astro.">
   <ClerkLayout protectedPage={true}>
     <div class="w-full flex justify-center">
-      <OrganizationList client:load />
+      <OrganizationList
+        afterSelectOrganizationUrl="/organization"
+        afterCreateOrganizationUrl="/organization"
+        afterSelectPersonalUrl="/user"
+      />
     </div>
   </ClerkLayout>
 </Layout>
