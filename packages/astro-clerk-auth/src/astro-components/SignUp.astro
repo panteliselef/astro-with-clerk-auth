@@ -1,0 +1,21 @@
+---
+import type { SignUpProps } from "@clerk/types";
+type Props = SignUpProps
+
+import { signInUrl } from "astro-clerk-auth";
+import { SignUp as SignUpReact } from "astro-clerk-auth/client/react";
+import { $ssrState } from "astro-clerk-auth/stores";
+
+// @ts-expect-error TODO: fix this
+$ssrState.set(Astro.locals.auth());
+
+const props = {
+  ...Astro.props,
+  signInUrl: Astro.props.signInUrl || signInUrl
+}
+---
+
+<SignUpReact
+  client:load
+  {...props}
+/>

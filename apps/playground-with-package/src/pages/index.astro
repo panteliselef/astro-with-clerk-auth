@@ -12,11 +12,11 @@ import SignOutButton from "../lib/astro-components/SignOutButton.astro";
 // } from "../lib/react";
 
 import {
+  ClerkLayout,
+  OrganizationSwitcher,
   SignedIn,
   SignedOut,
-  OrganizationSwitcher,
-} from "astro-clerk-auth/client/react";
-import { ClerkLayout } from "astro-clerk-auth/astro-components";
+} from "astro-clerk-auth/astro-components";
 // import { clerkSSR } from "astro-clerk-auth/server";
 /**
  * Replacement of `<ClerkLayout/>`
@@ -30,14 +30,14 @@ import { ClerkLayout } from "astro-clerk-auth/astro-components";
   <ClerkLayout protectedPage={true}>
     <h1>Welcome to <span class="text-gradient">Astro</span></h1>
     <OrganizationSwitcher
-      client:load
       appearance={{
         elements: {
           organizationSwitcherTrigger: "text-white",
         },
       }}
+      afterSelectOrganizationUrl="/organization"
     />
-    <SignedIn client:load>
+    <SignedIn>
       <SignOutButton />
     </SignedIn>
 
@@ -48,7 +48,7 @@ import { ClerkLayout } from "astro-clerk-auth/astro-components";
       above.
     </p>
     <ul role="list" class="link-card-grid">
-      <SignedOut client:load>
+      <SignedOut>
         <Card
           href="/sign-in"
           title="Log in"
@@ -60,7 +60,7 @@ import { ClerkLayout } from "astro-clerk-auth/astro-components";
           body="Supercharge your project with new frameworks and libraries."
         />
       </SignedOut>
-      <SignedIn client:load>
+      <SignedIn>
         <Card
           href="/user"
           title="User Profile"
