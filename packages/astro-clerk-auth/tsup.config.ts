@@ -1,4 +1,6 @@
 import { defineConfig } from 'tsup';
+// @ts-ignore
+import { name, version } from './package.json';
 
 export default defineConfig(() => {
   return {
@@ -7,6 +9,10 @@ export default defineConfig(() => {
     dts: true,
     onSuccess: 'tsc --emitDeclarationOnly --declaration',
     minify: false,
+    define: {
+      PACKAGE_NAME: `"${name}"`,
+      PACKAGE_VERSION: `"${version}"`,
+    },
     bundle: true,
     sourcemap: true,
     format: ['esm'],
