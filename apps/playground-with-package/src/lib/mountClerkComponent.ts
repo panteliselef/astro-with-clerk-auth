@@ -1,5 +1,5 @@
 import type { Clerk } from "@clerk/clerk-js";
-import { $state, $clerk } from "astro-clerk-auth/stores";
+// import { $state, $clerk } from "astro-clerk-auth/stores";
 
 export const mountClerkComponent = ({
   el,
@@ -12,11 +12,11 @@ export const mountClerkComponent = ({
   //   unmountFn: (...args: any) => void;
   props?: Record<string, any>;
 }) => {
-  $state.subscribe(({ isLoaded }) => {
-    if (!isLoaded) {
-      return;
-    }
+  // $state.subscribe(({ isLoaded }) => {
+  //   if (!isLoaded) {
+  //     return;
+  //   }
 
-    if (el) $clerk.get()?.[mountFn]?.(el, props);
-  });
+  //   if (el) $clerk.get()?.[mountFn]?.(el, props);
+  // });
 };

@@ -1,12 +1,12 @@
 import { Clerk } from '@clerk/clerk-js';
-import { ClerkOptions } from '@clerk/types';
 import { publishableKey } from '../../v0/constants';
 import { $clerk, $csrState } from '../../stores/internal';
+import { AstroClerkIntegrationParams } from '../../types';
 
 export * from './uiComponents';
 export * from './controlComponents';
 
-export function createClerkInstance(options?: ClerkOptions) {
+export function createClerkInstance(options?: AstroClerkIntegrationParams) {
   let clerkJSInstance = window.Clerk as Clerk
   if (!clerkJSInstance) {
     clerkJSInstance = new Clerk(publishableKey)
