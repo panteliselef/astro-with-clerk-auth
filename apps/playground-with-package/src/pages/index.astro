@@ -17,6 +17,7 @@ import {
   SignedIn,
   SignedOut,
 } from "astro-clerk-auth/astro-components";
+import { LanguagePicker } from "../components/LanguagePicker";
 // import { clerkSSR } from "astro-clerk-auth/server";
 /**
  * Replacement of `<ClerkLayout/>`
@@ -29,6 +30,7 @@ import {
 <Layout title="Welcome to Astro.">
   <ClerkLayout protectedPage={true}>
     <h1>Welcome to <span class="text-gradient">Astro</span></h1>
+    <LanguagePicker client:idle/>
     <OrganizationSwitcher
       appearance={{
         elements: {
