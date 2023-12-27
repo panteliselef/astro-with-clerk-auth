@@ -1,5 +1,6 @@
 import { AstroClerkIntegrationParams } from '../types';
 import { AstroIntegration } from 'astro';
+import { name as packageName } from '../../package.json';
 
 export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
   const { proxyUrl, isSatellite, domain, afterSignInUrl, afterSignUpUrl, signInUrl, signUpUrl } = params || {};
@@ -7,7 +8,14 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
   return {
     name: '@astro-clerk-auth/integration',
     hooks: {
-      'astro:config:setup': ({ injectScript, updateConfig, command }) => {
+      'astro:config:setup': ({ config, injectScript, updateConfig, logger }) => {
+        if (config.output === 'static')
+          logger.error(`${packageName} requires SSR to be turned on. Please update output to "server"`);
+
+        if (!config.adapter) {
+          logger.error('Missing adapter, please update your Astro config to use one.');
+        }
+
         updateConfig({
           vite: {
             define: {
