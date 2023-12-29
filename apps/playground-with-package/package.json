@@ -21,7 +21,7 @@
     "@clerk/types": "^4.0.0-alpha-v5.2",
     "@nanostores/react": "0.7.1",
     "astro": "^3.5.5",
-    "astro-clerk-auth": "file:.yalc/astro-clerk-auth",
+    "astro-clerk-auth": "*",
     "nanostores": "^0.9.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
