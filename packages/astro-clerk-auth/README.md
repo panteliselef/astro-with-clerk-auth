@@ -1,5 +1,5 @@
 # astro-clerk-auth
-
+[Online Demo](https://astro-clerk.elef.codes/)
 This is a private package which provides unofficial integration with [Astro](https://astro.build/) and [Clerk](https://clerk.com/)
 
 ## Astro app with middleware (Option 1, recommended)
