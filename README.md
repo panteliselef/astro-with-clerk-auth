@@ -11,9 +11,7 @@ This turborepo uses [npm](https://www.npmjs.com/) as a package manager. It inclu
 - `playground-with-middleware`: Out-of-date. Will be removed. Attempt to use vercel middleware.
 
 ### Packages
-- `astro-clerk-auth`: Private package for supporting integration between Clerk and Astro.
-
-### Utilities
+- `astro-clerk-auth`: Private package for supporting integration between Clerk and Astro. [Read the docs](./packages/astro-clerk-auth/README.md)
 
 ### Build
 
