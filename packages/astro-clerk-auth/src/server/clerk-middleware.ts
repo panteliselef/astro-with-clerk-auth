@@ -4,7 +4,7 @@ import type { MultiDomainAndOrProxy } from '@clerk/types';
 import type { APIContext } from 'astro';
 import { clerkClient } from '../v0/clerkClient';
 import { publishableKey } from '../v0/constants';
-import { getAuth } from '.';
+import { getAuth } from './get-auth';
 import { authenticateRequest } from '../v0/authenticateRequest';
 import { createCurrentUser } from './current-user';
 
@@ -111,7 +111,7 @@ export function decorateRequest(
   res.headers.set(constants.Headers.AuthReason, reason || '');
 
   /**
-   * Populate every page with the authObject. This allows for SSR to work properly 
+   * Populate every page with the authObject. This allows for SSR to work properly
    * without the developer having to wrap manually each page with `ClerkLayout.astro`
    * ^ ClerkLayout is still needed in order to populate the ssrState store, but it not responsible for passing the data to a page.
    */
@@ -119,7 +119,9 @@ export function decorateRequest(
     const reader = res.body?.getReader();
     const stream = new ReadableStream({
       async start(controller) {
-        controller.enqueue(`<script id="__CLERK_ASTRO_DATA__" type="application/json">${JSON.stringify(locals.auth())}</script>`);
+        controller.enqueue(
+          `<script id="__CLERK_ASTRO_DATA__" type="application/json">${JSON.stringify(locals.auth())}</script>`,
+        );
         let { value, done } = await reader!.read();
         while (!done) {
           controller.enqueue(value);
