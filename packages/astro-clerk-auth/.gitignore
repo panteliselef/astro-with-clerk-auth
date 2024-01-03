@@ -2,6 +2,8 @@
 dist/
 astro-components/
 !src/astro-components/
+components/
+!src/components/
 .output/
 
 .vscode/
