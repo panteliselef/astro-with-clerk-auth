@@ -11,13 +11,13 @@ import SignOutButton from "../lib/astro-components/SignOutButton.astro";
 //   UserButton,
 // } from "../lib/react";
 
+import { LanguagePicker } from "../components/LanguagePicker";
+import { ClerkLayout } from "astro-clerk-auth/components/control";
 import {
-  ClerkLayout,
   OrganizationSwitcher,
   SignedIn,
   SignedOut,
-} from "astro-clerk-auth/astro-components";
-import { LanguagePicker } from "../components/LanguagePicker";
+} from "astro-clerk-auth/components/react";
 // import { clerkSSR } from "astro-clerk-auth/server";
 /**
  * Replacement of `<ClerkLayout/>`
@@ -30,7 +30,7 @@ import { LanguagePicker } from "../components/LanguagePicker";
 <Layout title="Welcome to Astro.">
   <ClerkLayout protectedPage={true}>
     <h1>Welcome to <span class="text-gradient">Astro</span></h1>
-    <LanguagePicker client:idle/>
+    <LanguagePicker client:idle />
     <OrganizationSwitcher
       appearance={{
         elements: {
