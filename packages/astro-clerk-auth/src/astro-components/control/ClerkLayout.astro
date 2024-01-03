@@ -1,0 +1,11 @@
+---
+interface Props {
+  protectedPage?: boolean;
+}
+
+import { $ssrState } from "astro-clerk-auth/stores";
+
+// @ts-expect-error TODO: fix this
+$ssrState.set(Astro.locals.auth());
+---
+<slot />
