@@ -1,5 +1,5 @@
 import { updateClerkOptions } from "astro-clerk-auth/client/react";
-import React, { type ChangeEvent } from "react";
+import { type ChangeEvent } from "react";
 
 export function LanguagePicker() {
   const onChange = async (event: ChangeEvent<HTMLSelectElement>) => {

@@ -28,20 +28,50 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
           },
         });
 
+
+        /**
+         * The above script will run before client frameworks like React hydrate.
+         * This makes sure that we have initialized a Clerk instance and populated stores in order to avoid hydration issues
+         */
         injectScript(
           'before-hydration',
           `
+          console.log("before-hydration")
       import { $ssrState } from "astro-clerk-auth/stores";
       import { createClerkInstance } from "astro-clerk-auth/client/react";
-    
-      createClerkInstance(${JSON.stringify(params)});
-    
+
       const ssrDataContainer = document.getElementById("__CLERK_ASTRO_DATA__")
       if(ssrDataContainer) {
         $ssrState.set(
           JSON.parse(ssrDataContainer.textContent || "{}"),
         );
-      };`,
+      };
+    
+      await createClerkInstance(${JSON.stringify(params)});
+      `,
+        );
+
+
+        /**
+         * The above script only executes if a client framework like React needs to hydrate.
+         * We need to run the same script again for each page in order to initialize Clerk even if no UI framework is used in the client
+         * If no UI framework is used in the client, the above script with `before-hydration` will never run
+         */
+        injectScript(
+          'page',
+          `
+          console.log("page")
+          import { $ssrState } from "astro-clerk-auth/stores";
+          import { createClerkInstance } from "astro-clerk-auth/client/react";
+        
+          const ssrDataContainer = document.getElementById("__CLERK_ASTRO_DATA__")
+          if(ssrDataContainer) {
+            $ssrState.set(
+              JSON.parse(ssrDataContainer.textContent || "{}"),
+            );
+          };
+        
+          await createClerkInstance(${JSON.stringify(params)});`,
         );
       },
     },

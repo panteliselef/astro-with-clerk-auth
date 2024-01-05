@@ -8,6 +8,31 @@ export * from './controlComponents';
 
 let initOptions: AstroClerkIntegrationParams | undefined;
 
+export const mountAllClerkAstroJSComponents = () => {
+  const mountFns = {
+    'organization-list': 'mountOrganizationList',
+    'organization-profile': 'mountOrganizationProfile',
+    'organization-switcher': 'mountOrganizationSwitcher',
+    'user-button': 'mountUserButton',
+    'user-profile': 'mountUserProfile',
+    'sign-in': 'mountSignIn',
+    'sign-up': 'mountSignUp',
+  } as const;
+
+  Object.entries(mountFns).forEach(([category, mountFn]) => {
+    const elementsOfCategory = document.querySelectorAll(`[id^="clerk-${category}"]`);
+    elementsOfCategory.forEach((el) => {
+      const props = window.componentPropsMap?.get('user-button')?.get(el.id);
+      if (el) $clerk.get()?.[mountFn](el as HTMLDivElement, props);
+    });
+  });
+};
+
+/**
+ * Prevents firing clerk.load multiple times
+ */
+let createHasBeenCalled = false;
+
 export function createClerkInstance(options?: AstroClerkIntegrationParams) {
   let clerkJSInstance = window.Clerk as Clerk;
   if (!clerkJSInstance) {
@@ -15,13 +40,17 @@ export function createClerkInstance(options?: AstroClerkIntegrationParams) {
     $clerk.set(clerkJSInstance);
     window.Clerk = clerkJSInstance;
   }
-  // window.$derivedState = $derivedState;
+
+  if (createHasBeenCalled) return new Promise((res) => res(clerkJSInstance.loaded));
+  createHasBeenCalled = true;
 
   initOptions = options;
   return clerkJSInstance
     .load(options)
     .then(() => {
       $csrState.setKey('isLoaded', true);
+
+      mountAllClerkAstroJSComponents();
 
       clerkJSInstance.addListener((payload) => {
         $csrState.setKey('client', payload.client);
@@ -39,7 +68,7 @@ export function updateClerkOptions(options: AstroClerkIntegrationParams) {
     throw new Error('Missing clerk instance');
   }
   clerk.__unstable__updateProps({
-    options: {...initOptions, ...options},
+    options: { ...initOptions, ...options },
     appearance: { ...initOptions?.appearance, ...options.appearance },
   });
 }
