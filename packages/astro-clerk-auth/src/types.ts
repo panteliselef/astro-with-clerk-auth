@@ -8,7 +8,7 @@ export type AstroClerkIntegrationParams = Without<
 
 declare global {
   interface Window {
-    componentPropsMap?: Map<'user-button', Map<string, Record<string, unknown>>>;
+    componentPropsMap?: Map<string, Map<string, Record<string, unknown>>>;
   }
 }
 

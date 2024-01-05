@@ -22,7 +22,7 @@ export const mountAllClerkAstroJSComponents = () => {
   Object.entries(mountFns).forEach(([category, mountFn]) => {
     const elementsOfCategory = document.querySelectorAll(`[id^="clerk-${category}"]`);
     elementsOfCategory.forEach((el) => {
-      const props = window.componentPropsMap?.get('user-button')?.get(el.id);
+      const props = window.componentPropsMap?.get(category)?.get(el.id);
       if (el) $clerk.get()?.[mountFn](el as HTMLDivElement, props);
     });
   });
