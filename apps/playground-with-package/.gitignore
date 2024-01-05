@@ -22,3 +22,5 @@ pnpm-debug.log*
 
 .yalc/
 yalc.lock
+
+stats.html

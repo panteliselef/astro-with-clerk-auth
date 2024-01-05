@@ -52,11 +52,14 @@
     "./components/control/*": "./components/control/*",
     "./components/react": "./components/react/index.ts",
     "./components/react/*": "./components/react/*",
+    "./components/interactive": "./components/interactive/index.ts",
+    "./components/interactive/*": "./components/interactive/*",
     "./components/*": "./components/*",
     "./package.json": "./package.json"
   },
   "dependencies": {
     "@nanostores/react": "0.7.1",
+    "nanoid": "^5.0.4",
     "nanostores": "^0.9.5"
   },
   "devDependencies": {
