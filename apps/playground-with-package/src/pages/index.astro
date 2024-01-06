@@ -11,7 +11,6 @@ import SignOutButton from "../lib/astro-components/SignOutButton.astro";
 //   UserButton,
 // } from "../lib/react";
 
-import { LanguagePicker } from "../components/LanguagePicker";
 import { ClerkLayout, SignedIn, SignedOut } from "astro-clerk-auth/components/control";
 import { OrganizationSwitcher } from "astro-clerk-auth/components/interactive";
 // import { clerkSSR } from "astro-clerk-auth/server";
@@ -26,7 +25,6 @@ import { OrganizationSwitcher } from "astro-clerk-auth/components/interactive";
 <Layout title="Welcome to Astro.">
   <ClerkLayout protectedPage={true}>
     <h1>Welcome to <span class="text-gradient">Astro</span></h1>
-    <LanguagePicker client:idle />
     <OrganizationSwitcher
       appearance={{
         elements: {

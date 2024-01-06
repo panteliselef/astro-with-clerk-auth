@@ -9,6 +9,7 @@ import { Image } from "astro:assets";
 import logo from "../assets/Clerk-Purple-Logo.png";
 import { SignedIn, SignedOut } from "astro-clerk-auth/components/control";
 import { UserButton } from "astro-clerk-auth/components/interactive";
+import { LanguagePicker } from "../components/LanguagePicker";
 ---
 
 <!doctype html>
@@ -67,9 +68,13 @@ import { UserButton } from "astro-clerk-auth/components/interactive";
             </nav>
           </div>
 
-          <SignedIn>
-            <UserButton afterSignOutUrl="/" />
-          </SignedIn>
+          <div class="flex gap-5">
+            <LanguagePicker client:idle />
+
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+          </div>
 
           <SignedOut>
             <div class="flex items-center gap-4">
