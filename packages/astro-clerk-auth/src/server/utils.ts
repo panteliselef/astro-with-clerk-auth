@@ -1,4 +1,5 @@
-import { constants, decodeJwt } from '@clerk/backend';
+import { constants } from '@clerk/backend/internal';
+import { decodeJwt } from '@clerk/backend/jwt';
 
 type AuthKey = 'AuthStatus' | 'AuthMessage' | 'AuthReason';
 
@@ -36,5 +37,11 @@ function getCookie(req: Request, name: string): string | undefined {
 export const parseJwt = (req: Request) => {
   const cookieToken = getCookie(req, constants.Cookies.Session);
   const headerToken = getHeader(req, 'authorization')?.replace('Bearer ', '');
-  return decodeJwt(cookieToken || headerToken || '');
+  const { data, error } = decodeJwt(cookieToken || headerToken || '');
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
 };

@@ -1,4 +1,3 @@
-import type { Clerk } from '@clerk/clerk-js';
 import type { ClerkOptions, MultiDomainAndOrProxyPrimitives, Without } from '@clerk/types';
 export type AstroClerkIntegrationParams = Without<
   ClerkOptions,
