@@ -5,7 +5,7 @@ import {
   type SignedOutAuthObject,
   signedOutAuthObject,
   signedInAuthObject,
-} from '@clerk/backend';
+} from '@clerk/backend/internal';
 import type { APIContext } from 'astro';
 import { getAuthKeyFromRequest, parseJwt } from './utils';
 import { apiUrl, apiVersion, secretKey } from '../v0/constants';
@@ -43,7 +43,8 @@ export const createGetAuth = ({ noAuthStatusMessage }: { noAuthStatusMessage: st
     }
 
     const jwt = parseJwt(req);
-    return signedInAuthObject(jwt.payload, { ...options, token: jwt.raw.text });
+    // @ts-expect-error - TODO: Align types
+    return signedInAuthObject({ ...options, sessionToken: jwt.raw.text }, jwt.payload);
   };
 };
 

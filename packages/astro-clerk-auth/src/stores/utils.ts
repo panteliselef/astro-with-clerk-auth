@@ -1,17 +1,13 @@
 import type {
   ActiveSessionResource,
   InitialState,
-  MembershipRole,
+  OrganizationCustomRoleKey,
   OrganizationResource,
   Resources,
   UserResource,
-} from "@clerk/types";
+} from '@clerk/types';
 
-export function deriveState(
-  clerkLoaded: boolean,
-  state: Resources,
-  initialState: InitialState | undefined,
-) {
+export function deriveState(clerkLoaded: boolean, state: Resources, initialState: InitialState | undefined) {
   if (!clerkLoaded && initialState)
     return {
       ...deriveFromSsrInitialState(initialState),
@@ -31,7 +27,7 @@ function deriveFromSsrInitialState(initialState: InitialState) {
   const session = initialState.session as any as ActiveSessionResource;
   const organization = initialState.organization as any as OrganizationResource;
   const orgId = initialState.orgId;
-  const orgRole = initialState.orgRole as MembershipRole;
+  const orgRole = initialState.orgRole as OrganizationCustomRoleKey;
   const orgSlug = initialState.orgSlug;
   const actor = initialState.actor;
 
@@ -49,19 +45,13 @@ function deriveFromSsrInitialState(initialState: InitialState) {
 }
 
 function deriveFromClientSideState(state: Resources) {
-  const userId: string | null | undefined = state.user
-    ? state.user.id
-    : state.user;
+  const userId: string | null | undefined = state.user ? state.user.id : state.user;
   const user = state.user;
-  const sessionId: string | null | undefined = state.session
-    ? state.session.id
-    : state.session;
+  const sessionId: string | null | undefined = state.session ? state.session.id : state.session;
   const session = state.session;
   const actor = session?.actor;
   const organization = state.organization;
-  const orgId: string | null | undefined = state.organization
-    ? state.organization.id
-    : state.organization;
+  const orgId: string | null | undefined = state.organization ? state.organization.id : state.organization;
   const orgSlug = organization?.slug;
   const membership = organization
     ? user?.organizationMemberships?.find((om) => om.organization.id === orgId)

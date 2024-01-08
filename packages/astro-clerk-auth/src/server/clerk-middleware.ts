@@ -1,98 +1,176 @@
-import { defineMiddleware } from 'astro/middleware';
-import { type OptionalVerifyTokenOptions, type RequestState, constants } from '@clerk/backend';
-import type { MultiDomainAndOrProxy } from '@clerk/types';
-import type { APIContext } from 'astro';
+import type { AuthenticateRequestOptions, AuthObject, ClerkRequest, RequestState } from '@clerk/backend/internal';
+import { AuthStatus, constants, createClerkRequest, redirect } from '@clerk/backend/internal';
 import { clerkClient } from '../v0/clerkClient';
-import { publishableKey } from '../v0/constants';
+import { DOMAIN, IS_SATELLITE, PROXY_URL, PUBLISHABLE_KEY, SECRET_KEY, SIGN_IN_URL } from '../v0/constants';
+import type {
+  AstroMiddleware,
+  AstroMiddlewareNextParam,
+  AstroMiddlewareContexttParam,
+  AstroMiddlewareReturn,
+} from './types';
 import { getAuth } from './get-auth';
-import { authenticateRequest } from '../v0/authenticateRequest';
+import { handleValueOrFn, isDevelopmentFromSecretKey, isHttpOrHttps } from '@clerk/shared';
+import { APIContext } from 'astro';
 import { createCurrentUser } from './current-user';
 
-type WithAuthOptions = OptionalVerifyTokenOptions &
-  MultiDomainAndOrProxy & {
-    publishableKey?: string;
-    secretKey?: string;
-    signInUrl?: string;
+type ClerkMiddlewareAuthObject = AuthObject;
+
+type ClerkAstroMiddlewareHandler = (
+  auth: () => ClerkMiddlewareAuthObject,
+  context: AstroMiddlewareContexttParam,
+  next: AstroMiddlewareNextParam,
+) => AstroMiddlewareReturn;
+
+type ClerkAstroMiddlewareOptions = AuthenticateRequestOptions & { debug?: boolean };
+
+/**
+ * Middleware for Astro that handles authentication and authorization with Clerk.
+ */
+interface ClerkMiddleware {
+  /**
+   * @example
+   * export default clerkMiddleware((auth, context, next) => { ... }, options);
+   */
+  (handler: ClerkAstroMiddlewareHandler, options?: ClerkAstroMiddlewareOptions): AstroMiddleware;
+  /**
+   * @example
+   * export default clerkMiddleware(options);
+   */
+  (options?: ClerkAstroMiddlewareOptions): AstroMiddleware;
+}
+
+export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
+  const [handler, options] = parseHandlerAndOptions(args);
+
+  const nextMiddleware: AstroMiddleware = async (context, next) => {
+    const clerkRequest = createClerkRequest(context.request);
+
+    const requestState = await clerkClient.authenticateRequest(
+      clerkRequest,
+      createAuthenticateRequestOptions(clerkRequest, options),
+    );
+
+    const locationHeader = requestState.headers.get(constants.Headers.Location);
+    if (locationHeader) {
+      const res = new Response(null, { status: 307, headers: requestState.headers });
+      return decorateResponseWithObservabilityHeaders(res, requestState);
+    } else if (requestState.status === AuthStatus.Handshake) {
+      throw new Error('Clerk: handshake status without redirect');
+    }
+
+    const authObject = requestState.toAuth();
+
+    const authObjWithMethods: ClerkMiddlewareAuthObject = Object.assign(authObject, {});
+
+    let handlerResult = (await next()) as Response;
+    try {
+      handlerResult = (await handler?.(() => authObjWithMethods, context, next)) || handlerResult;
+    } catch (e: any) {
+      switch (e.message) {
+        default:
+          throw e;
+      }
+    }
+
+    // TODO: Handle Redirect thrown from handler
+    // if (isRedirect(handlerResult)) {
+    //   const res = setHeader(handlerResult, constants.Headers.AuthReason, 'redirect');
+    //   return serverRedirectWithAuth(clerkRequest, res, options);
+    // }
+
+    const response = decorateRequest(clerkRequest, context.locals, handlerResult, requestState);
+    if (requestState.headers) {
+      requestState.headers.forEach((value, key) => {
+        response.headers.append(key, value);
+      });
+    }
+
+    return response;
   };
 
-export const apiEndpointUnauthorizedNextResponse = () => {
-  return new Response(null, {
-    status: 401,
-    statusText: 'Unauthorized',
-  });
+  return nextMiddleware;
 };
 
-const decorateResponseWithObservabilityHeaders = (res: Response, requestState: RequestState) => {
+// Duplicate from '@clerk/nextjs'
+const parseHandlerAndOptions = (args: unknown[]) => {
+  return [
+    typeof args[0] === 'function' ? args[0] : undefined,
+    (args.length === 2 ? args[1] : typeof args[0] === 'function' ? {} : args[0]) || {},
+  ] as [ClerkAstroMiddlewareHandler | undefined, ClerkAstroMiddlewareOptions];
+};
+
+// Duplicate from '@clerk/nextjs'
+export const createAuthenticateRequestOptions = (clerkRequest: ClerkRequest, options: ClerkAstroMiddlewareOptions) => {
+  return {
+    ...options,
+    secretKey: options.secretKey || SECRET_KEY,
+    publishableKey: options.publishableKey || PUBLISHABLE_KEY,
+    ...handleMultiDomainAndProxy(clerkRequest, options),
+  };
+};
+
+// Duplicate from '@clerk/nextjs'
+export const decorateResponseWithObservabilityHeaders = (res: Response, requestState: RequestState): Response => {
   requestState.message && res.headers.set(constants.Headers.AuthMessage, encodeURIComponent(requestState.message));
   requestState.reason && res.headers.set(constants.Headers.AuthReason, encodeURIComponent(requestState.reason));
   requestState.status && res.headers.set(constants.Headers.AuthStatus, encodeURIComponent(requestState.status));
+  return res;
 };
 
-export const handleUnknownState = (requestState: RequestState) => {
-  const response = apiEndpointUnauthorizedNextResponse();
-  decorateResponseWithObservabilityHeaders(response, requestState);
-  return response;
-};
+// Duplicate from '@clerk/nextjs'
+export const handleMultiDomainAndProxy = (clerkRequest: ClerkRequest, opts: AuthenticateRequestOptions) => {
+  const relativeOrAbsoluteProxyUrl = handleValueOrFn(opts?.proxyUrl, clerkRequest.clerkUrl, PROXY_URL);
 
-export const createRouteMatcher = () => {
-  return (req: Request) => [/\/api\//].some((matcher) => matcher.test(req.url));
-};
+  let proxyUrl;
+  if (!!relativeOrAbsoluteProxyUrl && !isHttpOrHttps(relativeOrAbsoluteProxyUrl)) {
+    proxyUrl = new URL(relativeOrAbsoluteProxyUrl, clerkRequest.clerkUrl).toString();
+  } else {
+    proxyUrl = relativeOrAbsoluteProxyUrl;
+  }
 
-const isRequestMethodIndicatingApiRoute = (req: Request): boolean => {
-  const requestMethod = req.method.toLowerCase();
-  return !['get', 'head', 'options'].includes(requestMethod);
-};
+  const isSatellite = handleValueOrFn(opts.isSatellite, new URL(clerkRequest.url), IS_SATELLITE);
+  const domain = handleValueOrFn(opts.domain, new URL(clerkRequest.url), DOMAIN);
+  const signInUrl = opts?.signInUrl || SIGN_IN_URL;
 
-const isRequestContentTypeJson = (req: Request): boolean => {
-  const requestContentType = req.headers.get(constants.Headers.ContentType);
-  return requestContentType === constants.ContentTypes.Json;
-};
+  if (isSatellite && !proxyUrl && !domain) {
+    throw new Error(missingDomainAndProxy);
+  }
 
-const createApiRoutes = (): ((req: Request) => boolean) => {
-  const isDefaultApiRoute = createRouteMatcher();
-  return (req: Request) =>
-    isDefaultApiRoute(req) || isRequestMethodIndicatingApiRoute(req) || isRequestContentTypeJson(req);
-};
+  if (isSatellite && !isHttpOrHttps(signInUrl) && isDevelopmentFromSecretKey(opts.secretKey || SECRET_KEY)) {
+    throw new Error(missingSignInUrlInDev);
+  }
 
-export const debugRequestState = (params: RequestState) => {
-  const { isSignedIn, proxyUrl, isInterstitial, reason, message, publishableKey, isSatellite, domain } = params;
   return {
-    isSignedIn,
     proxyUrl,
-    isInterstitial,
-    reason,
-    message,
-    publishableKey,
     isSatellite,
     domain,
+    signInUrl,
   };
 };
 
-export const handleInterstitialState = (requestState: RequestState, opts: WithAuthOptions) => {
-  const response = new Response(
-    clerkClient.localInterstitial({
-      publishableKey: opts.publishableKey || publishableKey,
-      clerkJSUrl: '',
-      clerkJSVersion: '',
-      proxyUrl: requestState.proxyUrl,
-      isSatellite: requestState.isSatellite,
-      domain: requestState.domain,
-      // @ts-ignore
-      debugData: debugRequestState(requestState),
-      signInUrl: requestState.signInUrl,
-    }),
-    {
-      status: 401,
-      headers: {
-        'content-type': 'text/html',
-      },
-    },
-  );
-  decorateResponseWithObservabilityHeaders(response, requestState);
-  return response;
-};
+// Duplicate from '@clerk/nextjs'
+export const missingDomainAndProxy = `
+Missing domain and proxyUrl. A satellite application needs to specify a domain or a proxyUrl.
 
-export function decorateRequest(
+1) With middleware
+   e.g. export default authMiddleware({domain:'YOUR_DOMAIN',isSatellite:true});
+2) With environment variables e.g.
+   NEXT_PUBLIC_CLERK_DOMAIN='YOUR_DOMAIN'
+   NEXT_PUBLIC_CLERK_IS_SATELLITE='true'
+   `;
+
+// Duplicate from '@clerk/nextjs'
+export const missingSignInUrlInDev = `
+Invalid signInUrl. A satellite application requires a signInUrl for development instances.
+Check if signInUrl is missing from your configuration or if it is not an absolute URL
+
+1) With middleware
+   e.g. export default authMiddleware({signInUrl:'SOME_URL', isSatellite:true});
+2) With environment variables e.g.
+   NEXT_PUBLIC_CLERK_SIGN_IN_URL='SOME_URL'
+   NEXT_PUBLIC_CLERK_IS_SATELLITE='true'`;
+
+function decorateRequest(
   req: Request,
   locals: APIContext['locals'],
   res: Response,
@@ -120,7 +198,7 @@ export function decorateRequest(
     const stream = new ReadableStream({
       async start(controller) {
         controller.enqueue(
-          `<script id="__CLERK_ASTRO_DATA__" type="application/json">${JSON.stringify(locals.auth())}</script>`,
+          `<script id="__CLERK_ASTRO_DATA__" type="application/json">${JSON.stringify(locals.auth())}</script>\n`,
         );
         let { value, done } = await reader!.read();
         while (!done) {
@@ -141,25 +219,3 @@ export function decorateRequest(
   }
   return res;
 }
-
-export const clerkMiddleware = () => {
-  return defineMiddleware(async (context, next) => {
-    const isApiRoute = createApiRoutes();
-
-    const requestState = await authenticateRequest({ server: context.request });
-
-    if (requestState.isUnknown) {
-      return handleUnknownState(requestState);
-    } else if (requestState.isInterstitial && isApiRoute(context.request)) {
-      return handleUnknownState(requestState);
-    } else if (requestState.isInterstitial) {
-      const res = handleInterstitialState(requestState, {});
-      return res;
-    }
-
-    const finalRes = (await next()) as Response;
-
-    // @ts-ignore
-    return decorateRequest(context.request, context.locals, finalRes, requestState);
-  });
-};

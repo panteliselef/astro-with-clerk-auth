@@ -1,6 +1,6 @@
-import { Clerk } from "@clerk/backend";
+import { createClerkClient } from "@clerk/backend";
 import { apiUrl, apiVersion, secretKey } from "./constants";
 
-const clerkClient = Clerk({ secretKey, apiVersion, apiUrl });
+const clerkClient = createClerkClient({ secretKey, apiVersion, apiUrl });
 
 export { clerkClient };
