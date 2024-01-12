@@ -2,7 +2,6 @@
 import type { UserButtonProps } from "@clerk/types";
 type Props = UserButtonProps
 
-import { signInUrl } from "astro-clerk-auth";
 import { UserButton as UserButtonReact } from "astro-clerk-auth/client/react";
 /**
  * Weird bug with Astro locals not being populated in top level layouts
@@ -14,7 +13,6 @@ import { UserButton as UserButtonReact } from "astro-clerk-auth/client/react";
 
 const props = {
   ...Astro.props,
-  signInUrl: Astro.props.signInUrl || signInUrl
 }
 ---
 

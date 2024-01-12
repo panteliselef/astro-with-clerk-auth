@@ -30,6 +30,10 @@
       "types": "./dist/client/react/index.d.ts",
       "default": "./dist/client/react/index.js"
     },
+    "./client": {
+      "types": "./dist/client/index.d.ts",
+      "default": "./dist/client/index.js"
+    },
     "./stores": {
       "types": "./dist/stores/index.d.ts",
       "default": "./dist/stores/index.js"
@@ -46,7 +50,6 @@
       "types": "./dist/v0/index.d.ts",
       "default": "./dist/v0/index.js"
     },
-    "./client": "./client.d.ts",
     "./env": "./env.d.ts",
     "./components/control": "./components/control/index.ts",
     "./components/control/*": "./components/control/*",
