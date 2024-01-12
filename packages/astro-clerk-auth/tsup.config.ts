@@ -5,7 +5,15 @@ import { name, version } from './package.json';
 export default defineConfig(() => {
   return {
     clean: true,
-    entry: ['./src/index.ts', './src/client/react/index.ts', './src/stores/index.ts', './src/server/index.ts', './src/v0/index.ts', './src/integration/index.ts'],
+    entry: [
+      './src/index.ts',
+      './src/client/react/index.ts',
+      './src/client/index.ts',
+      './src/stores/index.ts',
+      './src/server/index.ts',
+      './src/v0/index.ts',
+      './src/integration/index.ts',
+    ],
     dts: true,
     onSuccess: 'tsc --emitDeclarationOnly --declaration',
     minify: false,

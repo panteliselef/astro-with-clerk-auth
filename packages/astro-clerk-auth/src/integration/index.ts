@@ -1,5 +1,5 @@
-import { AstroClerkIntegrationParams } from '../types';
-import { AstroIntegration } from 'astro';
+import type { AstroClerkIntegrationParams } from '../types';
+import type { AstroIntegration } from 'astro';
 import { name as packageName } from '../../package.json';
 
 export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
@@ -35,9 +35,9 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
         injectScript(
           'before-hydration',
           `
-          ${command==='dev' ?'console.log("astro-clerk-auth","Initialize Clerk: before-hydration")':''}
+          ${command === 'dev' ? 'console.log("astro-clerk-auth","Initialize Clerk: before-hydration")' : ''}
           import { $ssrState } from "astro-clerk-auth/stores";
-          import { createClerkInstance } from "astro-clerk-auth/client/react";
+          import { createClerkInstance } from "astro-clerk-auth/client";
 
           const ssrDataContainer = document.getElementById("__CLERK_ASTRO_DATA__")
           if(ssrDataContainer) {
@@ -57,9 +57,9 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
         injectScript(
           'page',
           `
-          ${command==='dev' ?'console.log("astro-clerk-auth","Initialize Clerk: page")':''}
+          ${command === 'dev' ? 'console.log("astro-clerk-auth","Initialize Clerk: page")' : ''}
           import { $ssrState } from "astro-clerk-auth/stores";
-          import { createClerkInstance } from "astro-clerk-auth/client/react";
+          import { createClerkInstance } from "astro-clerk-auth/client";
         
           const ssrDataContainer = document.getElementById("__CLERK_ASTRO_DATA__")
           if(ssrDataContainer) {
