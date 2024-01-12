@@ -8,7 +8,7 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
   return {
     name: '@astro-clerk-auth/integration',
     hooks: {
-      'astro:config:setup': ({ config, injectScript, updateConfig, logger }) => {
+      'astro:config:setup': ({ config, injectScript, updateConfig, logger, command }) => {
         if (config.output === 'static')
           logger.error(`${packageName} requires SSR to be turned on. Please update output to "server"`);
 
@@ -28,7 +28,6 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
           },
         });
 
-
         /**
          * The above script will run before client frameworks like React hydrate.
          * This makes sure that we have initialized a Clerk instance and populated stores in order to avoid hydration issues
@@ -36,21 +35,19 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
         injectScript(
           'before-hydration',
           `
-          console.log("before-hydration")
-      import { $ssrState } from "astro-clerk-auth/stores";
-      import { createClerkInstance } from "astro-clerk-auth/client/react";
+          ${command==='dev' ?'console.log("astro-clerk-auth","Initialize Clerk: before-hydration")':''}
+          import { $ssrState } from "astro-clerk-auth/stores";
+          import { createClerkInstance } from "astro-clerk-auth/client/react";
 
-      const ssrDataContainer = document.getElementById("__CLERK_ASTRO_DATA__")
-      if(ssrDataContainer) {
-        $ssrState.set(
-          JSON.parse(ssrDataContainer.textContent || "{}"),
+          const ssrDataContainer = document.getElementById("__CLERK_ASTRO_DATA__")
+          if(ssrDataContainer) {
+            $ssrState.set(
+              JSON.parse(ssrDataContainer.textContent || "{}"),
+            );
+          };
+        
+          await createClerkInstance(${JSON.stringify(params)});`,
         );
-      };
-    
-      await createClerkInstance(${JSON.stringify(params)});
-      `,
-        );
-
 
         /**
          * The above script only executes if a client framework like React needs to hydrate.
@@ -60,7 +57,7 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
         injectScript(
           'page',
           `
-          console.log("page")
+          ${command==='dev' ?'console.log("astro-clerk-auth","Initialize Clerk: page")':''}
           import { $ssrState } from "astro-clerk-auth/stores";
           import { createClerkInstance } from "astro-clerk-auth/client/react";
         
