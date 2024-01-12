@@ -41,7 +41,14 @@ export function createClerkInstance(options?: AstroClerkIntegrationParams) {
     window.Clerk = clerkJSInstance;
   }
 
-  if (createHasBeenCalled) return new Promise((res) => res(clerkJSInstance.loaded));
+  /**
+   * Probably html streaming has delayed the component from mounting immediately
+   */
+  if (createHasBeenCalled)
+    return new Promise((res) => {
+      mountAllClerkAstroJSComponents();
+      return res(clerkJSInstance.loaded);
+    });
   createHasBeenCalled = true;
 
   initOptions = options;
