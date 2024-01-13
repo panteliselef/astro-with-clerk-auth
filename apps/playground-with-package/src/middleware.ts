@@ -1,5 +1,5 @@
-import { clerkMiddleware } from "astro-clerk-auth/server";
-import { defineMiddleware, sequence } from "astro:middleware";
+import { clerkMiddleware, createRouteMatcher } from "astro-clerk-auth/server";
+// import { defineMiddleware, sequence } from "astro:middleware";
 
 // export const onRequest = clerkMiddleware();
 
@@ -30,13 +30,15 @@ import { defineMiddleware, sequence } from "astro:middleware";
 /**
  * 3. Support handler
  */
+const isProtectedPage = createRouteMatcher(['/user(.*)', '/discover(.*)', /^\/organization/])
+
 export const onRequest = clerkMiddleware((auth, context, next) => {
   const requestURL = new URL(context.request.url);
   if (["/sign-in", "/", "/sign-up"].includes(requestURL.pathname)) {
     return next();
   }
 
-  if (!auth().userId) {
+  if (isProtectedPage(context.request) && !auth().userId) {
     return auth().redirectToSignIn();
   }
 
