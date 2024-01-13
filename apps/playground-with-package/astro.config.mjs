@@ -12,8 +12,6 @@ export default defineConfig({
     tailwind(),
     react(),
     astroClerk({
-      signInUrl: "/sign-in",
-      signUpUrl: "/sign-up",
       afterSignInUrl: "/",
       afterSignUpUrl: "/",
     }),
@@ -22,7 +20,7 @@ export default defineConfig({
     plugins: [
       visualizer({
         template: "treemap",
-        open: process.env.ANALYZE==='true',
+        open: process.env.ANALYZE === "true",
         gzipSize: true,
       }),
     ],
