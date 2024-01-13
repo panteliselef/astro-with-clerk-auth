@@ -12,8 +12,12 @@ import { getAuth } from './get-auth';
 import { handleValueOrFn, isDevelopmentFromSecretKey, isHttpOrHttps } from '@clerk/shared';
 import { APIContext } from 'astro';
 import { createCurrentUser } from './current-user';
+import { isRedirect, setHeader } from './utils';
+import { serverRedirectWithAuth } from './server-redirect-with-auth';
 
-type ClerkMiddlewareAuthObject = AuthObject;
+type ClerkMiddlewareAuthObject = AuthObject & {
+  redirectToSignIn: (opts?: { returnBackUrl?: URL | string | null }) => Response;
+};
 
 type ClerkAstroMiddlewareHandler = (
   auth: () => ClerkMiddlewareAuthObject,
@@ -61,7 +65,9 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
 
     const authObject = requestState.toAuth();
 
-    const authObjWithMethods: ClerkMiddlewareAuthObject = Object.assign(authObject, {});
+    const authObjWithMethods: ClerkMiddlewareAuthObject = Object.assign(authObject, {
+      redirectToSignIn: createMiddlewareRedirectToSignIn(clerkRequest, requestState, context),
+    });
 
     decorateAstroLocal(context.request, context.locals, requestState);
 
@@ -78,11 +84,10 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
       }
     }
 
-    // TODO: Handle Redirect thrown from handler
-    // if (isRedirect(handlerResult)) {
-    //   const res = setHeader(handlerResult, constants.Headers.AuthReason, 'redirect');
-    //   return serverRedirectWithAuth(clerkRequest, res, options);
-    // }
+    if (isRedirect(handlerResult)) {
+      const res = setHeader(handlerResult, constants.Headers.AuthReason, 'redirect');
+      return serverRedirectWithAuth(context, clerkRequest, res, options);
+    }
 
     const response = await decorateRequest(context.locals, handlerResult, requestState);
     if (requestState.headers) {
@@ -227,3 +232,29 @@ async function decorateRequest(
   }
   return res;
 }
+
+const createRedirectAdapter = (context: AstroMiddlewareContextParam) => (url: string | URL) => {
+  const res = context.redirect(url instanceof URL ? url.href : url);
+  /**
+   * Hint to clerk to add cookie with db jwt
+   */
+  return setHeader(res, constants.Headers.ClerkRedirectTo, 'true');
+};
+
+const createMiddlewareRedirectToSignIn = (
+  clerkRequest: ClerkRequest,
+  requestState: RequestState,
+  context: AstroMiddlewareContextParam,
+): ClerkMiddlewareAuthObject['redirectToSignIn'] => {
+  return (opts = {}) => {
+    const optsReturnBackUrl = opts.returnBackUrl instanceof URL ? opts.returnBackUrl.href : opts.returnBackUrl;
+    return redirect({
+      redirectAdapter: createRedirectAdapter(context),
+      signInUrl: requestState.signInUrl,
+      signUpUrl: requestState.signUpUrl,
+      publishableKey: PUBLISHABLE_KEY,
+    }).redirectToSignIn({
+      returnBackUrl: opts.returnBackUrl === null ? '' : optsReturnBackUrl || clerkRequest.clerkUrl.toString(),
+    });
+  };
+};
