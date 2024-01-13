@@ -45,3 +45,15 @@ export const parseJwt = (req: Request) => {
 
   return data;
 };
+
+export const isRedirect = (res: Response) => {
+  return (
+    [300, 301, 302, 303, 304, 307, 308].includes(res.status) ||
+    res.headers.get(constants.Headers.ClerkRedirectTo) === 'true'
+  );
+};
+
+export const setHeader = (res: Response, name: string, val: string) => {
+  res.headers.set(name, val);
+  return res;
+};
