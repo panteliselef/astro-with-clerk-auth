@@ -4,10 +4,11 @@ type Props = OrganizationProfileProps
 
 import type { AstroBuiltinProps } from 'astro';
 import { OrganizationProfile as OrganizationProfileReact } from "astro-clerk-auth/client/react";
-/**
- * Weird bug with Astro locals not being populated in top level layouts
- */
 import { $ssrState } from "astro-clerk-auth/stores";
+/**
+ * For React component, in order to avoid hydration errors populate SSR store and do not depend on the component being wrapped ClerkLayout.
+ * For now this is only needed for control components like SignedIn/SignedOut
+ */
 // @ts-expect-error TODO: fix this
 $ssrState.set(Astro.locals.auth());
 

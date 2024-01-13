@@ -1,5 +1,12 @@
 ---
 import { SignedOut as SignedOutReact } from "astro-clerk-auth/client/react";
+import { $ssrState } from "astro-clerk-auth/stores";
+/**
+ * For React component, in order to avoid hydration errors populate SSR store and do not depend on the component being wrapped ClerkLayout.
+ * For now this is only needed for control components like SignedIn/SignedOut
+ */
+// @ts-expect-error TODO: fix this
+$ssrState.set(Astro.locals.auth());
 ---
 
 <SignedOutReact client:load>
