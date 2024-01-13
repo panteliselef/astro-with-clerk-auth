@@ -11,6 +11,7 @@ export default defineConfig(() => {
       './src/client/index.ts',
       './src/stores/index.ts',
       './src/server/index.ts',
+      './src/internal/index.ts',
       './src/v0/index.ts',
       './src/integration/index.ts',
     ],

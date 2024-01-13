@@ -2,6 +2,10 @@ import type { AstroClerkIntegrationParams } from '../types';
 import type { AstroIntegration } from 'astro';
 import { name as packageName } from '../../package.json';
 
+const buildEnvVarFromOption = (valueToBeStored: unknown, envName: string) => {
+  return valueToBeStored ? { [`import.meta.env.${envName}`]: JSON.stringify(valueToBeStored) } : {};
+};
+
 export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
   const { proxyUrl, isSatellite, domain, afterSignInUrl, afterSignUpUrl, signInUrl, signUpUrl } = params || {};
 
@@ -16,14 +20,15 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
           logger.error('Missing adapter, please update your Astro config to use one.');
         }
 
+        // Set params as envs do backend code has access to them
         updateConfig({
           vite: {
             define: {
-              'import.meta.env.PUBLIC_ASTRO_APP_CLERK_SIGN_IN_URL': JSON.stringify(signInUrl),
-              'import.meta.env.PUBLIC_ASTRO_APP_CLERK_SIGN_UP_URL': JSON.stringify(signUpUrl),
-              'import.meta.env.PUBLIC_ASTRO_APP_CLERK_IS_SATELLITE': JSON.stringify(isSatellite),
-              'import.meta.env.PUBLIC_ASTRO_APP_CLERK_PROXY_URL': JSON.stringify(proxyUrl),
-              'import.meta.env.PUBLIC_ASTRO_APP_CLERK_DOMAIN': JSON.stringify(domain),
+              ...buildEnvVarFromOption(signInUrl, 'PUBLIC_ASTRO_APP_CLERK_SIGN_IN_URL'),
+              ...buildEnvVarFromOption(signUpUrl, 'PUBLIC_ASTRO_APP_CLERK_SIGN_UP_URL'),
+              ...buildEnvVarFromOption(isSatellite, 'PUBLIC_ASTRO_APP_CLERK_IS_SATELLITE'),
+              ...buildEnvVarFromOption(proxyUrl, 'PUBLIC_ASTRO_APP_CLERK_PROXY_URL'),
+              ...buildEnvVarFromOption(domain, 'PUBLIC_ASTRO_APP_CLERK_DOMAIN'),
             },
           },
         });
@@ -38,6 +43,7 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
           ${command === 'dev' ? 'console.log("astro-clerk-auth","Initialize Clerk: before-hydration")' : ''}
           import { $ssrState } from "astro-clerk-auth/stores";
           import { createClerkInstance } from "astro-clerk-auth/client";
+          import { mergeEnvVarsWithParams } from "astro-clerk-auth/internal";
 
           const ssrDataContainer = document.getElementById("__CLERK_ASTRO_DATA__")
           if(ssrDataContainer) {
@@ -46,7 +52,7 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
             );
           };
         
-          await createClerkInstance(${JSON.stringify(params)});`,
+          await createClerkInstance(mergeEnvVarsWithParams(${JSON.stringify(params)}));`,
         );
 
         /**
@@ -60,6 +66,7 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
           ${command === 'dev' ? 'console.log("astro-clerk-auth","Initialize Clerk: page")' : ''}
           import { $ssrState } from "astro-clerk-auth/stores";
           import { createClerkInstance } from "astro-clerk-auth/client";
+          import { mergeEnvVarsWithParams } from "astro-clerk-auth/internal";
         
           const ssrDataContainer = document.getElementById("__CLERK_ASTRO_DATA__")
           if(ssrDataContainer) {
@@ -68,7 +75,7 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
             );
           };
         
-          await createClerkInstance(${JSON.stringify(params)});`,
+          await createClerkInstance(mergeEnvVarsWithParams(${JSON.stringify(params)}));`,
         );
       },
     },
