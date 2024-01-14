@@ -1,6 +1,7 @@
 import type {
   ActiveSessionResource,
   InitialState,
+  OrganizationCustomPermissionKey,
   OrganizationCustomRoleKey,
   OrganizationResource,
   Resources,
@@ -28,6 +29,7 @@ function deriveFromSsrInitialState(initialState: InitialState) {
   const organization = initialState.organization as any as OrganizationResource;
   const orgId = initialState.orgId;
   const orgRole = initialState.orgRole as OrganizationCustomRoleKey;
+  const orgPermissions = initialState.orgPermissions as OrganizationCustomPermissionKey[];
   const orgSlug = initialState.orgSlug;
   const actor = initialState.actor;
 
@@ -39,6 +41,7 @@ function deriveFromSsrInitialState(initialState: InitialState) {
     organization,
     orgId,
     orgRole,
+    orgPermissions,
     orgSlug,
     actor,
   };
@@ -56,6 +59,7 @@ function deriveFromClientSideState(state: Resources) {
   const membership = organization
     ? user?.organizationMemberships?.find((om) => om.organization.id === orgId)
     : organization;
+  const orgPermissions = membership ? membership.permissions : membership;
   const orgRole = membership ? membership.role : membership;
 
   return {
@@ -67,6 +71,7 @@ function deriveFromClientSideState(state: Resources) {
     orgId,
     orgRole,
     orgSlug,
+    orgPermissions,
     actor,
   };
 }
