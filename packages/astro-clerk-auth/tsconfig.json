@@ -8,6 +8,7 @@
     "outDir": "dist",
     "resolveJsonModule": true,
     "declarationDir": "dist/types",
+    "noUncheckedIndexedAccess": true
   },
   "exclude": ["dist", "build", "node_modules"]
 }
