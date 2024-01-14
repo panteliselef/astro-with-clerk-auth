@@ -12,6 +12,8 @@ import { apiUrl, apiVersion, secretKey } from '../v0/constants';
 
 type AuthObjectWithoutResources<T extends AuthObject> = Omit<T, 'user' | 'organization' | 'session'>;
 
+export type GetAuthReturn = AuthObjectWithoutResources<SignedInAuthObject> | AuthObjectWithoutResources<SignedOutAuthObject>
+
 export const createGetAuth = ({ noAuthStatusMessage }: { noAuthStatusMessage: string }) => {
   return (
     req: Request,

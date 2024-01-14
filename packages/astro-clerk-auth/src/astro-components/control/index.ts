@@ -6,4 +6,6 @@ export { default as ClerkLayout } from './ClerkLayout.astro';
 export { default as SignedIn } from './SignedIn.astro';
 // @ts-ignore
 export { default as SignedOut } from './SignedOut.astro';
+// @ts-ignore
+export { default as Protect } from './Protect.astro';
 

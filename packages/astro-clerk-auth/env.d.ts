@@ -3,7 +3,7 @@ declare namespace App {
     authStatus: string;
     authMessage: string | null;
     authReason: string | null;
-    auth: () => ReturnType<typeof import('astro-clerk-auth/server').getAuth>
-    currentUser: () => Promise<import('@clerk/backend').User | null>
+    auth: () => import('astro-clerk-auth/server').GetAuthReturn;
+    currentUser: () => Promise<import('@clerk/backend').User | null>;
   }
 }
