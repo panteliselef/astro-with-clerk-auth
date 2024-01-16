@@ -15,7 +15,6 @@
   "homepage": "https://github.com/panteliselef/astro-with-clerk-auth/blob/main/README.md",
   "scripts": {
     "dev": "tsup --watch",
-    "changeset": "changeset",
     "build": "tsup",
     "postbuild": "rm -rf ./components && mkdir -p ./components/ && cp  -r ./src/astro-components/* ./components/",
     "lint": "eslint \"**/*.ts*\"",
