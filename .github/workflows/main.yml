@@ -1,0 +1,24 @@
+name: CI
+on:
+  pull_request:
+    branches:
+      - main
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: 'npm'
+
+      - name: Install NPM Dependencies
+        run: npm ci --audit=false --fund=false --prefer-offline
+        shell: bash
+
+      - name: Build Packages
+        timeout-minutes: 20
+        run: npx turbo build --filter='astro-clerk-auth'
