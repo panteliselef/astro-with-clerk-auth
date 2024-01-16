@@ -1,0 +1,35 @@
+name: Publish
+on:
+  push:
+   branches:
+    - main
+
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: 'npm'
+      
+      - name: Install NPM Dependencies
+        run: npm ci --audit=false --fund=false --prefer-offline
+        shell: bash
+
+      - name: Build astro-clerk-auth
+        timeout-minutes: 20
+        run: npx turbo build --filter='astro-clerk-auth'
+
+      - name: Create Release PR or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: npm run release'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
