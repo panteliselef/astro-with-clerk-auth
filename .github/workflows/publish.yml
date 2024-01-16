@@ -27,4 +27,5 @@ jobs:
         with:
           publish: npx turbo release --filter='astro-clerk-auth'
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
