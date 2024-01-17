@@ -1,5 +1,6 @@
 {
   "name": "astro-clerk-auth",
+  "description": "Unofficial package Clerk SDK for Asto",
   "version": "0.0.1",
   "type": "module",
   "private": false,
@@ -8,11 +9,15 @@
   "types": "./dist/index.d.ts",
   "license": "MIT",
   "author": "Pantelis Eleftheriadis",
+  "homepage": "https://github.com/panteliselef/astro-with-clerk-auth/blob/main/packages/astro-clerk-auth/README.md",
   "repository": {
     "type": "git",
-    "url": "https://github.com/panteliselef/astro-with-clerk-auth.git"
+    "url": "git+https://github.com/panteliselef/astro-with-clerk-auth.git",
+    "directory": "packages/astro-clerk-auth"
   },
-  "homepage": "https://github.com/panteliselef/astro-with-clerk-auth/blob/main/README.md",
+  "bugs": {
+    "url": "https://github.com/panteliselef/astro-with-clerk-auth/issues"
+  },
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
@@ -93,5 +98,8 @@
     "@clerk/shared": "^2.0.0-alpha-v5.8",
     "@clerk/types": "^4.0.0-alpha-v5.12",
     "astro": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
