@@ -41,18 +41,8 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
           'before-hydration',
           `
           ${command === 'dev' ? 'console.log("astro-clerk-auth","Initialize Clerk: before-hydration")' : ''}
-          import { $ssrState } from "astro-clerk-auth/stores";
-          import { createClerkInstance } from "astro-clerk-auth/client";
-          import { mergeEnvVarsWithParams } from "astro-clerk-auth/internal";
-
-          const ssrDataContainer = document.getElementById("__CLERK_ASTRO_DATA__")
-          if(ssrDataContainer) {
-            $ssrState.set(
-              JSON.parse(ssrDataContainer.textContent || "{}"),
-            );
-          };
-        
-          await createClerkInstance(mergeEnvVarsWithParams(${JSON.stringify(params)}));`,
+          import { runInjectionScript } from "astro-clerk-auth/internal";
+          await runInjectionScript(${JSON.stringify(params)});`,
         );
 
         /**
@@ -64,18 +54,8 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
           'page',
           `
           ${command === 'dev' ? 'console.log("astro-clerk-auth","Initialize Clerk: page")' : ''}
-          import { $ssrState } from "astro-clerk-auth/stores";
-          import { createClerkInstance } from "astro-clerk-auth/client";
-          import { mergeEnvVarsWithParams } from "astro-clerk-auth/internal";
-        
-          const ssrDataContainer = document.getElementById("__CLERK_ASTRO_DATA__")
-          if(ssrDataContainer) {
-            $ssrState.set(
-              JSON.parse(ssrDataContainer.textContent || "{}"),
-            );
-          };
-        
-          await createClerkInstance(mergeEnvVarsWithParams(${JSON.stringify(params)}));`,
+          import { runInjectionScript } from "astro-clerk-auth/internal";
+          await runInjectionScript(${JSON.stringify(params)});`,
         );
       },
     },
