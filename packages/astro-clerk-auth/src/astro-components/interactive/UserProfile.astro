@@ -11,17 +11,17 @@ const safeId = customAlphabet(urlAlphabet, 10)();
 
 <script is:inline define:vars={{ props: Astro.props, safeId }}>
   const setOrCreatePropMap = ({ category, id, props }) => {
-    if (!window.componentPropsMap) {
-      window.componentPropsMap = new Map();
+    if (!window.__astro_clerk_component_props) {
+      window.__astro_clerk_component_props = new Map();
     }
 
-    if (!window.componentPropsMap.has(category)) {
+    if (!window.__astro_clerk_component_props.has(category)) {
       const _ = new Map();
       _.set(id, props);
-      window.componentPropsMap.set(category, _);
+      window.__astro_clerk_component_props.set(category, _);
     }
 
-    window.componentPropsMap.get(category)?.set(id, props);
+    window.__astro_clerk_component_props.get(category)?.set(id, props);
   };
 
   setOrCreatePropMap({
