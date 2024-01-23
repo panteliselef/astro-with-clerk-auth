@@ -14,7 +14,7 @@ export type AstroClerkIntegrationParams = Without<
 
 declare global {
   interface Window {
-    componentPropsMap?: Map<string, Map<string, Record<string, unknown>>>;
+    __astro_clerk_component_props: Map<string, Map<string, Record<string, unknown>>>;
   }
 }
 
