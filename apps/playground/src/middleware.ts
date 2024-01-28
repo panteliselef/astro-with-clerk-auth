@@ -1,11 +1,15 @@
-import { clerkMiddleware, createRouteMatcher } from "astro-clerk-auth/server";
+import {
+  clerkMiddleware,
+  // createRouteMatcher
+} from "astro-clerk-auth/server";
 
-const isProtectedPage = createRouteMatcher(['/guestbook(.*)'])
+// const isProtectedPage = createRouteMatcher(['/guestbook(.*)'])
 
 export const onRequest = clerkMiddleware((auth, context, next) => {
-  if (isProtectedPage(context.request) && !auth().userId) {
-    return auth().redirectToSignIn();
-  }
-
+  console.log("auth", auth());
+  console.log("context", context);
+  // if (isProtectedPage(context.request) && !auth().userId) {
+  //   return auth().redirectToSignIn();
+  // }
   return next();
 });
