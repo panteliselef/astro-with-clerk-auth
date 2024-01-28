@@ -2,7 +2,6 @@
 import { SEO } from "astro-seo";
 export interface Props {
   title: string;
-  showHeader?: boolean;
 }
 
 const { title } = Astro.props;
@@ -48,6 +47,7 @@ const previewUrl = new URL("/preview.jpg", Astro.request.url).href;
       const gradient = new Gradient();
 
       // Call `initGradient` with the selector to your canvas
+      // @ts-ignore
       gradient.initGradient("#gradient-canvas");
     </script>
   </head>
