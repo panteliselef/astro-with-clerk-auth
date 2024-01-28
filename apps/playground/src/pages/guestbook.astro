@@ -1,31 +1,20 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { getAuth } from 'astro-clerk-auth/v0';
-import UserButton from '../react/UserButton';
-import { queryBuilder } from '../db/planetscale';
-import { GuestbookForm } from '../components/GuestbookForm';
-import { type Entry, entriesStore } from '../atoms/enties';
-import { Signatures } from '../components/Signatures';
+import Layout from "../layouts/Layout.astro";
+import { queryBuilder } from "../db/planetscale";
+import { GuestbookForm } from "../components/GuestbookForm";
+import { type Entry, entriesStore } from "../atoms/enties";
+import { Signatures } from "../components/Signatures";
+import { UserButton } from "astro-clerk-auth/components/interactive";
 
-if (import.meta.env.FLAG_GUESTBOOK !== 'true') {
+if (import.meta.env.FLAG_GUESTBOOK !== "true") {
   return Astro.redirect(`/`, 307);
-}
-
-const auth = await getAuth({ client: Astro });
-
-if (auth instanceof Response) {
-  return auth;
-}
-
-if (!auth.userId) {
-  return Astro.redirect(`/sign-in?redirect_url=${Astro.request.url}`, 307);
 }
 
 async function getGuestbook() {
   const data = await queryBuilder
-    .selectFrom('guestbook')
-    .select(['id', 'message', 'created_by'])
-    .orderBy('updatedAt', 'desc')
+    .selectFrom("guestbook")
+    .select(["id", "message", "created_by"])
+    .orderBy("updatedAt", "desc")
     .limit(100)
     .execute();
 
@@ -37,6 +26,9 @@ let error = false;
 
 try {
   entries = await getGuestbook();
+  if (!Astro.locals.auth().userId) {
+    throw new Error("Requires userid");
+  }
 } catch (e) {
   error = true;
   entries = [];
@@ -45,27 +37,37 @@ try {
 entriesStore.set(entries);
 ---
 
-<Layout title="Protected by clerk">
-  <div class="invisible" style="height:0;" id="ssr_data">{JSON.stringify(entries)}</div>
+<Layout title="Guestbook | Pantelis">
+  <div class="invisible" style="height:0;" id="ssr_data">
+    {JSON.stringify(entries)}
+  </div>
   <main class="w-full flex justify-center lg:pt-10">
     <div class="w-full p-5 max-w-lg flex flex-col gap-2">
       <div class="flex flex-col">
         <a class="text-sm pt-4" href="/">Portfolio</a>
         <div class="flex flex-row justify-between items-center">
           <h1 class="text-4xl font-serif">Guestbook</h1>
-          <UserButton client:only />
+          <UserButton />
         </div>
         <p class="flex items-center gap-3 gtext-sm leading-8">✍️</p>
       </div>
       <GuestbookForm client:load />
-      {error && <p class="text-neutral-600 dark:text-neutral-400 mr-1 text-center p-4">We failed to load entries 😩</p>}
+      {
+        error && (
+          <p class="text-neutral-600 dark:text-neutral-400 mr-1 text-center p-4">
+            We failed to load entries 😩
+          </p>
+        )
+      }
       <Signatures client:load />
     </div>
   </main>
 </Layout>
 
 <script>
-  import { entriesStore } from '../atoms/enties';
+  import { entriesStore } from "../atoms/enties";
 
-  entriesStore.set(JSON.parse(document.getElementById('ssr_data')!.textContent || '{}'));
+  entriesStore.set(
+    JSON.parse(document.getElementById("ssr_data")!.textContent || "{}"),
+  );
 </script>
