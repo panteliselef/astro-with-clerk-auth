@@ -50,10 +50,17 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
   const nextMiddleware: AstroMiddleware = async (context, next) => {
     const clerkRequest = createClerkRequest(context.request);
 
-    const requestState = await clerkClient.authenticateRequest(
-      clerkRequest,
-      createAuthenticateRequestOptions(clerkRequest, options),
-    );
+    let requestState = {} as RequestState;
+
+    try {
+      requestState = await clerkClient.authenticateRequest(
+        clerkRequest,
+        createAuthenticateRequestOptions(clerkRequest, options),
+      );
+    } catch (e) {
+      console.log('requestState', e);
+      throw e;
+    }
 
     const locationHeader = requestState.headers.get(constants.Headers.Location);
     if (locationHeader) {
@@ -80,6 +87,7 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
     } catch (e: any) {
       switch (e.message) {
         default:
+          console.log('HANDLER RESULT', e);
           throw e;
       }
     }
