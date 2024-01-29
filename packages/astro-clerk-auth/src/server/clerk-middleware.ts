@@ -45,9 +45,11 @@ interface ClerkMiddleware {
 }
 
 export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
+  console.log("Clerk middleware parse handler")
   const [handler, options] = parseHandlerAndOptions(args);
 
   const nextMiddleware: AstroMiddleware = async (context, next) => {
+    console.log("Clerk middleware running")
     const clerkRequest = createClerkRequest(context.request);
 
     let requestState = {} as RequestState;
