@@ -66,6 +66,7 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
 
     const locationHeader = requestState.headers.get(constants.Headers.Location);
     if (locationHeader) {
+      console.log()
       const res = new Response(null, { status: 307, headers: requestState.headers });
       return decorateResponseWithObservabilityHeaders(res, requestState);
     } else if (requestState.status === AuthStatus.Handshake) {
@@ -74,11 +75,19 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
 
     const authObject = requestState.toAuth();
 
+    console.log("before authObjWithMethods")
     const authObjWithMethods: ClerkMiddlewareAuthObject = Object.assign(authObject, {
       redirectToSignIn: createMiddlewareRedirectToSignIn(clerkRequest, requestState, context),
     });
+    console.log("after authObjWithMethods")
 
-    decorateAstroLocal(context.request, context.locals, requestState);
+    try {
+      decorateAstroLocal(context.request, context.locals, requestState);
+      console.log("decorateAstroLocal")
+    }
+    catch (e) {
+      console.log("FAILED decorateAstroLocal")
+    }
 
     /**
      * Generate SSR page
@@ -99,7 +108,9 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
       return serverRedirectWithAuth(context, clerkRequest, res, options);
     }
 
+    console.log("before decorateRequest")
     const response = await decorateRequest(context.locals, handlerResult, requestState);
+    console.log("after decorateRequest")
     if (requestState.headers) {
       requestState.headers.forEach((value, key) => {
         response.headers.append(key, value);
