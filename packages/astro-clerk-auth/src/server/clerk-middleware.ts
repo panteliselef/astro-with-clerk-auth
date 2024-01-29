@@ -49,77 +49,84 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
   const [handler, options] = parseHandlerAndOptions(args);
 
   const nextMiddleware: AstroMiddleware = async (context, next) => {
-    console.log('Clerk middleware running');
-    console.log('before createClerkRequest');
-    const clerkRequest = createClerkRequest(context.request);
-    console.log('after createClerkRequest');
-
-    let requestState = {} as RequestState;
-
     try {
-      requestState = await clerkClient.authenticateRequest(
-        clerkRequest,
-        createAuthenticateRequestOptions(clerkRequest, options),
-      );
-    } catch (e) {
-      console.log('requestState', e);
-      // throw e;
-    }
+      console.log('Clerk middleware running');
+      console.log('before createClerkRequest');
+      const clerkRequest = createClerkRequest(context.request);
+      console.log('after createClerkRequest');
 
-    const locationHeader = requestState.headers.get(constants.Headers.Location);
-    if (locationHeader) {
-      console.log('locationHeader');
-      const res = new Response(null, { status: 307, headers: requestState.headers });
-      return decorateResponseWithObservabilityHeaders(res, requestState);
-    } else if (requestState.status === AuthStatus.Handshake) {
-      console.log('requestState.status is handshake', AuthStatus.Handshake);
-      throw new Error('Clerk: handshake status without redirect');
-    }
+      let requestState = {} as RequestState;
 
-    const authObject = requestState.toAuth();
-
-    console.log('before authObjWithMethods');
-    const authObjWithMethods: ClerkMiddlewareAuthObject = Object.assign(authObject, {
-      redirectToSignIn: createMiddlewareRedirectToSignIn(clerkRequest, requestState, context),
-    });
-    console.log('after authObjWithMethods');
-
-    try {
-      decorateAstroLocal(context.request, context.locals, requestState);
-      console.log('decorateAstroLocal');
-    } catch (e) {
-      console.log('FAILED decorateAstroLocal');
-    }
-
-    /**
-     * Generate SSR page
-     */
-    let handlerResult: Response;
-    try {
-      handlerResult = (await handler?.(() => authObjWithMethods, context, next)) || ((await next()) as Response);
-    } catch (e: any) {
-      switch (e.message) {
-        default:
-          console.log('HANDLER RESULT', e);
-          throw e;
+      try {
+        requestState = await clerkClient.authenticateRequest(
+            clerkRequest,
+            createAuthenticateRequestOptions(clerkRequest, options),
+        );
+      } catch (e) {
+        console.log('requestState', e);
+        // throw e;
       }
-    }
 
-    // if (isRedirect(handlerResult)) {
-    //   const res = setHeader(handlerResult, constants.Headers.AuthReason, 'redirect');
-    //   return serverRedirectWithAuth(context, clerkRequest, res, options);
-    // }
+      const locationHeader = requestState.headers.get(constants.Headers.Location);
+      if (locationHeader) {
+        console.log('locationHeader');
+        const res = new Response(null, { status: 307, headers: requestState.headers });
+        return decorateResponseWithObservabilityHeaders(res, requestState);
+      } else if (requestState.status === AuthStatus.Handshake) {
+        console.log('requestState.status is handshake', AuthStatus.Handshake);
+        throw new Error('Clerk: handshake status without redirect');
+      }
 
-    console.log('before decorateRequest');
-    const response = await decorateRequest(context.locals, handlerResult, requestState);
-    console.log('after decorateRequest');
-    if (requestState.headers) {
-      requestState.headers.forEach((value, key) => {
-        response.headers.append(key, value);
+      const authObject = requestState.toAuth();
+
+      console.log('before authObjWithMethods');
+      const authObjWithMethods: ClerkMiddlewareAuthObject = Object.assign(authObject, {
+        redirectToSignIn: createMiddlewareRedirectToSignIn(clerkRequest, requestState, context),
       });
+      console.log('after authObjWithMethods');
+
+      try {
+        decorateAstroLocal(context.request, context.locals, requestState);
+        console.log('decorateAstroLocal');
+      } catch (e) {
+        console.log('FAILED decorateAstroLocal');
+      }
+
+      /**
+       * Generate SSR page
+       */
+      let handlerResult: Response;
+      try {
+        handlerResult = (await handler?.(() => authObjWithMethods, context, next)) || ((await next()) as Response);
+      } catch (e: any) {
+        switch (e.message) {
+          default:
+            console.log('HANDLER RESULT', e);
+            throw e;
+        }
+      }
+
+      // if (isRedirect(handlerResult)) {
+      //   const res = setHeader(handlerResult, constants.Headers.AuthReason, 'redirect');
+      //   return serverRedirectWithAuth(context, clerkRequest, res, options);
+      // }
+
+      console.log('before decorateRequest');
+      const response = await decorateRequest(context.locals, handlerResult, requestState);
+      console.log('after decorateRequest');
+      if (requestState.headers) {
+        requestState.headers.forEach((value, key) => {
+          response.headers.append(key, value);
+        });
+      }
+
+      return response;
+    }
+    catch (e) {
+      console.log("ERRRRORRR", e)
+      return next()
     }
 
-    return response;
   };
 
   return nextMiddleware;
