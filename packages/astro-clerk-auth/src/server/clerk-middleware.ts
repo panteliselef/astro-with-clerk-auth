@@ -45,12 +45,14 @@ interface ClerkMiddleware {
 }
 
 export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
-  console.log("Clerk middleware parse handler")
+  console.log('Clerk middleware parse handler');
   const [handler, options] = parseHandlerAndOptions(args);
 
   const nextMiddleware: AstroMiddleware = async (context, next) => {
-    console.log("Clerk middleware running")
+    console.log('Clerk middleware running');
+    console.log('before createClerkRequest');
     const clerkRequest = createClerkRequest(context.request);
+    console.log('after createClerkRequest');
 
     let requestState = {} as RequestState;
 
@@ -66,27 +68,27 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
 
     const locationHeader = requestState.headers.get(constants.Headers.Location);
     if (locationHeader) {
-      console.log()
+      console.log('locationHeader');
       const res = new Response(null, { status: 307, headers: requestState.headers });
       return decorateResponseWithObservabilityHeaders(res, requestState);
     } else if (requestState.status === AuthStatus.Handshake) {
+      console.log('requestState.status is handshake', AuthStatus.Handshake);
       throw new Error('Clerk: handshake status without redirect');
     }
 
     const authObject = requestState.toAuth();
 
-    console.log("before authObjWithMethods")
+    console.log('before authObjWithMethods');
     const authObjWithMethods: ClerkMiddlewareAuthObject = Object.assign(authObject, {
       redirectToSignIn: createMiddlewareRedirectToSignIn(clerkRequest, requestState, context),
     });
-    console.log("after authObjWithMethods")
+    console.log('after authObjWithMethods');
 
     try {
       decorateAstroLocal(context.request, context.locals, requestState);
-      console.log("decorateAstroLocal")
-    }
-    catch (e) {
-      console.log("FAILED decorateAstroLocal")
+      console.log('decorateAstroLocal');
+    } catch (e) {
+      console.log('FAILED decorateAstroLocal');
     }
 
     /**
@@ -108,9 +110,9 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
       return serverRedirectWithAuth(context, clerkRequest, res, options);
     }
 
-    console.log("before decorateRequest")
+    console.log('before decorateRequest');
     const response = await decorateRequest(context.locals, handlerResult, requestState);
-    console.log("after decorateRequest")
+    console.log('after decorateRequest');
     if (requestState.headers) {
       requestState.headers.forEach((value, key) => {
         response.headers.append(key, value);
@@ -143,9 +145,11 @@ export const createAuthenticateRequestOptions = (clerkRequest: ClerkRequest, opt
 
 // Duplicate from '@clerk/nextjs'
 export const decorateResponseWithObservabilityHeaders = (res: Response, requestState: RequestState): Response => {
+  console.log('before decorateResponseWithObservabilityHeaders');
   requestState.message && res.headers.set(constants.Headers.AuthMessage, encodeURIComponent(requestState.message));
   requestState.reason && res.headers.set(constants.Headers.AuthReason, encodeURIComponent(requestState.reason));
   requestState.status && res.headers.set(constants.Headers.AuthStatus, encodeURIComponent(requestState.status));
+  console.log('After decorateResponseWithObservabilityHeaders');
   return res;
 };
 
