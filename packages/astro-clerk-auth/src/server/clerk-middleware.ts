@@ -1,5 +1,5 @@
 import type { AuthenticateRequestOptions, AuthObject, ClerkRequest, RequestState } from '@clerk/backend/internal';
-import { AuthStatus, constants, createClerkRequest, createRedirect } from '@clerk/backend/internal';
+import { AuthStatus, constants, createClerkRequest, redirect } from '@clerk/backend/internal';
 import { clerkClient } from '../v0/clerkClient';
 import { DOMAIN, IS_SATELLITE, PROXY_URL, PUBLISHABLE_KEY, SECRET_KEY, SIGN_IN_URL } from '../v0/constants';
 import type {
@@ -59,8 +59,8 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
 
       try {
         requestState = await clerkClient.authenticateRequest(
-          clerkRequest,
-          createAuthenticateRequestOptions(clerkRequest, options),
+            clerkRequest,
+            createAuthenticateRequestOptions(clerkRequest, options),
         );
       } catch (e) {
         console.log('requestState', e);
@@ -121,10 +121,12 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
       }
 
       return response;
-    } catch (e) {
-      console.log('ERRRRORRR', e);
-      return next();
     }
+    catch (e) {
+      console.log("ERRRRORRR", e)
+      return next()
+    }
+
   };
 
   return nextMiddleware;
@@ -278,9 +280,8 @@ const createMiddlewareRedirectToSignIn = (
 ): ClerkMiddlewareAuthObject['redirectToSignIn'] => {
   return (opts = {}) => {
     const optsReturnBackUrl = opts.returnBackUrl instanceof URL ? opts.returnBackUrl.href : opts.returnBackUrl;
-    return createRedirect({
+    return redirect({
       redirectAdapter: createRedirectAdapter(context),
-      baseUrl: clerkRequest.clerkUrl,
       signInUrl: requestState.signInUrl,
       signUpUrl: requestState.signUpUrl,
       publishableKey: PUBLISHABLE_KEY,

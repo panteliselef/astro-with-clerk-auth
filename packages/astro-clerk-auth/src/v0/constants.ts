@@ -25,8 +25,6 @@ const SIGN_UP_URL = signUpUrl;
 const DOMAIN = import.meta.env.PUBLIC_ASTRO_APP_CLERK_DOMAIN || ('' as string);
 const PROXY_URL = import.meta.env.PUBLIC_ASTRO_APP_CLERK_PROXY_URL || ('' as string);
 const IS_SATELLITE = import.meta.env.PUBLIC_ASTRO_APP_CLERK_IS_SATELLITE === 'true';
-const API_VERSION = import.meta.env.CLERK_API_VERSION || 'v1';
-const API_URL = import.meta.env.CLERK_API_URL || 'https://api.clerk.dev';
 
 export {
   secretKey,
@@ -46,6 +44,4 @@ export {
   DOMAIN,
   PROXY_URL,
   IS_SATELLITE,
-  API_URL,
-  API_VERSION,
 };

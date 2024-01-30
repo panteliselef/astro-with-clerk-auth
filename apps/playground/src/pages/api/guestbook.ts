@@ -22,7 +22,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       throw new Error("not logged in");
     }
 
-    const data = await clerkClient.users.getUser(auth.userId);
+    const { data } = await clerkClient.users.getUser(auth.userId);
 
     if (!data) throw new Error("Email not found");
 

@@ -7,15 +7,12 @@ import {
   signedInAuthObject,
 } from '@clerk/backend/internal';
 import type { APIContext } from 'astro';
-import { getAuthKeyFromRequest } from './utils';
-import { SECRET_KEY, secretKey, API_URL, API_VERSION } from '../v0/constants';
-import { decodeJwt } from '@clerk/backend/jwt';
+import { getAuthKeyFromRequest, parseJwt } from './utils';
+import { apiUrl, apiVersion, secretKey } from '../v0/constants';
 
 type AuthObjectWithoutResources<T extends AuthObject> = Omit<T, 'user' | 'organization' | 'session'>;
 
-export type GetAuthReturn =
-  | AuthObjectWithoutResources<SignedInAuthObject>
-  | AuthObjectWithoutResources<SignedOutAuthObject>;
+export type GetAuthReturn = AuthObjectWithoutResources<SignedInAuthObject> | AuthObjectWithoutResources<SignedOutAuthObject>
 
 export const createGetAuth = ({ noAuthStatusMessage }: { noAuthStatusMessage: string }) => {
   return (
@@ -26,8 +23,7 @@ export const createGetAuth = ({ noAuthStatusMessage }: { noAuthStatusMessage: st
     // When the auth status is set, we trust that the middleware has already run
     // Then, we don't have to re-verify the JWT here,
     // we can just strip out the claims manually.
-    const authToken = locals.authToken || getAuthKeyFromRequest(req, 'AuthToken');
-    const authStatus = locals.authStatus || getAuthKeyFromRequest(req, 'AuthStatus');
+    const authStatus = locals.authStatus || (getAuthKeyFromRequest(req, 'AuthStatus') as AuthStatus);
     const authMessage = locals.authMessage || getAuthKeyFromRequest(req, 'AuthMessage');
     const authReason = locals.authReason || getAuthKeyFromRequest(req, 'AuthReason');
 
@@ -36,11 +32,11 @@ export const createGetAuth = ({ noAuthStatusMessage }: { noAuthStatusMessage: st
     }
 
     const options = {
+      secretKey: opts?.secretKey || secretKey,
+      apiUrl: apiUrl,
+      apiVersion: apiVersion,
       authStatus,
-      apiUrl: API_URL,
-      apiVersion: API_VERSION,
       authMessage,
-      secretKey: opts?.secretKey || SECRET_KEY,
       authReason,
     };
 
@@ -48,7 +44,7 @@ export const createGetAuth = ({ noAuthStatusMessage }: { noAuthStatusMessage: st
       return signedOutAuthObject(options);
     }
 
-    const jwt = decodeJwt(authToken as string);
+    const jwt = parseJwt(req);
     // @ts-expect-error - TODO: Align types
     return signedInAuthObject({ ...options, sessionToken: jwt.raw.text }, jwt.payload);
   };
