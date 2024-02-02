@@ -4,9 +4,6 @@
   "version": "0.0.1",
   "type": "module",
   "private": false,
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "license": "MIT",
   "author": "Pantelis Eleftheriadis",
   "homepage": "https://github.com/panteliselef/astro-with-clerk-auth/blob/main/packages/astro-clerk-auth/README.md",
@@ -78,25 +75,25 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@nanostores/react": "^0.7.1",
-    "nanoid": "^5.0.4",
-    "nanostores": "^0.9.5",
-    "path-to-regexp": "^6.2.1"
+    "@nanostores/react": "0.7.1",
+    "nanoid": "5.0.4",
+    "nanostores": "0.9.5",
+    "path-to-regexp": "6.2.1"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.27.1",
-    "eslint": "^7.32.0",
+    "@changesets/cli": "2.27.1",
+    "eslint": "7.32.0",
     "eslint-config-custom": "*",
-    "react": "^18.2.0",
+    "react": "18.2.0",
     "tsconfig": "*",
-    "tsup": "^6.7.0",
-    "typescript": "^4.5.2"
+    "tsup": "6.7.0",
+    "typescript": "4.5.2"
   },
   "peerDependencies": {
     "@clerk/backend": "1.0.0-alpha-v5.12",
     "@clerk/clerk-js": "5.0.0-alpha-v5.13",
-    "@clerk/shared": "^2.0.0-alpha-v5.8",
-    "@clerk/types": "^4.0.0-alpha-v5.12",
+    "@clerk/shared": "2.0.0-alpha-v5.8",
+    "@clerk/types": "4.0.0-alpha-v5.12",
     "astro": "^3.2.0"
   },
   "engines": {
