@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import { useAuth } from './hooks';
 import { ProtectComponentDefaultProps } from '../../types';
+import { CheckAuthorizationWithCustomPermissions } from '@clerk/types';
 
 export function SignedOut(props: PropsWithChildren) {
   const { userId } = useAuth();
@@ -62,14 +63,14 @@ export const Protect = ({ children, fallback, ...restAuthorizedParams }: Protect
    * Check against the results of `has` called inside the callback
    */
   if (typeof restAuthorizedParams.condition === 'function') {
-    if (restAuthorizedParams.condition(has)) {
+    if (restAuthorizedParams.condition(has as CheckAuthorizationWithCustomPermissions)) {
       return authorized;
     }
     return unauthorized;
   }
 
   if (restAuthorizedParams.role || restAuthorizedParams.permission) {
-    if (has(restAuthorizedParams)) {
+    if (has?.(restAuthorizedParams)) {
       return authorized;
     }
     return unauthorized;
