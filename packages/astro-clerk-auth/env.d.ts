@@ -1,5 +1,6 @@
 declare namespace App {
   interface Locals {
+    authToken: string | null;
     authStatus: string;
     authMessage: string | null;
     authReason: string | null;

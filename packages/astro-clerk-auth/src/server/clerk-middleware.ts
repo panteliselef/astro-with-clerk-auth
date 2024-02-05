@@ -1,5 +1,5 @@
 import type { AuthenticateRequestOptions, AuthObject, ClerkRequest, RequestState } from '@clerk/backend/internal';
-import { AuthStatus, constants, createClerkRequest, redirect } from '@clerk/backend/internal';
+import { AuthStatus, constants, createClerkRequest, createRedirect } from '@clerk/backend/internal';
 import { clerkClient } from '../v0/clerkClient';
 import { DOMAIN, IS_SATELLITE, PROXY_URL, PUBLISHABLE_KEY, SECRET_KEY, SIGN_IN_URL } from '../v0/constants';
 import type {
@@ -14,6 +14,10 @@ import { APIContext } from 'astro';
 import { createCurrentUser } from './current-user';
 import { isRedirect, setHeader } from './utils';
 import { serverRedirectWithAuth } from './server-redirect-with-auth';
+
+const CONTROL_FLOW_ERROR = {
+  REDIRECT_TO_SIGN_IN: 'CLERK_PROTECT_REDIRECT_TO_SIGN_IN',
+};
 
 type ClerkMiddlewareAuthObject = AuthObject & {
   redirectToSignIn: (opts?: { returnBackUrl?: URL | string | null }) => Response;
@@ -47,8 +51,11 @@ interface ClerkMiddleware {
 export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
   const [handler, options] = parseHandlerAndOptions(args);
 
-  const nextMiddleware: AstroMiddleware = async (context, next) => {
+  const astroMiddleware: AstroMiddleware = async (context, next) => {
     const clerkRequest = createClerkRequest(context.request);
+
+    console.log('UAT', context.cookies.get('__client_uat'));
+    console.log('SESSION', context.cookies.get('__session'));
 
     const requestState = await clerkClient.authenticateRequest(
       clerkRequest,
@@ -56,6 +63,7 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
     );
 
     const locationHeader = requestState.headers.get(constants.Headers.Location);
+    console.log('WOWOW', locationHeader);
     if (locationHeader) {
       const res = new Response(null, { status: 307, headers: requestState.headers });
       return decorateResponseWithObservabilityHeaders(res, requestState);
@@ -65,9 +73,8 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
 
     const authObject = requestState.toAuth();
 
-    const authObjWithMethods: ClerkMiddlewareAuthObject = Object.assign(authObject, {
-      redirectToSignIn: createMiddlewareRedirectToSignIn(clerkRequest, requestState, context),
-    });
+    const redirectToSignIn = createMiddlewareRedirectToSignIn(clerkRequest);
+    const authObjWithMethods: ClerkMiddlewareAuthObject = Object.assign(authObject, { redirectToSignIn });
 
     decorateAstroLocal(context.request, context.locals, requestState);
 
@@ -78,10 +85,7 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
     try {
       handlerResult = (await handler?.(() => authObjWithMethods, context, next)) || ((await next()) as Response);
     } catch (e: any) {
-      switch (e.message) {
-        default:
-          throw e;
-      }
+      handlerResult = handleControlFlowErrors(e, clerkRequest, requestState);
     }
 
     if (isRedirect(handlerResult)) {
@@ -99,7 +103,7 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
     return response;
   };
 
-  return nextMiddleware;
+  return astroMiddleware;
 };
 
 // Duplicate from '@clerk/nextjs'
@@ -182,7 +186,8 @@ Check if signInUrl is missing from your configuration or if it is not an absolut
    NEXT_PUBLIC_CLERK_IS_SATELLITE='true'`;
 
 function decorateAstroLocal(req: Request, locals: APIContext['locals'], requestState: RequestState) {
-  const { reason, message, status } = requestState;
+  const { reason, message, status, token } = requestState;
+  locals.authToken = token;
   locals.authStatus = status;
   locals.authMessage = message;
   locals.authReason = reason;
@@ -195,8 +200,9 @@ async function decorateRequest(
   res: Response,
   requestState: RequestState,
 ): Promise<Response> {
-  const { reason, message, status } = requestState;
+  const { reason, message, status, token } = requestState;
 
+  res.headers.set(constants.Headers.AuthToken, token || '');
   res.headers.set(constants.Headers.AuthStatus, status);
   res.headers.set(constants.Headers.AuthMessage, message || '');
   res.headers.set(constants.Headers.AuthReason, reason || '');
@@ -233,28 +239,46 @@ async function decorateRequest(
   return res;
 }
 
-const createRedirectAdapter = (context: AstroMiddlewareContextParam) => (url: string | URL) => {
-  const res = context.redirect(url instanceof URL ? url.href : url);
+const redirectAdapter = (url: string | URL) => {
+  const res = new Response(null, {
+    status: 307,
+  });
+
   /**
    * Hint to clerk to add cookie with db jwt
    */
-  return setHeader(res, constants.Headers.ClerkRedirectTo, 'true');
+  setHeader(res, constants.Headers.ClerkRedirectTo, 'true');
+  return setHeader(res, 'Location', url instanceof URL ? url.href : url);
 };
 
 const createMiddlewareRedirectToSignIn = (
   clerkRequest: ClerkRequest,
-  requestState: RequestState,
-  context: AstroMiddlewareContextParam,
 ): ClerkMiddlewareAuthObject['redirectToSignIn'] => {
   return (opts = {}) => {
-    const optsReturnBackUrl = opts.returnBackUrl instanceof URL ? opts.returnBackUrl.href : opts.returnBackUrl;
-    return redirect({
-      redirectAdapter: createRedirectAdapter(context),
-      signInUrl: requestState.signInUrl,
-      signUpUrl: requestState.signUpUrl,
-      publishableKey: PUBLISHABLE_KEY,
-    }).redirectToSignIn({
-      returnBackUrl: opts.returnBackUrl === null ? '' : optsReturnBackUrl || clerkRequest.clerkUrl.toString(),
-    });
+    const err = new Error(CONTROL_FLOW_ERROR.REDIRECT_TO_SIGN_IN) as any;
+    err.returnBackUrl = opts.returnBackUrl === null ? '' : opts.returnBackUrl || clerkRequest.clerkUrl.toString();
+    throw err;
   };
+};
+
+// Handle errors thrown by protect() and redirectToSignIn() calls,
+// as we want to align the APIs between middleware, pages and route handlers
+// Normally, middleware requires to explicitly return a response, but we want to
+// avoid discrepancies between the APIs as it's easy to miss the `return` statement
+// especially when copy-pasting code from one place to another.
+// This function handles the known errors thrown by the APIs described above,
+// and returns the appropriate response.
+const handleControlFlowErrors = (e: any, clerkRequest: ClerkRequest, requestState: RequestState): Response => {
+  switch (e.message) {
+    case CONTROL_FLOW_ERROR.REDIRECT_TO_SIGN_IN:
+      return createRedirect({
+        redirectAdapter,
+        baseUrl: clerkRequest.clerkUrl,
+        signInUrl: requestState.signInUrl,
+        signUpUrl: requestState.signUpUrl,
+        publishableKey: PUBLISHABLE_KEY,
+      }).redirectToSignIn({ returnBackUrl: e.returnBackUrl });
+    default:
+      throw e;
+  }
 };

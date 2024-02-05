@@ -22,11 +22,18 @@ export const POST: APIRoute = async ({ request, locals }) => {
       throw new Error("not logged in");
     }
 
-    const { data } = await clerkClient.users.getUser(auth.userId);
-
-    if (!data) throw new Error("Email not found");
-
-    const { primaryEmailAddressId, username } = data;
+    let user;
+    try {
+      user = await clerkClient.users.getUser(auth.userId);
+    } catch (e) {
+      return new Response(
+        JSON.stringify({
+          message: "User not found",
+        }),
+        { status: 400 },
+      );
+    }
+    const { primaryEmailAddressId, username } = user || {};
 
     if (!primaryEmailAddressId) throw new Error("Email not found");
     if (!username) throw new Error("username not found");
