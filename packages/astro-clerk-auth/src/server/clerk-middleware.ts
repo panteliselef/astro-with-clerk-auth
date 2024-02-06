@@ -54,16 +54,12 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
   const astroMiddleware: AstroMiddleware = async (context, next) => {
     const clerkRequest = createClerkRequest(context.request);
 
-    console.log('UAT', context.cookies.get('__client_uat'));
-    console.log('SESSION', context.cookies.get('__session'));
-
     const requestState = await clerkClient.authenticateRequest(
       clerkRequest,
       createAuthenticateRequestOptions(clerkRequest, options),
     );
 
     const locationHeader = requestState.headers.get(constants.Headers.Location);
-    console.log('WOWOW', locationHeader);
     if (locationHeader) {
       const res = new Response(null, { status: 307, headers: requestState.headers });
       return decorateResponseWithObservabilityHeaders(res, requestState);
