@@ -1,5 +1,12 @@
 # astro-clerk-auth
 
+## 0.0.3
+
+### Patch Changes
+
+- b20a1f8: Improve package.json of astro-clerk-auth
+  Remove @clerk/\* packages from `external` in tsup config
+
 ## 0.0.2
 
 ### Patch Changes
