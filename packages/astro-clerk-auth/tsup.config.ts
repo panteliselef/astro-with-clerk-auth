@@ -15,7 +15,6 @@ export default defineConfig(() => {
       './src/integration/index.ts',
     ],
     dts: true,
-    onSuccess: 'tsc --emitDeclarationOnly --declaration',
     minify: false,
     define: {
       PACKAGE_NAME: `"${name}"`,
@@ -24,6 +23,6 @@ export default defineConfig(() => {
     bundle: true,
     sourcemap: true,
     format: ['esm'],
-    external: ['astro', 'react', 'react-dom', '@clerk/backend', '@clerk/clerk-js', '@clerk/shared', '@clerk/types'],
+    external: ['astro', 'react', 'react-dom'],
   };
 });

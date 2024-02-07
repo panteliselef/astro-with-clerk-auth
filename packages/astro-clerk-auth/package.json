@@ -5,19 +5,28 @@
   "type": "module",
   "private": false,
   "license": "MIT",
-  "author": "Pantelis Eleftheriadis",
+  "author": "Pantelis Eleftheriadis <panteliselef@outlook.com>",
   "homepage": "https://github.com/panteliselef/astro-with-clerk-auth/blob/main/packages/astro-clerk-auth/README.md",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/panteliselef/astro-with-clerk-auth.git",
     "directory": "packages/astro-clerk-auth"
   },
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "keywords": [
+    "auth",
+    "clerk",
+    "astro"
+  ],
+  "sideEffects": false,
   "bugs": {
     "url": "https://github.com/panteliselef/astro-with-clerk-auth/issues"
   },
   "scripts": {
-    "dev": "tsup --watch",
-    "build": "tsup",
+    "dev": "tsup --watch --onSuccess \"npm run build:dts\"",
+    "build": "tsup --onSuccess \"npm run build:dts\"",
+    "build:dts": "tsc --emitDeclarationOnly --declaration",
     "postbuild": "rm -rf ./components && mkdir -p ./components/ && cp  -r ./src/astro-components/* ./components/",
     "lint": "eslint \"**/*.ts*\""
   },
@@ -34,35 +43,35 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "import": "./dist/index.js"
     },
     "./client/react": {
       "types": "./dist/client/react/index.d.ts",
-      "default": "./dist/client/react/index.js"
+      "import": "./dist/client/react/index.js"
     },
     "./client": {
       "types": "./dist/client/index.d.ts",
-      "default": "./dist/client/index.js"
+      "import": "./dist/client/index.js"
     },
     "./stores": {
       "types": "./dist/stores/index.d.ts",
-      "default": "./dist/stores/index.js"
+      "import": "./dist/stores/index.js"
     },
     "./integration": {
       "types": "./dist/integration/index.d.ts",
-      "default": "./dist/integration/index.js"
+      "import": "./dist/integration/index.js"
     },
     "./internal": {
       "types": "./dist/internal/index.d.ts",
-      "default": "./dist/internal/index.js"
+      "import": "./dist/internal/index.js"
     },
     "./server": {
       "types": "./dist/server/index.d.ts",
-      "default": "./dist/server/index.js"
+      "import": "./dist/server/index.js"
     },
     "./v0": {
       "types": "./dist/v0/index.d.ts",
-      "default": "./dist/v0/index.js"
+      "import": "./dist/v0/index.js"
     },
     "./env": "./env.d.ts",
     "./components/control": "./components/control/index.ts",
@@ -94,7 +103,7 @@
     "typescript": "^5.0.0"
   },
   "peerDependencies": {
-    "astro": "^3.2.0"
+    "astro": "^3.2.0 || ^4.0.0"
   },
   "engines": {
     "node": ">=20"
