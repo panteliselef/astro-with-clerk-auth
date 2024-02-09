@@ -94,7 +94,10 @@ type UseAuth = () => UseAuthReturn;
 
 export function useStore(store: Store, opts = {}) {
   return useSyncExternalStore(store.subscribe, store.get, () => {
-    return authAsyncStorage.getStore();
+    if (typeof window === 'undefined') {
+      return authAsyncStorage.getStore();
+    }
+    return {};
   });
 }
 
