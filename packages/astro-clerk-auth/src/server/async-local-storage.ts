@@ -1,8 +1,12 @@
-import { AsyncLocalStorage } from 'node:async_hooks';
+import { type AsyncLocalStorage } from 'node:async_hooks';
 
-function createAsyncLocalStorage<Store extends {}>(): AsyncLocalStorage<Store> {
-  return new AsyncLocalStorage();
+async function createAsyncLocalStorage<Store extends {}>(): Promise<AsyncLocalStorage<Store>> {
+  if (typeof window === 'undefined') {
+    const { AsyncLocalStorage } = await import('node:async_hooks');
+    return new AsyncLocalStorage();
+  }
+
+  return {} as AsyncLocalStorage<Store>;
 }
 
-
-export const authAsyncStorage = createAsyncLocalStorage();
+export const authAsyncStorage = await createAsyncLocalStorage();
