@@ -17,6 +17,8 @@ export default defineConfig(() => {
       './src/v0/index.ts',
       './src/integration/index.ts',
       './src/integration/hotload.ts',
+      './src/async-local-storage.client.ts',
+      './src/async-local-storage.server.ts',
     ],
     dts: true,
     minify: false,
