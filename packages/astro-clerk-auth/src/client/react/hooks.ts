@@ -1,7 +1,7 @@
 import type { ActJWTClaim, CheckAuthorizationWithCustomPermissions, OrganizationCustomRoleKey } from '@clerk/types';
 import type { Store } from 'nanostores';
 import { useCallback, useSyncExternalStore } from 'react';
-import { $authStore } from '../../stores/internal';
+import {$authStore, $initialState} from '../../stores/internal';
 import { authAsyncStorage } from '../../server/async-local-storage';
 
 type CheckAuthorizationSignedOut = undefined;
@@ -92,12 +92,14 @@ type UseAuth = () => UseAuthReturn;
  * }
  */
 
+// TODO: Use the hook from nano stores
 export function useStore(store: Store, opts = {}) {
   return useSyncExternalStore(store.subscribe, store.get, () => {
     if (typeof window === 'undefined') {
       return authAsyncStorage.getStore();
     }
-    return {};
+    // TODO: Add comments / maybe switch to authStore ??
+    return $initialState.get()
   });
 }
 
