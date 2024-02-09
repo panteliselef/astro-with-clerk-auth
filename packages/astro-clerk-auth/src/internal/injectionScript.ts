@@ -6,13 +6,13 @@
  */
 
 import { createClerkInstance } from '../client';
-import { $ssrState } from '../stores/internal';
+import { $initialState } from '../stores/internal';
 import { AstroClerkIntegrationParams } from '../types';
 
 export async function runInjectionScript(astroClerkOptions?: AstroClerkIntegrationParams) {
   const ssrDataContainer = document.getElementById('__CLERK_ASTRO_DATA__');
   if (ssrDataContainer) {
-    $ssrState.set(JSON.parse(ssrDataContainer.textContent || '{}'));
+    $initialState.set(JSON.parse(ssrDataContainer.textContent || '{}'));
   }
 
   await createClerkInstance(mergeEnvVarsWithParams(astroClerkOptions));

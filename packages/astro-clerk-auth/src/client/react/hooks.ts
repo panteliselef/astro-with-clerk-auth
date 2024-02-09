@@ -1,7 +1,8 @@
 import type { ActJWTClaim, CheckAuthorizationWithCustomPermissions, OrganizationCustomRoleKey } from '@clerk/types';
-import { useStore } from '@nanostores/react';
-import { useCallback } from 'react';
+import type { Store } from 'nanostores';
+import { useCallback, useSyncExternalStore } from 'react';
 import { $authStore } from '../../stores/internal';
+import { authAsyncStorage } from '../../server/async-local-storage';
 
 type CheckAuthorizationSignedOut = undefined;
 type CheckAuthorizationWithoutOrgOrUser = (params?: Parameters<CheckAuthorizationWithCustomPermissions>[0]) => false;
@@ -90,6 +91,13 @@ type UseAuth = () => UseAuthReturn;
  *   return <div>...</div>
  * }
  */
+
+export function useStore(store: Store, opts = {}) {
+  return useSyncExternalStore(store.subscribe, store.get, () => {
+    return authAsyncStorage.getStore();
+  });
+}
+
 export const useAuth: UseAuth = () => {
   const { sessionId, userId, actor, orgId, orgRole, orgSlug, orgPermissions } = useStore($authStore);
 

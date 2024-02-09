@@ -3,9 +3,9 @@ interface Props {
   protectedPage?: boolean;
 }
 
-import { $ssrState } from "astro-clerk-auth/stores";
+import { __internal_authAsyncStorage } from "astro-clerk-auth/server";
 
-// @ts-expect-error TODO: fix this
-$ssrState.set(Astro.locals.auth());
+__internal_authAsyncStorage.enterWith(Astro.locals.auth())
+
 ---
 <slot />
