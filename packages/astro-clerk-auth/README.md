@@ -7,9 +7,19 @@ Package of unofficial integration with [Astro](https://astro.build/) and [Clerk]
 ## Install package
 Add `astro-clerk-auth` as a dependency
 
+**With npm**
+```sh
+npm install astro-clerk-auth
+```
+
+**With yarn**
+```sh
+yarn add astro-clerk-auth
+```
+
 **With pnpm**
 ```sh
-pnpm add astro-clerk-auth @clerk/backend@1.0.0-alpha-v5.12 @clerk/clerk-js@5.0.0-alpha-v5.13 @clerk/shared@2.0.0-alpha-v5.8 @clerk/types@4.0.0-alpha-v5.12
+pnpm add astro-clerk-auth
 ```
 
 ## Add integrations
@@ -113,11 +123,11 @@ import { OrganizationList } from "astro-clerk-auth/components/interactive";
 import { ClerkLayout } from "astro-clerk-auth/components/control";
 ---
 
-<Layout title="Welcome to Astro.">
-  <ClerkLayout>
+<ClerkLayout>
+  <Layout title="Welcome to Astro.">
     ...
-  </ClerkLayout>
-</Layout>
+  </Layout>
+</ClerkLayout>
 
 ```
 
@@ -168,6 +178,23 @@ import { SignedIn } from 'astro-clerk-auth/components/control'
 
 
 ## Deep dive
+
+### Use Clerk react hooks
+Example SignedIn React component that supports SSR
+```tsx
+import type { PropsWithChildren } from 'react';
+import { useAuth } from 'astro-clerk-auth/client/react';
+
+export function SignedIn(props: PropsWithChildren) {
+  const { userId } = useAuth()
+
+  if (!userId) {
+    return null;
+  }
+  return props.children;
+}
+```
+
 ### Use the isomorphic authStore to build your custom logic
 Example SignedOut React component that supports SSR
 ```tsx
@@ -177,22 +204,6 @@ import { $authStore } from 'astro-clerk-auth/stores';
 
 export function SignedOut(props: PropsWithChildren) {
   const { userId } = useStore($authStore);
-
-  if (userId) {
-    return null;
-  }
-  return props.children;
-}
-```
-
-### Use Clerk react hooks
-Example SignedIn React component that supports SSR
-```tsx
-import type { PropsWithChildren } from 'react';
-import { useAuth } from 'astro-clerk-auth/client/react';
-
-export function SignedOut(props: PropsWithChildren) {
-  const { userId } = useAuth()
 
   if (userId) {
     return null;
