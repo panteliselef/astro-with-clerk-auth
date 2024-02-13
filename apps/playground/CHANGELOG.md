@@ -1,5 +1,13 @@
 # playground
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [b72d6d1]
+- Updated dependencies [5de3bec]
+  - astro-clerk-auth@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes
