@@ -1,7 +1,7 @@
 import type { ActJWTClaim, CheckAuthorizationWithCustomPermissions, OrganizationCustomRoleKey } from '@clerk/types';
 import type { Store } from 'nanostores';
 import { useCallback, useSyncExternalStore } from 'react';
-import {$authStore, $initialState} from '../../stores/internal';
+import { $authStore } from '../../stores/internal';
 import { authAsyncStorage } from '../../server/async-local-storage';
 
 type CheckAuthorizationSignedOut = undefined;
@@ -91,27 +91,6 @@ type UseAuth = () => UseAuthReturn;
  *   return <div>...</div>
  * }
  */
-
-// TODO: Use the hook from nano stores
-export function useStore(store: Store, opts = {}) {
-  return useSyncExternalStore(store.subscribe, store.get, () => {
-    // Per react docs
-    /**
-     * optional getServerSnapshot:
-     * A function that returns the initial snapshot of the data in the store.
-     * It will be used only during server rendering and during hydration of server-rendered content on the client.
-     * The server snapshot must be the same between the client and the server, and is usually serialized and passed from the server to the client.
-     * If you omit this argument, rendering the component on the server will throw an error.
-     */
-
-    if (typeof window === 'undefined') {
-      return authAsyncStorage.getStore();
-    }
-    // TODO: Add comments / maybe switch to authStore ??
-    return $initialState.get()
-  });
-}
-
 export const useAuth: UseAuth = () => {
   const { sessionId, userId, actor, orgId, orgRole, orgSlug, orgPermissions } = useStore($authStore);
 
@@ -198,3 +177,34 @@ export const useAuth: UseAuth = () => {
 
   throw new Error('Invalid state. Feel free to submit a bug or reach out to support');
 };
+
+/**
+ * This implementation of `useStore` is an alternative solution to the hook exported by nanostores
+ * Reference: https://github.com/nanostores/react/blob/main/index.js
+ */
+function useStore(store: Store) {
+  let get = store.get.bind(store);
+
+  return useSyncExternalStore(store.listen, get, () => {
+    // Per react docs
+    /**
+     * optional getServerSnapshot:
+     * A function that returns the initial snapshot of the data in the store.
+     * It will be used only during server rendering and during hydration of server-rendered content on the client.
+     * The server snapshot must be the same between the client and the server, and is usually serialized and passed from the server to the client.
+     * If you omit this argument, rendering the component on the server will throw an error.
+     */
+
+    /**
+     * When this runs on the server we want to grab the content from the async-local-storage.
+     */
+    if (typeof window === 'undefined') {
+      return authAsyncStorage.getStore();
+    }
+
+    /**a
+     * When this runs on the client, during hydration, we want to grab the content the store.
+     */
+    return get();
+  });
+}
