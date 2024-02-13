@@ -13,9 +13,11 @@ import SignOutButton from "../lib/astro-components/SignOutButton.astro";
 
 import {
   ClerkLayout,
+} from "astro-clerk-auth/components/control";
+import {
   SignedIn,
   SignedOut,
-} from "astro-clerk-auth/components/control";
+} from "astro-clerk-auth/components/react";
 import { OrganizationSwitcher } from "astro-clerk-auth/components/interactive";
 // import { clerkSSR } from "astro-clerk-auth/server";
 /**
@@ -45,8 +47,7 @@ import { OrganizationSwitcher } from "astro-clerk-auth/components/interactive";
     <p class="instructions">
       To get started, open the directory <code>src/pages</code> in your project.<br
       />
-      <strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message
-      above.
+      <strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
     </p>
     <ul role="list" class="link-card-grid">
       <SignedOut>

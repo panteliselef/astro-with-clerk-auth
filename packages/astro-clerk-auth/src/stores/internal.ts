@@ -23,11 +23,11 @@ export const $csrState = map<{
   organization: null,
 });
 
-export const $ssrState = map<InitialState>();
+export const $initialState = map<InitialState>();
 
 export const $clerk = atom<Clerk | null>(null);
 
-export const $authStore = computed([$csrState, $ssrState], (state, ssrState) => {
+export const $authStore = computed([$csrState, $initialState], (state, initialState) => {
   return deriveState(
     state.isLoaded,
     {
@@ -36,6 +36,6 @@ export const $authStore = computed([$csrState, $ssrState], (state, ssrState) => 
       organization: state.organization,
       client: state.client!,
     },
-    ssrState,
+    initialState,
   );
 });
