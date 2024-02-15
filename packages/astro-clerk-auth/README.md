@@ -22,6 +22,15 @@ yarn add astro-clerk-auth
 pnpm add astro-clerk-auth
 ```
 
+## Set environment variables
+```sh
+PUBLIC_ASTRO_APP_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxx
+CLERK_SECRET_KEY=sk_test_xxxxxxx
+
+PUBLIC_ASTRO_APP_CLERK_SIGN_IN_URL=/sign-in # update this if sign in page exists on another path
+PUBLIC_ASTRO_APP_CLERK_SIGN_UP_URL=/sign-up # update this if sign up page exists on another path
+```
+
 ## Add integrations
 - Add the `astroClerk` integration in your `astro.config.mjs` file
 - (Optional) Install the `@astrojs/react` and add the `react` in your `astro.config.mjs` file. You only need to perform this action if you are planing to use react with your project or the React features that provided by `astro-clerk-auth`. [Instructions](https://docs.astro.build/en/guides/integrations-guide/react/)
@@ -39,7 +48,10 @@ import astroClerk from "astro-clerk-auth";
 export default defineConfig({
   integrations: [
     react(),
-    astroClerk(),
+    astroClerk({
+      afterSignInUrl: "/",
+      afterSignUpUrl: "/",
+    }),
   ],
   output: "server",
   adapter: node({
