@@ -30,6 +30,16 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
               ...buildEnvVarFromOption(proxyUrl, 'PUBLIC_ASTRO_APP_CLERK_PROXY_URL'),
               ...buildEnvVarFromOption(domain, 'PUBLIC_ASTRO_APP_CLERK_DOMAIN'),
             },
+
+            // We need this for top-level await
+            optimizeDeps: {
+              esbuildOptions: {
+                target: 'es2022',
+              },
+            },
+            build: {
+              target: 'es2022',
+            },
           },
         });
 
