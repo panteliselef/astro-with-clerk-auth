@@ -31,6 +31,12 @@ PUBLIC_ASTRO_APP_CLERK_SIGN_IN_URL=/sign-in # update this if sign in page exists
 PUBLIC_ASTRO_APP_CLERK_SIGN_UP_URL=/sign-up # update this if sign up page exists on another path
 ```
 
+## Update `env.d.ts`
+```ts
+/// <reference types="astro/client" />
+/// <reference types="astro-clerk-auth/env" />
+```
+
 ## Add integrations
 - Add the `astroClerk` integration in your `astro.config.mjs` file
 - (Optional) Install the `@astrojs/react` and add the `react` in your `astro.config.mjs` file. You only need to perform this action if you are planing to use react with your project or the React features that provided by `astro-clerk-auth`. [Instructions](https://docs.astro.build/en/guides/integrations-guide/react/)
