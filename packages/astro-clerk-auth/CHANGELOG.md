@@ -1,5 +1,13 @@
 # astro-clerk-auth
 
+## 0.0.5
+
+### Patch Changes
+
+- 9e05766: Set `vite` configuration to target `es2022`.
+- 7d8a6dc: Recreate types from astro in order to avoid issues with exported types in Astro 3 and 4 where used directly.
+  Astro 3 exported the types as generics whereas in Astro 4 those were regular types, this was causing the end type consumed in the package to be `any`.
+
 ## 0.0.4
 
 ### Patch Changes
