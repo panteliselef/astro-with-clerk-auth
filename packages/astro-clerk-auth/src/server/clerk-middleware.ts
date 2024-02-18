@@ -212,12 +212,25 @@ async function decorateRequest(
     const reader = res.body?.getReader();
     const stream = new ReadableStream({
       async start(controller) {
-        controller.enqueue(
-          `<script id="__CLERK_ASTRO_DATA__" type="application/json">${JSON.stringify(locals.auth())}</script>\n`,
-        );
         let { value, done } = await reader!.read();
         while (!done) {
-          controller.enqueue(value);
+          const decodedValue = new TextDecoder().decode(value);
+
+          /**
+           * Hijack html response to position `__CLERK_ASTRO_DATA__` before the closing `head` html tag
+           */
+          if (decodedValue.includes('</head>')) {
+            const [p1, p2] = decodedValue.split('</head>');
+            controller.enqueue(p1);
+            controller.enqueue(
+              `<script id="__CLERK_ASTRO_DATA__" type="application/json">${JSON.stringify(locals.auth())}</script>\n`,
+            );
+            controller.enqueue('</head>');
+            controller.enqueue(p2);
+          } else {
+            controller.enqueue(value);
+          }
+
           ({ value, done } = await reader!.read());
         }
         controller.close();
