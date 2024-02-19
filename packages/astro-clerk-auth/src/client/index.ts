@@ -26,27 +26,39 @@ const mountAllClerkAstroJSComponents = () => {
 };
 
 /**
+ * Prevents mounting components multiple times when the `createClerkInstanceInternal` was been called twice without await first
+ * This is useful as the "integration" may call the function twice at the same time.
+ */
+const runOnce = (onFirst: typeof createClerkInstanceInternal) => {
+  let hasRun = false;
+  return (params: Parameters<typeof createClerkInstanceInternal>[0]) => {
+    if (hasRun) {
+      let clerkJSInstance = window.Clerk as Clerk;
+      return new Promise((res) => {
+        if (clerkJSInstance.loaded) mountAllClerkAstroJSComponents();
+        return res(clerkJSInstance.loaded);
+      });
+    }
+    /**
+     * Probably html streaming has delayed the component from mounting immediately
+     */
+    hasRun = true;
+    return onFirst(params);
+  };
+};
+
+/**
  * Prevents firing clerk.load multiple times
  */
-let createHasBeenCalled = false;
+export const createClerkInstance = runOnce(createClerkInstanceInternal);
 
-export function createClerkInstance(options?: AstroClerkIntegrationParams) {
+export function createClerkInstanceInternal(options?: AstroClerkIntegrationParams) {
   let clerkJSInstance = window.Clerk as Clerk;
   if (!clerkJSInstance) {
     clerkJSInstance = new Clerk(publishableKey);
     $clerk.set(clerkJSInstance);
     window.Clerk = clerkJSInstance;
   }
-
-  /**
-   * Probably html streaming has delayed the component from mounting immediately
-   */
-  if (createHasBeenCalled)
-    return new Promise((res) => {
-      if (clerkJSInstance.loaded) mountAllClerkAstroJSComponents();
-      return res(clerkJSInstance.loaded);
-    });
-  createHasBeenCalled = true;
 
   initOptions = options;
   return clerkJSInstance
