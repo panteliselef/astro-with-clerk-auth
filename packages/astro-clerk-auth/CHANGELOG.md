@@ -1,5 +1,13 @@
 # astro-clerk-auth
 
+## 0.0.6
+
+### Patch Changes
+
+- 20e9708: Improve html semantics by positioning `__CLERK_ASTRO_DATA__` inside the `<head>` tag.
+- 6a1d3dc: Bump clerk beta versions.
+- 81a70ce: Remove `redirect` as AuthReason.
+
 ## 0.0.5
 
 ### Patch Changes
