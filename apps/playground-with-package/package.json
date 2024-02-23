@@ -16,6 +16,8 @@
     "@astrojs/react": "^3.0.6",
     "@astrojs/tailwind": "^5.0.2",
     "@astrojs/vercel": "^5.2.0",
+    "@clerk/types": "4.0.0-beta.16",
+    "@clerk/localizations": "2.0.0-beta.14",
     "@nanostores/react": "0.7.1",
     "astro": "^3.5.5",
     "astro-clerk-auth": "0.0.6",
