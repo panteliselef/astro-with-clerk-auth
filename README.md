@@ -1,4 +1,4 @@
-# Unofficial Clerk + Astro starter
+# Community Clerk + Astro starter
 
 ## What's inside?
 
