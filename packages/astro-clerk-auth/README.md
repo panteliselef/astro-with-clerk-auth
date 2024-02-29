@@ -1,8 +1,11 @@
 # astro-clerk-auth
-Package of unofficial integration with [Astro](https://astro.build/) and [Clerk](https://clerk.com/)
+Community package integrating [Clerk](https://clerk.com/) with [Astro](https://astro.build/)
 
 ## Live Demo
 [Online Demo](https://astro-clerk.elef.codes/)
+
+## Report Issues
+If you are experiencing issues please submit them via the [Issues page in GH](https://github.com/panteliselef/astro-with-clerk-auth/issues). As this is not an officially supported sdk by Clerk, contacting them directly for issues regarding this package might cause your requests to be unanswered.
 
 ## Install package
 Add `astro-clerk-auth` as a dependency
