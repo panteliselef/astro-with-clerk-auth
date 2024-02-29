@@ -14,13 +14,6 @@ import SignOutButton from "../lib/astro-components/SignOutButton.astro";
 import { ClerkLayout } from "astro-clerk-auth/components/control";
 import { SignedIn, SignedOut } from "astro-clerk-auth/components/react";
 import { OrganizationSwitcher } from "astro-clerk-auth/components/interactive";
-// import { clerkSSR } from "astro-clerk-auth/server";
-/**
- * Replacement of `<ClerkLayout/>`
- * Experimental pattern
- */
-// This currently doesnt work because Astro middleware has not populated `Astro.local.auth`
-// clerkSSR(Astro)
 ---
 
 <ClerkLayout protectedPage={true}>
