@@ -1,5 +1,12 @@
 # astro-clerk-auth
 
+## 0.0.8
+
+### Patch Changes
+
+- abadd2f: Re-export @clerk/backend from '/server'
+- 5b70352: Bump clerk beta versions.
+
 ## 0.0.7
 
 ### Patch Changes
