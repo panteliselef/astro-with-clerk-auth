@@ -189,7 +189,26 @@ import { Protect } from 'astro-clerk-auth/components/react'
 import { SignedIn } from 'astro-clerk-auth/components/control'
 ```
 
+### Protect your API Routes
+In this example we are fetching the logged in user.
+```ts
+import type { APIRoute } from "astro";
 
+const unautorized = () =>
+  new Response(JSON.stringify({ error: "unathorized access" }), {
+    status: 401,
+  });
+
+export const GET: APIRoute = async ({ locals }) => {
+  if (!locals.auth().userId) {
+    return unautorized();
+  }
+
+  return new Response(JSON.stringify(await locals.currentUser()), {
+    status: 200,
+  });
+};
+```
 
 ## Use Astro.locals
 - Use `Astro.locals.auth()` to retrieve the [Authentication Object](https://clerk.com/docs/references/nextjs/authentication-object#authentication-object)
