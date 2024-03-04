@@ -8,7 +8,7 @@ import type {
 } from '@clerk/types';
 export type AstroClerkIntegrationParams = Without<
   ClerkOptions,
-  'isSatellite' | 'sdkMetadata' | 'telemetry' | 'standardBrowser' | 'selectInitialSession'
+  'isSatellite' | 'sdkMetadata' | 'standardBrowser' | 'selectInitialSession'
 > &
   MultiDomainAndOrProxyPrimitives;
 

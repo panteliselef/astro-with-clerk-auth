@@ -1,13 +1,14 @@
 import type { AstroClerkIntegrationParams } from '../types';
 import type { AstroIntegration } from 'astro';
-import { name as packageName } from '../../package.json';
+import { name as packageName, version as packageVersion } from '../../package.json';
+import { ClerkOptions } from '@clerk/types';
 
 const buildEnvVarFromOption = (valueToBeStored: unknown, envName: string) => {
   return valueToBeStored ? { [`import.meta.env.${envName}`]: JSON.stringify(valueToBeStored) } : {};
 };
 
 export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
-  const { proxyUrl, isSatellite, domain, afterSignInUrl, afterSignUpUrl, signInUrl, signUpUrl } = params || {};
+  const { proxyUrl, isSatellite, domain, signInUrl, signUpUrl } = params || {};
 
   return {
     name: '@astro-clerk-auth/integration',
@@ -19,6 +20,26 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
         if (!config.adapter) {
           logger.error('Missing adapter, please update your Astro config to use one.');
         }
+
+        if (params?.telemetry !== false) {
+          logger.warn('==========================');
+          logger.warn('Clerk Telemetry is enabled');
+          logger.warn('==========================');
+        }
+
+        const internalParams: ClerkOptions = {
+          ...params,
+          sdkMetadata: {
+            version: packageVersion,
+            name: packageName,
+            environment: command === 'dev' ? 'development' : 'production',
+          },
+          telemetry: {
+            ...params?.telemetry,
+            //@ts-ignore
+            maxBufferSize: 1,
+          },
+        };
 
         // Set params as envs do backend code has access to them
         updateConfig({
@@ -52,7 +73,7 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
           `
           ${command === 'dev' ? 'console.log("astro-clerk-auth","Initialize Clerk: before-hydration")' : ''}
           import { runInjectionScript } from "astro-clerk-auth/internal";
-          await runInjectionScript(${JSON.stringify(params)});`,
+          await runInjectionScript(${JSON.stringify(internalParams)});`,
         );
 
         /**
@@ -65,7 +86,7 @@ export default (params?: AstroClerkIntegrationParams): AstroIntegration => {
           `
           ${command === 'dev' ? 'console.log("astro-clerk-auth","Initialize Clerk: page")' : ''}
           import { runInjectionScript } from "astro-clerk-auth/internal";
-          await runInjectionScript(${JSON.stringify(params)});`,
+          await runInjectionScript(${JSON.stringify(internalParams)});`,
         );
       },
     },
