@@ -1,5 +1,12 @@
 # astro-clerk-auth
 
+## 0.0.9
+
+### Patch Changes
+
+- 4b57912: Update documentation for protecting api routes.
+- f723cb6: Bump clerk packages.
+
 ## 0.0.8
 
 ### Patch Changes
