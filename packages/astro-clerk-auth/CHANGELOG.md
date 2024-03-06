@@ -1,5 +1,11 @@
 # astro-clerk-auth
 
+## 0.0.10
+
+### Patch Changes
+
+- 112b4b6: Bump clerk beta versions
+
 ## 0.0.9
 
 ### Patch Changes
