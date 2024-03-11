@@ -2,20 +2,21 @@
 import type { SignUpProps } from "@clerk/types";
 type Props = SignUpProps;
 
-import { signInUrl } from "astro-clerk-auth/v0";
+import { signInUrl, signUpUrl } from "astro-clerk-auth/v0";
 import { customAlphabet, urlAlphabet } from "nanoid";
 
 const safeId = customAlphabet(urlAlphabet, 10)();
 
-const props = {
+const serverProps = {
   ...Astro.props,
+  path: Astro.props.path || signUpUrl,
   signInUrl: Astro.props.signInUrl || signInUrl
 }
 ---
 
 <div id={`clerk-sign-up-${safeId}`}></div>
 
-<script is:inline define:vars={{ props: Astro.props, safeId }}>
+<script is:inline define:vars={{ props: serverProps, safeId }}>
   const setOrCreatePropMap = ({ category, id, props }) => {
     if (!window.__astro_clerk_component_props) {
       window.__astro_clerk_component_props = new Map();

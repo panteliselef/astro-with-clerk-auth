@@ -10,7 +10,7 @@ import UserJSON from "../../components/UserJSON.astro";
   <Protected>
     <ClerkLayout protectedPage={true}>
       <div class="w-full flex justify-center">
-        <UserProfile path="/user" routing="path" />
+        <UserProfile routing="hash" />
       </div>
       <UserJSON />
     </ClerkLayout>

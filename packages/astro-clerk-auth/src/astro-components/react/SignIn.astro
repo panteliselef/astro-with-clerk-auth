@@ -2,7 +2,7 @@
 import type { SignInProps } from "@clerk/types";
 type Props = SignInProps
 
-import { signUpUrl } from "astro-clerk-auth/v0";
+import { signUpUrl, signInUrl } from "astro-clerk-auth/v0";
 import { SignIn as SignInReact } from "astro-clerk-auth/client/react";
 /**
  * For React component, in order to avoid hydration errors populate SSR store and do not depend on the component being wrapped ClerkLayout.
@@ -14,6 +14,7 @@ __internal_authAsyncStorage.enterWith(Astro.locals.auth())
 
 const props = {
   ...Astro.props,
+  path: Astro.props.path || signInUrl,
   signUpUrl: Astro.props.signUpUrl || signUpUrl
 }
 ---
