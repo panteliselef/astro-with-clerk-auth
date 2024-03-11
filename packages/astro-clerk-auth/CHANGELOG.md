@@ -1,5 +1,13 @@
 # astro-clerk-auth
 
+## 0.0.11
+
+### Patch Changes
+
+- 258d4d6: Bump clerk versions
+  - @clerk/backend@1.0.0-beta.27 -> @clerk/backend@1.0.0-beta.28
+  - @clerk/clerk-js@5.0.0-beta.33 -> @clerk/clerk-js@5.0.0-beta.34
+
 ## 0.0.10
 
 ### Patch Changes
