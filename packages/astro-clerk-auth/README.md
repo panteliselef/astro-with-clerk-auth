@@ -41,7 +41,7 @@ PUBLIC_ASTRO_APP_CLERK_SIGN_UP_URL=/sign-up # update this if sign up page exists
 ```
 
 ## Add integrations
-- Add the `astroClerk` integration in your `astro.config.mjs` file
+- Add the `clerk` integration in your `astro.config.mjs` file
 - (Optional) Install the `@astrojs/react` and add the `react` in your `astro.config.mjs` file. You only need to perform this action if you are planing to use react with your project or the React features that provided by `astro-clerk-auth`. [Instructions](https://docs.astro.build/en/guides/integrations-guide/react/)
 - Install the `@astrojs/node` package and the `node` adapter in your `astro.config.mjs` file. [Instructions](https://docs.astro.build/en/guides/server-side-rendering/)
 - Set `output` to `server`.
@@ -52,12 +52,12 @@ Example configuration file
 import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import node from "@astrojs/node";
-import astroClerk from "astro-clerk-auth";
+import clerk from "astro-clerk-auth";
 
 export default defineConfig({
   integrations: [
     react(),
-    astroClerk({
+    clerk({
       afterSignInUrl: "/",
       afterSignUpUrl: "/",
     }),
