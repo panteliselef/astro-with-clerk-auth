@@ -1,5 +1,11 @@
 # astro-clerk-auth
 
+## 0.1.0
+
+### Minor Changes
+
+- 3b3c26f: Enable installation with `astro add` command.
+
 ## 0.0.11
 
 ### Patch Changes
