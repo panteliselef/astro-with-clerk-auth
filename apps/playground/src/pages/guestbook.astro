@@ -7,11 +7,7 @@ import { Signatures } from "../components/Signatures";
 import { UserButton } from "astro-clerk-auth/components/interactive";
 
 if (import.meta.env.FLAG_GUESTBOOK !== "true") {
-
-  console.log("wow", import.meta.env.FLAG_GUESTBOOK)
-  console.log("22wow", import.meta.env)
-  console.log("3wow", import.meta.env.CLERK_SECRET_KEY)
-  console.log("4wow", import.meta.env.PUBLIC_ASTRO_APP_CLERK_PUBLISHABLE_KEY)
+  console.log("wow", typeof import.meta.env.FLAG_GUESTBOOK)
   // Redirect with reason
   return new Response(null, {
     status: 307,
