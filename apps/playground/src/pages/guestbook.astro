@@ -7,7 +7,14 @@ import { Signatures } from "../components/Signatures";
 import { UserButton } from "astro-clerk-auth/components/interactive";
 
 if (import.meta.env.FLAG_GUESTBOOK !== "true") {
-  return Astro.redirect(`/`, 307);
+  // Redirect with reason
+  return new Response(null, {
+    status: 307,
+    headers: new Headers({
+      "x-elef-reason": "flag-guestbook-false",
+      Location: "/",
+    }),
+  });
 }
 
 async function getGuestbook() {
