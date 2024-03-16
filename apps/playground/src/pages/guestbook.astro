@@ -6,8 +6,22 @@ import { type Entry, entriesStore } from "../atoms/enties";
 import { Signatures } from "../components/Signatures";
 import { UserButton } from "astro-clerk-auth/components/interactive";
 
-if (import.meta.env.FLAG_GUESTBOOK !== "true") {
-  return Astro.redirect(`/`, 307);
+const handleTruthyString = (value: string | boolean) => {
+  if (typeof value === "string") {
+    return value === "true";
+  }
+  return value;
+};
+
+if (!handleTruthyString(import.meta.env.FLAG_GUESTBOOK)) {
+  // Redirect with reason
+  return new Response(null, {
+    status: 307,
+    headers: new Headers({
+      "x-elef-reason": "flag-guestbook-false",
+      Location: "/",
+    }),
+  });
 }
 
 async function getGuestbook() {
