@@ -2,7 +2,8 @@ import { defineConfig } from "astro/config";
 import tailwind from "@astrojs/tailwind";
 import react from "@astrojs/react";
 import vercel from "@astrojs/vercel/serverless";
-import clerk from "astro-clerk-auth";
+import node from "@astrojs/node";
+import clerk from "astro-clerk-auth/integration/hotload";
 import { visualizer } from "rollup-plugin-visualizer";
 
 // https://astro.build/config
@@ -44,12 +45,15 @@ export default defineConfig({
     },
   },
   output: "server",
-  adapter: vercel({
-    webAnalytics: {
-      enabled: true,
-    },
-    speedInsights: {
-      enabled: true,
-    },
+  // adapter: vercel({
+  //   webAnalytics: {
+  //     enabled: true,
+  //   },
+  //   speedInsights: {
+  //     enabled: true,
+  //   },
+  // }),
+  adapter: node({
+    mode: "standalone",
   }),
 });

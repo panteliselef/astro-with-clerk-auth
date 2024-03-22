@@ -63,9 +63,17 @@
       "types": "./dist/integration/index.d.ts",
       "import": "./dist/integration/index.js"
     },
+    "./integration/hotload": {
+      "types": "./dist/integration/hotload.d.ts",
+      "import": "./dist/integration/hotload.js"
+    },
     "./internal": {
       "types": "./dist/internal/index.d.ts",
       "import": "./dist/internal/index.js"
+    },
+    "./internal/hotload": {
+      "types": "./dist/internal/hotload.d.ts",
+      "import": "./dist/internal/hotload.js"
     },
     "./server": {
       "types": "./dist/server/index.d.ts",
