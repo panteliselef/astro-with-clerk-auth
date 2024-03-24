@@ -1,7 +1,6 @@
 import type { Clerk } from '@clerk/clerk-js';
 import type { AstroClerkIntegrationParams } from '../types';
 import { $clerk, $csrState } from '../stores/internal';
-import { PUBLISHABLE_KEY } from '../v0/constants';
 import { waitForClerkScript } from '../internal/utils/loadClerkJSScript';
 import { runOnce } from './run-once';
 import { mountAllClerkAstroJSComponents } from './mount-clerk-astro-js-components';
@@ -12,14 +11,6 @@ let initOptions: AstroClerkIntegrationParams | undefined;
  * Prevents firing clerk.load multiple times
  */
 export const createClerkInstance = runOnce(createClerkInstanceInternal);
-
-const loadScriptConfig = {
-  clerkJSUrl: undefined,
-  clerkJSVariant: undefined,
-  clerkJSVersion: undefined,
-  sdkMetadata: undefined,
-  publishableKey: PUBLISHABLE_KEY,
-};
 
 export async function createClerkInstanceInternal(options?: AstroClerkIntegrationParams) {
   let clerkJSInstance = window.Clerk as Clerk;
