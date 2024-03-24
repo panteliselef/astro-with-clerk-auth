@@ -7,7 +7,7 @@ const { title } = Astro.props;
 
 import { Image } from "astro:assets";
 import logo from "../assets/Clerk-Purple-Logo.png";
-import { SignedIn, SignedOut } from "astro-clerk-auth/components/react";
+import { SignedIn, SignedOut } from "astro-clerk-auth/components/control";
 import { UserButton } from "astro-clerk-auth/components/interactive";
 import { LanguagePicker } from "../components/LanguagePicker";
 import GithubIcon from "../components/GithubIcon.astro";
@@ -19,7 +19,7 @@ import AstroBgLogo from "../components/AstroBgLogo.astro";
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content="Astro description" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>

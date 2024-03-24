@@ -1,4 +1,4 @@
-import { updateClerkOptions } from "astro-clerk-auth/client/hotload";
+import { updateClerkOptions } from "astro-clerk-auth/client";
 import { type ChangeEvent } from "react";
 
 export function LanguagePicker() {
