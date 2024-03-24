@@ -57,13 +57,13 @@ export default (params?: AstroClerkIntegrationParams & { mode?: 'headless' }): A
         //    * The above script will run before client frameworks like React hydrate.
         //    * This makes sure that we have initialized a Clerk instance and populated stores in order to avoid hydration issues
         //    */
-        //   injectScript(
-        //     'before-hydration',
-        //     `
-        //     ${command === 'dev' ? 'console.log("astro-clerk-auth","Initialize Clerk: before-hydration")' : ''}
-        //     import { runInjectionScript } from "astro-clerk-auth/internal";
-        //     await runInjectionScript(${JSON.stringify(params)});`,
-        //   );
+        injectScript(
+          'before-hydration',
+          `
+            ${command === 'dev' ? 'console.log("astro-clerk-auth","Initialize Clerk: before-hydration")' : ''}
+            import { runInjectionScript } from "astro-clerk-auth/internal/hotload";
+            await runInjectionScript(${JSON.stringify(params)});`,
+        );
 
         //   /**
         //    * The above script only executes if a client framework like React needs to hydrate.

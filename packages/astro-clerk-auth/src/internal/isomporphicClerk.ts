@@ -43,7 +43,7 @@ import type {
   HeadlessBrowserClerkConstructor,
   IsomorphicClerkOptions,
 } from './types';
-import { loadClerkJsScript } from './utils/loadClerkJSScript';
+// import { loadClerkJsScript } from './utils/loadClerkJSScript';
 import { errorThrower } from './utils/errorThrower';
 
 export const unsupportedNonBrowserDomainOrProxyUrlFunction =
@@ -368,12 +368,12 @@ export class IsomorphicClerk implements IsomorphicLoadedClerk {
     try {
       // Hot-load latest ClerkJS from Clerk CDN
       if (!global.Clerk) {
-        await loadClerkJsScript({
-          ...this.options,
-          publishableKey: this.#publishableKey,
-          proxyUrl: this.proxyUrl,
-          domain: this.domain,
-        });
+        // await loadClerkJsScript({
+        //   ...this.options,
+        //   publishableKey: this.#publishableKey,
+        //   proxyUrl: this.proxyUrl,
+        //   domain: this.domain,
+        // });
       }
 
       if (!global.Clerk) {

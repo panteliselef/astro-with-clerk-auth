@@ -3,7 +3,6 @@ import { AstroClerkIntegrationParams } from '../types';
 import { $clerk, $csrState } from '../stores/internal';
 import { PUBLISHABLE_KEY } from '../v0/constants';
 import { waitForClerkScript } from '../internal/utils/loadClerkJSScript';
-import { BrowserClerk, HeadlessBrowserClerk } from '../internal/types';
 
 let initOptions: AstroClerkIntegrationParams | undefined;
 
@@ -37,6 +36,10 @@ const runOnce = (onFirst: typeof createClerkInstanceInternal) => {
     if (hasRun) {
       let clerkJSInstance = window.Clerk as Clerk;
       return new Promise((res) => {
+        if (!clerkJSInstance) {
+          return res(false);
+        }
+
         if (clerkJSInstance.loaded) mountAllClerkAstroJSComponents();
         return res(clerkJSInstance.loaded);
       });
@@ -48,22 +51,6 @@ const runOnce = (onFirst: typeof createClerkInstanceInternal) => {
     return onFirst(params);
   };
 };
-
-declare const global: Global;
-export interface Global {
-  Clerk?: HeadlessBrowserClerk | BrowserClerk;
-}
-
-/**
- * Vite does not define `global` by default
- * One workaround is to use the `define` config prop
- * https://vitejs.dev/config/#define
- * We are solving this in the SDK level to reduce setup steps.
- */
-if (typeof window !== 'undefined' && !window.global) {
-  //@ts-ignore
-  window.global = typeof global === 'undefined' ? window : global;
-}
 
 /**
  * Prevents firing clerk.load multiple times
@@ -83,16 +70,11 @@ export async function createClerkInstanceInternal(options?: AstroClerkIntegratio
   if (!clerkJSInstance) {
     await waitForClerkScript();
 
-    if (!global.Clerk) {
+    if (!window.Clerk) {
       throw new Error('Failed to download latest ClerkJS. Contact support@clerk.com.');
     }
-    // @ts-ignore
-    clerkJSInstance = global.Clerk;
-
-    // await global.Clerk.load(options);
-
+    clerkJSInstance = window.Clerk;
     $clerk.set(clerkJSInstance);
-    window.Clerk = clerkJSInstance;
   }
 
   initOptions = options;

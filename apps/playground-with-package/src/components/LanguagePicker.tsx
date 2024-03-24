@@ -1,4 +1,4 @@
-import { updateClerkOptions } from "astro-clerk-auth/client";
+import { updateClerkOptions } from "astro-clerk-auth/client/hotload";
 import { type ChangeEvent } from "react";
 
 export function LanguagePicker() {
@@ -7,6 +7,7 @@ export function LanguagePicker() {
     let localization: any;
 
     if (value === "fr") {
+      // TODO: Update to  (await import("@clerk/localizations/fr-FR")).frFR
       localization = (await import("@clerk/localizations")).frFR;
     } else {
       localization = undefined;
