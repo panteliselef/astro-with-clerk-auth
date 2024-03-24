@@ -2,17 +2,19 @@ import { createDevOrStagingUrlCache, parsePublishableKey } from '@clerk/shared/k
 import { isValidProxyUrl, proxyUrlToAbsoluteURL } from '@clerk/shared/proxy';
 import { addClerkPrefix } from '@clerk/shared/url';
 
-import type { IsomorphicClerkOptions } from '../types';
-
 import { versionSelector } from './versionSelector';
 
 const { isDevOrStagingUrl } = createDevOrStagingUrlCache();
 
 const FAILED_TO_FIND_CLERK_SCRIPT = 'Clerk: Failed find clerk-js script';
 
-type LoadClerkJsScriptOptions = Omit<IsomorphicClerkOptions, 'proxyUrl' | 'domain'> & {
+type BuildClerkJsScriptOptions = {
   proxyUrl: string;
   domain: string;
+  clerkJSUrl?: string;
+  clerkJSVariant?: 'headless' | '';
+  clerkJSVersion?: string;
+  publishableKey: string;
 };
 
 export const waitForClerkScript = () => {
@@ -30,7 +32,7 @@ export const waitForClerkScript = () => {
   });
 };
 
-const clerkJsScriptUrl = (opts: LoadClerkJsScriptOptions) => {
+const clerkJsScriptUrl = (opts: BuildClerkJsScriptOptions) => {
   const { clerkJSUrl, clerkJSVariant, clerkJSVersion, proxyUrl, domain, publishableKey } = opts;
 
   if (clerkJSUrl) {
@@ -51,7 +53,7 @@ const clerkJsScriptUrl = (opts: LoadClerkJsScriptOptions) => {
   return `https://${scriptHost}/npm/@clerk/clerk-js@${version}/dist/clerk.${variant}browser.js`;
 };
 
-const applyClerkJsScriptAttributes = (options: LoadClerkJsScriptOptions) => (script: HTMLScriptElement) => {
+const applyClerkJsScriptAttributes = (options: BuildClerkJsScriptOptions) => (script: HTMLScriptElement) => {
   const { publishableKey, proxyUrl, domain } = options;
   if (publishableKey) {
     script.setAttribute('data-clerk-publishable-key', publishableKey);
