@@ -1,56 +1,17 @@
 import { Clerk } from '@clerk/clerk-js';
-import { AstroClerkIntegrationParams } from '../types';
+import type { AstroClerkIntegrationParams } from '../types';
 import { $clerk, $csrState } from '../stores/internal';
 import { publishableKey } from '../v0/constants';
+import type { CreateClerkInstanceInternalFn } from './types';
+import { runOnce } from './run-once';
+import { mountAllClerkAstroJSComponents } from './mount-clerk-astro-js-components';
 
 let initOptions: AstroClerkIntegrationParams | undefined;
-
-const mountAllClerkAstroJSComponents = () => {
-  const mountFns = {
-    'organization-list': 'mountOrganizationList',
-    'organization-profile': 'mountOrganizationProfile',
-    'organization-switcher': 'mountOrganizationSwitcher',
-    'user-button': 'mountUserButton',
-    'user-profile': 'mountUserProfile',
-    'sign-in': 'mountSignIn',
-    'sign-up': 'mountSignUp',
-  } as const;
-
-  Object.entries(mountFns).forEach(([category, mountFn]) => {
-    const elementsOfCategory = document.querySelectorAll(`[id^="clerk-${category}"]`);
-    elementsOfCategory.forEach((el) => {
-      const props = window.__astro_clerk_component_props?.get(category)?.get(el.id);
-      if (el) $clerk.get()?.[mountFn](el as HTMLDivElement, props);
-    });
-  });
-};
-
-/**
- * Prevents mounting components multiple times when the `createClerkInstanceInternal` was been called twice without await first
- * This is useful as the "integration" may call the function twice at the same time.
- */
-const runOnce = (onFirst: typeof createClerkInstanceInternal) => {
-  let hasRun = false;
-  return (params: Parameters<typeof createClerkInstanceInternal>[0]) => {
-    if (hasRun) {
-      let clerkJSInstance = window.Clerk as Clerk;
-      return new Promise((res) => {
-        if (clerkJSInstance.loaded) mountAllClerkAstroJSComponents();
-        return res(clerkJSInstance.loaded);
-      });
-    }
-    /**
-     * Probably html streaming has delayed the component from mounting immediately
-     */
-    hasRun = true;
-    return onFirst(params);
-  };
-};
 
 /**
  * Prevents firing clerk.load multiple times
  */
-export const createClerkInstance = runOnce(createClerkInstanceInternal);
+export const createClerkInstance: CreateClerkInstanceInternalFn = runOnce(createClerkInstanceInternal);
 
 export function createClerkInstanceInternal(options?: AstroClerkIntegrationParams) {
   let clerkJSInstance = window.Clerk as Clerk;

@@ -1,16 +1,14 @@
 import { createDevOrStagingUrlCache, parsePublishableKey } from '@clerk/shared/keys';
-import { loadScript } from '@clerk/shared/loadScript';
 import { isValidProxyUrl, proxyUrlToAbsoluteURL } from '@clerk/shared/proxy';
 import { addClerkPrefix } from '@clerk/shared/url';
 
 import type { IsomorphicClerkOptions } from '../types';
 
 import { versionSelector } from './versionSelector';
-import { errorThrower } from './errorThrower';
 
 const { isDevOrStagingUrl } = createDevOrStagingUrlCache();
 
-const FAILED_TO_LOAD_ERROR = 'Clerk: Failed to load Clerk';
+const FAILED_TO_FIND_CLERK_SCRIPT = 'Clerk: Failed find clerk-js script';
 
 type LoadClerkJsScriptOptions = Omit<IsomorphicClerkOptions, 'proxyUrl' | 'domain'> & {
   proxyUrl: string;
@@ -22,7 +20,7 @@ export const waitForClerkScript = () => {
     const script = document.querySelector('script[data-clerk-script]');
 
     if (!script) {
-      return reject('No script found');
+      return reject(FAILED_TO_FIND_CLERK_SCRIPT);
     }
 
     script.addEventListener('load', () => {
