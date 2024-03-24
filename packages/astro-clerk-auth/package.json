@@ -34,6 +34,7 @@
   },
   "files": [
     "dist",
+    "hotload",
     "client",
     "server",
     "internal",
@@ -86,6 +87,10 @@
     "./v0": {
       "types": "./dist/v0/index.d.ts",
       "import": "./dist/v0/index.js"
+    },
+    "./hotload": {
+      "types": "./dist/hotload.d.ts",
+      "import": "./dist/hotload.js"
     },
     "./env": "./env.d.ts",
     "./components/control": "./components/control/index.ts",

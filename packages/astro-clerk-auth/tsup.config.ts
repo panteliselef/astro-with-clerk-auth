@@ -6,6 +6,7 @@ export default defineConfig(() => {
     clean: true,
     entry: [
       './src/index.ts',
+      './src/hotload.ts',
       './src/client/react/index.ts',
       './src/client/index.ts',
       './src/client/hotload.ts',
