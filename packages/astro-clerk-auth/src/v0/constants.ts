@@ -16,8 +16,6 @@ const signUpUrl = import.meta.env.PUBLIC_ASTRO_APP_CLERK_SIGN_UP_URL || ('' as s
 
 const jwtKey = import.meta.env.CLERK_JWT_KEY || '';
 
-const jsVersion = import.meta.env.CLERK_JS_VERSION || '';
-
 const PUBLISHABLE_KEY = publishableKey;
 const SECRET_KEY = secretKey;
 const SIGN_IN_URL = signInUrl;
@@ -28,6 +26,10 @@ const IS_SATELLITE = import.meta.env.PUBLIC_ASTRO_APP_CLERK_IS_SATELLITE === 'tr
 const API_VERSION = import.meta.env.CLERK_API_VERSION || 'v1';
 const API_URL = import.meta.env.CLERK_API_URL || 'https://api.clerk.dev';
 
+const CLERK_JS_URL = import.meta.env.PUBLIC_ASTRO_APP_CLERK_JS_URL;
+const CLERK_JS_VARIANT = import.meta.env.PUBLIC_ASTRO_APP_CLERK_JS_VARIANT;
+const CLERK_JS_VERSION = import.meta.env.PUBLIC_ASTRO_APP_CLERK_JS_VERSION;
+
 export {
   secretKey,
   apiKey,
@@ -36,7 +38,6 @@ export {
   frontendApi,
   publishableKey,
   jwtKey,
-  jsVersion,
   signInUrl,
   signUpUrl,
   PUBLISHABLE_KEY,
@@ -48,4 +49,7 @@ export {
   IS_SATELLITE,
   API_URL,
   API_VERSION,
+  CLERK_JS_URL,
+  CLERK_JS_VARIANT,
+  CLERK_JS_VERSION,
 };

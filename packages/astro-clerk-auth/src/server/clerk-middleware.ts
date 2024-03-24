@@ -9,13 +9,12 @@ import type {
   AstroMiddlewareReturn,
 } from './types';
 import { getAuth } from './get-auth';
-import { parsePublishableKey } from '@clerk/shared/keys';
 import { handleValueOrFn, isDevelopmentFromSecretKey, isHttpOrHttps } from '@clerk/shared';
 import { APIContext } from 'astro';
 import { createCurrentUser } from './current-user';
 import { isRedirect, setHeader } from './utils';
 import { serverRedirectWithAuth } from './server-redirect-with-auth';
-import { ClerkOptions, MultiDomainAndOrProxy, SDKMetadata, Without } from '@clerk/types';
+import { buildClerkHotloadScript } from './build-clerk-hotload-script';
 
 const CONTROL_FLOW_ERROR = {
   REDIRECT_TO_SIGN_IN: 'CLERK_PROTECT_REDIRECT_TO_SIGN_IN',
@@ -192,34 +191,6 @@ function decorateAstroLocal(req: Request, locals: APIContext['locals'], requestS
   locals.currentUser = createCurrentUser(req, locals);
 }
 
-type IsomorphicClerkOptions = Without<ClerkOptions, 'isSatellite'> & {
-  // Clerk?: ClerkProp;
-  clerkJSUrl?: string;
-  clerkJSVariant?: 'headless' | '';
-  clerkJSVersion?: string;
-  sdkMetadata?: SDKMetadata;
-  publishableKey: string;
-} & MultiDomainAndOrProxy;
-
-type LoadClerkJsScriptOptions = Omit<IsomorphicClerkOptions, 'proxyUrl' | 'domain'> & {
-  proxyUrl?: string;
-  domain?: string;
-};
-
-const clerkJsScriptUrl = (opts: LoadClerkJsScriptOptions) => {
-  const { clerkJSUrl, clerkJSVariant, clerkJSVersion, publishableKey } = opts;
-
-  if (clerkJSUrl) {
-    return clerkJSUrl;
-  }
-
-  let scriptHost = parsePublishableKey(publishableKey)?.frontendApi || '';
-
-  const variant = clerkJSVariant ? `${clerkJSVariant.replace(/\.+$/, '')}.` : '';
-  const version = 'beta';
-  return `https://${scriptHost}/npm/@clerk/clerk-js@${version}/dist/clerk.${variant}browser.js`;
-};
-
 async function decorateRequest(
   locals: APIContext['locals'],
   res: Response,
@@ -255,9 +226,10 @@ async function decorateRequest(
               `<script id="__CLERK_ASTRO_DATA__" type="application/json">${JSON.stringify(locals.auth())}</script>\n`,
             );
 
-            controller.enqueue(
-              `<script src="${clerkJsScriptUrl({ publishableKey: PUBLISHABLE_KEY })}" data-clerk-script async crossOrigin='anonymous' data-clerk-publishable-key="${PUBLISHABLE_KEY}"></script>\n`,
-            );
+            if (__HOTLOAD__) {
+              controller.enqueue(buildClerkHotloadScript());
+            }
+
             controller.enqueue('</head>');
             controller.enqueue(p2);
           } else {
