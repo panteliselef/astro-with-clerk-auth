@@ -2,8 +2,7 @@ import { defineConfig } from "astro/config";
 import tailwind from "@astrojs/tailwind";
 import react from "@astrojs/react";
 import vercel from "@astrojs/vercel/serverless";
-// import node from "@astrojs/node";
-import clerk from "astro-clerk-auth/integration/hotload";
+import clerk from "astro-clerk-auth";
 import { visualizer } from "rollup-plugin-visualizer";
 
 // https://astro.build/config
@@ -53,7 +52,4 @@ export default defineConfig({
       enabled: true,
     },
   }),
-  // adapter: node({
-  //   mode: "standalone",
-  // }),
 });
