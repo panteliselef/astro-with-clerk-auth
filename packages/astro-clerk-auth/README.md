@@ -1,11 +1,11 @@
 # astro-clerk-auth
-Community package integrating [Clerk](https://clerk.com/) with [Astro](https://astro.build/)
+Community package that integrates [Clerk](https://clerk.com/) with [Astro](https://astro.build/)
 
 ## Live Demo
 [Online Demo](https://astro-clerk.elef.codes/)
 
 ## Report Issues
-If you are experiencing issues please submit them via the [Issues page in GH](https://github.com/panteliselef/astro-with-clerk-auth/issues). As this is not an officially supported sdk by Clerk, contacting them directly for issues regarding this package might cause your requests to be unanswered.
+If you are experiencing issues please submit them via the [Issues page in GH](https://github.com/panteliselef/astro-with-clerk-auth/issues). As this SDK is not officially suppported by Clerk or Astro, contacting them directly for issues regarding this package might cause your requests to be unanswered.
 
 ## Install package
 Add `astro-clerk-auth` as a dependency
@@ -41,7 +41,7 @@ PUBLIC_ASTRO_APP_CLERK_SIGN_UP_URL=/sign-up # update this if sign up page exists
 ```
 
 ## Add integrations
-- Add the `clerk` integration in your `astro.config.mjs` file
+- Add the `clerk` integration in your `astro.config.mjs` file.
 - (Optional) Install the `@astrojs/react` and add the `react` in your `astro.config.mjs` file. You only need to perform this action if you are planing to use react with your project or the React features that provided by `astro-clerk-auth`. [Instructions](https://docs.astro.build/en/guides/integrations-guide/react/)
 - Install the `@astrojs/node` package and the `node` adapter in your `astro.config.mjs` file. [Instructions](https://docs.astro.build/en/guides/server-side-rendering/)
 - Set `output` to `server`.
@@ -71,7 +71,7 @@ export default defineConfig({
 
 
 ## Add a middleware file
-This step is required in order to use SSR or any control component.Create a `middleware.ts` file inside the `src/` directory
+This step is required in order to use SSR or any control component. Create a `middleware.ts` file inside the `src/` directory.
 
 **Simple use**
 ```ts
@@ -132,7 +132,7 @@ export const onRequest = clerkMiddleware((auth, context, next) => {
 ```
 
 ## Wrap each page with `ClerkLayout` (Only required for SSR with React)
-In order to properly support SSR you would need to wrap each page in your app with the `ClerkLayout` Astro component.
+In order to properly support SSR, you need to wrap each page in your app with the `ClerkLayout` Astro component.
 
 Example Page  `my-page.astro`
 ```astro
@@ -161,7 +161,7 @@ Supported components
 - [OrganizationList](https://clerk.com/docs/components/organization/organization-list)
 - [OrganizationProfile](https://clerk.com/docs/components/organization/organization-profile)
 
-All of the above can be used with React or Vanilla JS. They only difference is the import path
+All of the above can be used with React or Vanilla JS. The only difference is the import path.
 
 ```ts
 // Import UserProfile build with React (requires `@astro/react`)
@@ -171,7 +171,7 @@ import { UserProfile } from 'astro-clerk-auth/components/react'
 import { UserProfile } from 'astro-clerk-auth/components/interactive'
 ```
 
-Pages that include a Clerk UI component need to be wrapped with `ClerkLayout` as shown above.
+Pages that include a Clerk UI component need to be wrapped with `ClerkLayout`, as shown above.
 
 ### Use Clerk Control Components
 Supported components
@@ -179,7 +179,7 @@ Supported components
 - [SignedOut](https://clerk.com/docs/components/control/signed-out)
 - [Protect](https://clerk.com/docs/components/protect)
 
-All of the above can be used with React or only on server. They only difference is the import path.
+All of the above can be used with React or only on server. The only difference is the import path.
 
 ```ts
 // Import Protect build with React (requires `@astro/react`)
