@@ -1,22 +1,4 @@
-/**
- * The following code will be used in order to be injected as script via the astro integration.
- * F.e.
- *
- * injectScript('before-hydration', `...`)
- */
-
-import { createClerkInstance } from '../client';
-import { $initialState } from '../stores/internal';
 import { AstroClerkIntegrationParams } from '../types';
-
-export async function runInjectionScript(astroClerkOptions?: AstroClerkIntegrationParams) {
-  const ssrDataContainer = document.getElementById('__CLERK_ASTRO_DATA__');
-  if (ssrDataContainer) {
-    $initialState.set(JSON.parse(ssrDataContainer.textContent || '{}'));
-  }
-
-  await createClerkInstance(mergeEnvVarsWithParams(astroClerkOptions));
-}
 
 const mergeEnvVarsWithParams = (params?: AstroClerkIntegrationParams) => {
   const {
@@ -36,3 +18,5 @@ const mergeEnvVarsWithParams = (params?: AstroClerkIntegrationParams) => {
     ...rest,
   };
 };
+
+export { mergeEnvVarsWithParams };

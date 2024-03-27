@@ -1,8 +1,7 @@
-import { Clerk } from '@clerk/clerk-js';
+import type { Clerk } from '@clerk/clerk-js';
 import type { AstroClerkIntegrationParams } from '../types';
 import { $clerk, $csrState } from '../stores/internal';
-import { publishableKey } from '../v0/constants';
-import type { CreateClerkInstanceInternalFn } from './types';
+import { waitForClerkScript } from '../internal/utils/loadClerkJSScript';
 import { runOnce } from './run-once';
 import { mountAllClerkAstroJSComponents } from './mount-clerk-astro-js-components';
 
@@ -11,14 +10,18 @@ let initOptions: AstroClerkIntegrationParams | undefined;
 /**
  * Prevents firing clerk.load multiple times
  */
-export const createClerkInstance: CreateClerkInstanceInternalFn = runOnce(createClerkInstanceInternal);
+export const createClerkInstance = runOnce(createClerkInstanceInternal);
 
-export function createClerkInstanceInternal(options?: AstroClerkIntegrationParams) {
+export async function createClerkInstanceInternal(options?: AstroClerkIntegrationParams) {
   let clerkJSInstance = window.Clerk as Clerk;
   if (!clerkJSInstance) {
-    clerkJSInstance = new Clerk(publishableKey);
+    await waitForClerkScript();
+
+    if (!window.Clerk) {
+      throw new Error('Failed to download latest ClerkJS. Contact support@clerk.com.');
+    }
+    clerkJSInstance = window.Clerk;
     $clerk.set(clerkJSInstance);
-    window.Clerk = clerkJSInstance;
   }
 
   initOptions = options;

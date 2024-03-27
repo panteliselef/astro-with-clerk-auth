@@ -14,6 +14,7 @@ import { APIContext } from 'astro';
 import { createCurrentUser } from './current-user';
 import { isRedirect, setHeader } from './utils';
 import { serverRedirectWithAuth } from './server-redirect-with-auth';
+import { buildClerkHotloadScript } from './build-clerk-hotload-script';
 
 const CONTROL_FLOW_ERROR = {
   REDIRECT_TO_SIGN_IN: 'CLERK_PROTECT_REDIRECT_TO_SIGN_IN',
@@ -224,6 +225,11 @@ async function decorateRequest(
             controller.enqueue(
               `<script id="__CLERK_ASTRO_DATA__" type="application/json">${JSON.stringify(locals.auth())}</script>\n`,
             );
+
+            if (__HOTLOAD__) {
+              controller.enqueue(buildClerkHotloadScript());
+            }
+
             controller.enqueue('</head>');
             controller.enqueue(p2);
           } else {
