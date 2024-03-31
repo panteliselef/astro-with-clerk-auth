@@ -14,6 +14,7 @@ import { APIContext } from 'astro';
 import { createCurrentUser } from './current-user';
 import { isRedirect, setHeader } from './utils';
 import { serverRedirectWithAuth } from './server-redirect-with-auth';
+import { authAsyncStorage } from './async-local-storage';
 
 const CONTROL_FLOW_ERROR = {
   REDIRECT_TO_SIGN_IN: 'CLERK_PROTECT_REDIRECT_TO_SIGN_IN',
@@ -75,27 +76,33 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
     decorateAstroLocal(context.request, context.locals, requestState);
 
     /**
-     * Generate SSR page
+     * For React component, in order to avoid hydration errors populate SSR store and do not depend on the component being wrapped ClerkLayout.
+     * For now this is only needed for control components like SignedIn/SignedOut
      */
-    let handlerResult: Response;
-    try {
-      handlerResult = (await handler?.(() => authObjWithMethods, context, next)) || ((await next()) as Response);
-    } catch (e: any) {
-      handlerResult = handleControlFlowErrors(e, clerkRequest, requestState);
-    }
+    return authAsyncStorage.run(context.locals.auth(), async () => {
+      /**
+       * Generate SSR page
+       */
+      let handlerResult: Response;
+      try {
+        handlerResult = (await handler?.(() => authObjWithMethods, context, next)) || ((await next()) as Response);
+      } catch (e: any) {
+        handlerResult = handleControlFlowErrors(e, clerkRequest, requestState);
+      }
 
-    if (isRedirect(handlerResult)) {
-      return serverRedirectWithAuth(context, clerkRequest, handlerResult, options);
-    }
+      if (isRedirect(handlerResult!)) {
+        return serverRedirectWithAuth(context, clerkRequest, handlerResult!, options);
+      }
 
-    const response = await decorateRequest(context.locals, handlerResult, requestState);
-    if (requestState.headers) {
-      requestState.headers.forEach((value, key) => {
-        response.headers.append(key, value);
-      });
-    }
+      const response = await decorateRequest(context.locals, handlerResult!, requestState);
+      if (requestState.headers) {
+        requestState.headers.forEach((value, key) => {
+          response.headers.append(key, value);
+        });
+      }
 
-    return response;
+      return response;
+    });
   };
 
   return astroMiddleware;

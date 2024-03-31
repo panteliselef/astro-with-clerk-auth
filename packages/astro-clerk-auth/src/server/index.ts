@@ -30,10 +30,8 @@ export type {
   User,
 } from '@clerk/backend';
 
-
 export { clerkMiddleware } from './clerk-middleware';
 export { createRouteMatcher } from './route-matcher';
-
 
 /**
  * This will be used to define types of Astro.Locals inside `env.d.ts`
