@@ -1,13 +1,10 @@
 ---
-import { ClerkLayout } from "astro-clerk-auth/components/control";
 import { SignUp } from "astro-clerk-auth/components/interactive";
 import Layout from "../../layouts/Layout.astro";
 ---
 
 <Layout title="Welcome to Astro.">
-  <ClerkLayout>
-    <div class="w-full flex justify-center">
-      <SignUp path='/sign-up' />
-    </div>
-  </ClerkLayout>
+  <div class="w-full flex justify-center">
+    <SignUp path="/sign-up" />
+  </div>
 </Layout>

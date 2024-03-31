@@ -1,5 +1,4 @@
 ---
-import { ClerkLayout } from "astro-clerk-auth/components/control";
 import {
   OrganizationSwitcher,
   OrganizationProfile,
@@ -9,17 +8,15 @@ import Streaming from "../layouts/Streaming.astro";
 ---
 
 <Layout title="Welcome to Astro.">
-  <ClerkLayout protectedPage={true}>
-    <Streaming />
-    <div class="w-full flex justify-center flex-col">
-      <OrganizationSwitcher
-        appearance={{
-          elements: {
-            organizationSwitcherTrigger: "text-white",
-          },
-        }}
-      />
-      <OrganizationProfile />
-    </div>
-  </ClerkLayout>
+  <Streaming />
+  <div class="w-full flex justify-center flex-col">
+    <OrganizationSwitcher
+      appearance={{
+        elements: {
+          organizationSwitcherTrigger: "text-white",
+        },
+      }}
+    />
+    <OrganizationProfile />
+  </div>
 </Layout>
