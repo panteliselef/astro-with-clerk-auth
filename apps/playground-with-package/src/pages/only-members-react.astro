@@ -1,22 +1,19 @@
 ---
-import { ClerkLayout } from "astro-clerk-auth/components/control";
 import { Protect } from "astro-clerk-auth/components/react";
 import Layout from "../layouts/Layout.astro";
 ---
 
-<ClerkLayout protectedPage={true}>
-  <Layout title="Page is only accessible by members">
-    <div class="w-full flex justify-center flex-col">
-      <Protect role="basic_member">
-        <Fragment slot="fallback">
-          <h1 class="text-2xl text-center">Not a member</h1>
-          <a
-            class="text-sm text-center text-gray-100 transition hover:text-gray-400"
-            href="/only-admins">Go to Admin Page</a
-          >
-        </Fragment>
-        <h1 class="text-2xl text-center">I'm a member</h1>
-      </Protect>
-    </div>
-  </Layout>
-</ClerkLayout>
+<Layout title="Page is only accessible by members">
+  <div class="w-full flex justify-center flex-col">
+    <Protect role="basic_member">
+      <Fragment slot="fallback">
+        <h1 class="text-2xl text-center">Not a member</h1>
+        <a
+          class="text-sm text-center text-gray-100 transition hover:text-gray-400"
+          href="/only-admins">Go to Admin Page</a
+        >
+      </Fragment>
+      <h1 class="text-2xl text-center">I'm a member</h1>
+    </Protect>
+  </div>
+</Layout>

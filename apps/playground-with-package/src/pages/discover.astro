@@ -1,17 +1,14 @@
 ---
 import { OrganizationList } from "astro-clerk-auth/components/interactive";
-import { ClerkLayout } from "astro-clerk-auth/components/control";
 import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Welcome to Astro.">
-  <ClerkLayout protectedPage={true}>
-    <div class="w-full flex justify-center">
-      <OrganizationList
-        afterSelectOrganizationUrl="/organization"
-        afterCreateOrganizationUrl="/organization"
-        afterSelectPersonalUrl="/user"
-      />
-    </div>
-  </ClerkLayout>
+  <div class="w-full flex justify-center">
+    <OrganizationList
+      afterSelectOrganizationUrl="/organization"
+      afterCreateOrganizationUrl="/organization"
+      afterSelectPersonalUrl="/user"
+    />
+  </div>
 </Layout>
