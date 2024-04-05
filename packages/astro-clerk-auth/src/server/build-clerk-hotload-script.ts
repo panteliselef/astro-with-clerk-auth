@@ -50,9 +50,9 @@ function buildClerkHotloadScript() {
   data-clerk-script 
   async 
   crossOrigin='anonymous' 
-  data-clerk-publishable-key="${PUBLISHABLE_KEY}"
-  data-clerk-proxy-url="${PROXY_URL}"
-  data-clerk-domain="${DOMAIN}"
+  ${PUBLISHABLE_KEY ? `data-clerk-publishable-key="${PUBLISHABLE_KEY}"` : ``}
+  ${PROXY_URL ? `data-clerk-proxy-url="${PROXY_URL}"` : ``}
+  ${DOMAIN ? `data-clerk-domain="${DOMAIN}"` : ``}
   ></script>\n`;
 }
 

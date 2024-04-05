@@ -3,11 +3,6 @@ export const versionSelector = (clerkJSVersion: string | undefined, packageVersi
     return clerkJSVersion;
   }
 
-  const prereleaseTag = getPrereleaseTag(packageVersion);
-  if (prereleaseTag) {
-    throw 'prelease tags are not supported';
-  }
-
   const majorTag = Number(getMajorVersion(packageVersion));
 
   // Is v0
@@ -15,13 +10,8 @@ export const versionSelector = (clerkJSVersion: string | undefined, packageVersi
     return 'beta';
   }
 
-  return majorTag + 4 + '';
+  // TODO: Update when v5 and core-2 is officially out
+  return 'beta';
 };
-
-const getPrereleaseTag = (packageVersion: string) =>
-  packageVersion
-    .trim()
-    .replace(/^v/, '')
-    .match(/-(.+?)(\.|$)/)?.[1];
 
 const getMajorVersion = (packageVersion: string) => packageVersion.trim().replace(/^v/, '').split('.')[0];
