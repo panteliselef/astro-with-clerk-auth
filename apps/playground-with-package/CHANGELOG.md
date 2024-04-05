@@ -1,5 +1,12 @@
 # playground-with-package
 
+## 0.0.16
+
+### Patch Changes
+
+- Updated dependencies [6054242]
+  - astro-clerk-auth@0.3.0
+
 ## 0.0.15
 
 ### Patch Changes
