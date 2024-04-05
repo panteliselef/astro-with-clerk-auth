@@ -2,7 +2,7 @@ import { defineConfig } from "astro/config";
 import tailwind from "@astrojs/tailwind";
 import react from "@astrojs/react";
 import vercel from "@astrojs/vercel/serverless";
-import clerk from "astro-clerk-auth";
+import clerk from "astro-clerk-auth/hotload";
 import { visualizer } from "rollup-plugin-visualizer";
 
 // https://astro.build/config
