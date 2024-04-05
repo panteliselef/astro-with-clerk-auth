@@ -13,7 +13,8 @@
 
   export default defineConfig({
     integrations: [
-      ...clerk({
+      ...
+      clerk({
         afterSignInUrl: "/",
         afterSignUpUrl: "/",
       }),
