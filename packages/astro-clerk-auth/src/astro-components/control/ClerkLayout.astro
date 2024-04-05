@@ -3,9 +3,5 @@ interface Props {
   protectedPage?: boolean;
 }
 
-import { __internal_authAsyncStorage } from "astro-clerk-auth/server";
-
-__internal_authAsyncStorage.enterWith(Astro.locals.auth())
-
 ---
 <slot />

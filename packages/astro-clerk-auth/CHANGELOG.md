@@ -1,5 +1,28 @@
 # astro-clerk-auth
 
+## 0.2.0
+
+### Minor Changes
+
+- 03d94be: Replace `.enterWith()` with `.run()` when using async local storage.
+  - After this change, usage of `ClerkLayout` will not be necessary for React SSR work properly.
+
+### Patch Changes
+
+- 952ea60: Bump clerk versions
+  - @clerk/backend@1.0.0-beta.30 -> @clerk/backend@1.0.0-beta.31
+  - @clerk/clerk-js@5.0.0-beta.37 -> @clerk/clerk-js@5.0.0-beta.38
+
+## 0.1.2
+
+### Patch Changes
+
+- d2242d9: Bump clerk versions
+  - @clerk/backend@1.0.0-beta.29 -> @clerk/backend@1.0.0-beta.30
+  - @clerk/clerk-js@5.0.0-beta.35 -> @clerk/clerk-js@5.0.0-beta.37
+  - @clerk/shared@5.0.0-beta.19 -> @clerk/shared@5.0.0-beta.20
+  - @clerk/types@4.0.0-beta.21 -> @clerk/types@4.0.0-beta.22
+
 ## 0.1.1
 
 ### Patch Changes

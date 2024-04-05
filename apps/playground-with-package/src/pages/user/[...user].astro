@@ -1,5 +1,4 @@
 ---
-import { ClerkLayout } from "astro-clerk-auth/components/control";
 import { UserProfile } from "astro-clerk-auth/components/interactive";
 import Layout from "../../layouts/Layout.astro";
 import Protected from "../../layouts/Protected.astro";
@@ -8,11 +7,9 @@ import UserJSON from "../../components/UserJSON.astro";
 
 <Layout title="Welcome to Astro.">
   <Protected>
-    <ClerkLayout protectedPage={true}>
-      <div class="w-full flex justify-center">
-        <UserProfile path="/user" routing="path" />
-      </div>
-      <UserJSON />
-    </ClerkLayout>
+    <div class="w-full flex justify-center">
+      <UserProfile path="/user" routing="path" />
+    </div>
+    <UserJSON />
   </Protected>
 </Layout>
