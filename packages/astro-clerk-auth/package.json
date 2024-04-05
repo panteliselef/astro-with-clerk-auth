@@ -34,6 +34,7 @@
   },
   "files": [
     "dist",
+    "hotload",
     "client",
     "server",
     "internal",
@@ -55,6 +56,10 @@
       "types": "./dist/client/index.d.ts",
       "import": "./dist/client/index.js"
     },
+    "./client/hotload": {
+      "types": "./dist/client/hotload.d.ts",
+      "import": "./dist/client/hotload.js"
+    },
     "./stores": {
       "types": "./dist/stores/index.d.ts",
       "import": "./dist/stores/index.js"
@@ -63,9 +68,17 @@
       "types": "./dist/integration/index.d.ts",
       "import": "./dist/integration/index.js"
     },
+    "./integration/hotload": {
+      "types": "./dist/integration/hotload.d.ts",
+      "import": "./dist/integration/hotload.js"
+    },
     "./internal": {
       "types": "./dist/internal/index.d.ts",
       "import": "./dist/internal/index.js"
+    },
+    "./internal/hotload": {
+      "types": "./dist/internal/hotload.d.ts",
+      "import": "./dist/internal/hotload.js"
     },
     "./server": {
       "types": "./dist/server/index.d.ts",
@@ -74,6 +87,10 @@
     "./v0": {
       "types": "./dist/v0/index.d.ts",
       "import": "./dist/v0/index.js"
+    },
+    "./hotload": {
+      "types": "./dist/hotload.d.ts",
+      "import": "./dist/hotload.js"
     },
     "./env": "./env.d.ts",
     "./components/control": "./components/control/index.ts",
