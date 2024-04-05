@@ -7,8 +7,7 @@ export function LanguagePicker() {
     let localization: any;
 
     if (value === "fr") {
-      // TODO: Update to  (await import("@clerk/localizations/fr-FR")).frFR
-      localization = (await import("@clerk/localizations")).frFR;
+      localization = (await import("@clerk/localizations/fr-FR")).frFR
     } else {
       localization = undefined;
     }
