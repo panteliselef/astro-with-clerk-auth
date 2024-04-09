@@ -11,8 +11,6 @@ interface ImportMetaEnv {
   readonly CLERK_API_VERSION?: string;
   readonly CLERK_JWT_KEY?: string;
   readonly CLERK_SECRET_KEY?: string;
-  readonly DATABASE_URL?: string;
-  readonly FLAG_GUESTBOOK?: string;
 }
 
 interface ImportMeta {
