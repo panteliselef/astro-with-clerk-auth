@@ -1,5 +1,11 @@
 # astro-clerk-auth
 
+## 0.3.1
+
+### Patch Changes
+
+- ba2d35b: Bug fix: build fails when the integration was called with no arguments.
+
 ## 0.3.0
 
 ### Minor Changes
@@ -13,8 +19,7 @@
 
   export default defineConfig({
     integrations: [
-      ...
-      clerk({
+      ...clerk({
         afterSignInUrl: "/",
         afterSignUpUrl: "/",
       }),
