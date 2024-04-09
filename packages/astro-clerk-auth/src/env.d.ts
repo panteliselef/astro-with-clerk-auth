@@ -4,7 +4,7 @@ interface ImportMetaEnv {
   readonly PUBLIC_ASTRO_APP_CLERK_FRONTEND_API?: string;
   readonly PUBLIC_ASTRO_APP_CLERK_PUBLISHABLE_KEY?: string;
   readonly PUBLIC_ASTRO_APP_CLERK_JS_URL?: string;
-  readonly PUBLIC_ASTRO_APP_CLERK_JS_VARIANT?: string;
+  readonly PUBLIC_ASTRO_APP_CLERK_JS_VARIANT?: 'headless' | '';
   readonly PUBLIC_ASTRO_APP_CLERK_JS_VERSION?: string;
   readonly CLERK_API_KEY?: string;
   readonly CLERK_API_URL?: string;
