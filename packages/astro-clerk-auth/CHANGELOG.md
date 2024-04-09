@@ -1,5 +1,11 @@
 # astro-clerk-auth
 
+## 0.3.2
+
+### Patch Changes
+
+- 7b3cc4f: Bug fix: Hide error about invalid clerkJSVariant when it is correct.
+
 ## 0.3.1
 
 ### Patch Changes
