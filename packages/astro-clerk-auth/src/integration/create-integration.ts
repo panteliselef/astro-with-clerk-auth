@@ -34,7 +34,7 @@ function createIntegration<P extends { mode: 'hotload' | 'bundled' }>({ mode }: 
             logger.error('Missing adapter, please update your Astro config to use one.');
           }
 
-          if (typeof clerkJSVariant !== undefined && clerkJSVariant !== 'headless' && clerkJSVariant !== '') {
+          if (typeof clerkJSVariant !== 'undefined' && clerkJSVariant !== 'headless' && clerkJSVariant !== '') {
             logger.error('Invalid value for clerkJSVariant. Acceptable values are `"headless"`, `""`, and `undefined`');
           }
 
