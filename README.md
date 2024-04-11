@@ -1,4 +1,4 @@
-# Community Clerk + Astro starter
+# Community Clerk + Astro starter `astro-clerk-auth`
 
 ## What's inside?
 
