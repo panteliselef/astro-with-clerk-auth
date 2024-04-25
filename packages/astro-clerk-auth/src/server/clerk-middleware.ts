@@ -220,25 +220,29 @@ async function decorateRequest(
     const stream = new ReadableStream({
       async start(controller) {
         let { value, done } = await reader!.read();
+        const encoder = new TextEncoder();
+        const decoder = new TextDecoder();
         while (!done) {
-          const decodedValue = new TextDecoder().decode(value);
+          const decodedValue = decoder.decode(value);
 
           /**
            * Hijack html response to position `__CLERK_ASTRO_DATA__` before the closing `head` html tag
            */
           if (decodedValue.includes('</head>')) {
             const [p1, p2] = decodedValue.split('</head>');
-            controller.enqueue(p1);
+            controller.enqueue(encoder.encode(p1));
             controller.enqueue(
-              `<script id="__CLERK_ASTRO_DATA__" type="application/json">${JSON.stringify(locals.auth())}</script>\n`,
+              encoder.encode(
+                `<script id="__CLERK_ASTRO_DATA__" type="application/json">${JSON.stringify(locals.auth())}</script>\n`,
+              ),
             );
 
             if (__HOTLOAD__) {
-              controller.enqueue(buildClerkHotloadScript());
+              controller.enqueue(encoder.encode(buildClerkHotloadScript()));
             }
 
-            controller.enqueue('</head>');
-            controller.enqueue(p2);
+            controller.enqueue(encoder.encode('</head>'));
+            controller.enqueue(encoder.encode(p2));
           } else {
             controller.enqueue(value);
           }
