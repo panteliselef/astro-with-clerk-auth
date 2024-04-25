@@ -1,5 +1,13 @@
 # astro-clerk-auth
 
+## 0.4.0
+
+### Minor Changes
+
+- 0995ae4: Introduce fixes that would allow the package to be used from an astro application deployed in Cloudflare Pages.
+  - Mark 'node:async_hooks' as external
+  - When enqueueing in a readable stream, always encode text to Uint8 array
+
 ## 0.3.2
 
 ### Patch Changes
