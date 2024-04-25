@@ -270,6 +270,33 @@ export function Header() {
 }
 ```
 
+### Use Clerk in Headless Mode
+
+[Clerk Headless mode](https://clerk.com/docs/components/clerk-provider) (see `ClerkJSVariant` prop their docs) is a Clerk variant that is focused towards getting smaller bundle sizes. This variant does *not* include React or any client side components for Clerk (e.g. their signin component). Because of that the bundle size is drastically smaller. On top of that it also lazy loads the JavaScript client side. 
+
+In order to use headless mode with this package, change your Astro configuration file to: 
+
+```diff
+import { defineConfig } from "astro/config";
+import react from "@astrojs/react";
+import node from "@astrojs/node";
+- import clerk from "astro-clerk-auth";
++ import clerk from "astro-clerk-auth/hotload";
+
+export default defineConfig({
+  integrations: [
+    react(),
+    clerk({
++      clerkJSVariant: "headless"
+    }),
+  ],
+  output: "server",
+  adapter: node({
+    mode: "standalone",
+  }),
+});
+```
+
 ### Known issues
 - When building an Astro app you may see the following message in your terminal. This will not cause any performance issues and can be safely ignored.
   ```sh
