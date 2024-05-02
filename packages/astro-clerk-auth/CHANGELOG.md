@@ -1,5 +1,11 @@
 # astro-clerk-auth
 
+## 0.5.0
+
+### Minor Changes
+
+- 4494f79: Update to use Clerk Core 2 stable packages
+
 ## 0.4.0
 
 ### Minor Changes
