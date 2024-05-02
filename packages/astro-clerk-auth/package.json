@@ -103,10 +103,10 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@clerk/backend": "1.0.0-beta.31",
-    "@clerk/clerk-js": "5.0.0-beta.38",
-    "@clerk/shared": "2.0.0-beta.20",
-    "@clerk/types": "4.0.0-beta.22",
+    "@clerk/backend": "1.1.1",
+    "@clerk/clerk-js": "5.2.1",
+    "@clerk/shared": "2.0.1",
+    "@clerk/types": "4.2.0",
     "@nanostores/react": "0.7.1",
     "nanoid": "5.0.4",
     "nanostores": "0.9.5",
