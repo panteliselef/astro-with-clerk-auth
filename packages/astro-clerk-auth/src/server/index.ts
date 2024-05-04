@@ -37,9 +37,3 @@ export { createRouteMatcher } from './route-matcher';
  * This will be used to define types of Astro.Locals inside `env.d.ts`
  */
 export type { GetAuthReturn } from './get-auth';
-
-/**
- * Export async storage for astro component to use directly
- */
-import { authAsyncStorage } from '../server/async-local-storage';
-export const __internal_authAsyncStorage = authAsyncStorage;

@@ -2,7 +2,7 @@ import type { ActJWTClaim, CheckAuthorizationWithCustomPermissions, Organization
 import type { Store } from 'nanostores';
 import { useCallback, useSyncExternalStore } from 'react';
 import { $authStore } from '../../stores/internal';
-import { authAsyncStorage } from '../../server/async-local-storage';
+import { getClerkAuthInitState } from 'clerk:astro';
 
 type CheckAuthorizationSignedOut = undefined;
 type CheckAuthorizationWithoutOrgOrUser = (params?: Parameters<CheckAuthorizationWithCustomPermissions>[0]) => false;
@@ -195,16 +195,6 @@ function useStore(store: Store) {
      * If you omit this argument, rendering the component on the server will throw an error.
      */
 
-    /**
-     * When this runs on the server we want to grab the content from the async-local-storage.
-     */
-    if (typeof window === 'undefined') {
-      return authAsyncStorage.getStore();
-    }
-
-    /**a
-     * When this runs on the client, during hydration, we want to grab the content the store.
-     */
-    return get();
+    return getClerkAuthInitState();
   });
 }
