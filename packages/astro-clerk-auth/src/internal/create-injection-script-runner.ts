@@ -7,7 +7,7 @@ import { getClerkAuthInitState } from 'clerk:astro';
 function createInjectionScriptRunner(creator: CreateClerkInstanceInternalFn) {
   async function runner(astroClerkOptions?: AstroClerkIntegrationParams) {
     // Sync SSR initState to the store
-    // @ts-expect-error missing user, organization, session objects but this is expected
+    // @ts-ignore missing user, organization, session objects but this is expected
     $initialState.set(getClerkAuthInitState());
 
     await creator(mergeEnvVarsWithParams(astroClerkOptions));
