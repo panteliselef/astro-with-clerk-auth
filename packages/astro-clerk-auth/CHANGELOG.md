@@ -1,5 +1,15 @@
 # astro-clerk-auth
 
+## 0.6.0
+
+### Minor Changes
+
+- de9c9ce: Use vite's virtual modules in order to avoid leaking node:async_hooks into a browser module.
+  Fixes a known issue:
+  ```shell
+  [plugin:vite:resolve] Module "async_hooks" has been externalized for browser compatibility, imported by "...".
+  ```
+
 ## 0.5.0
 
 ### Minor Changes
