@@ -21,6 +21,9 @@ export async function createClerkInstanceInternal(options?: AstroClerkIntegratio
       throw new Error('Failed to download latest ClerkJS. Contact support@clerk.com.');
     }
     clerkJSInstance = window.Clerk;
+  }
+  
+  if(!$clerk.get()) {
     $clerk.set(clerkJSInstance);
   }
 

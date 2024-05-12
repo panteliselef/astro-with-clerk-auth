@@ -1,11 +1,53 @@
-import type { ActJWTClaim, CheckAuthorizationWithCustomPermissions, OrganizationCustomRoleKey } from '@clerk/types';
-import type { Store } from 'nanostores';
+import type {
+  ActJWTClaim,
+  CheckAuthorizationWithCustomPermissions,
+  Clerk,
+  GetToken,
+  LoadedClerk,
+  OrganizationCustomRoleKey,
+  SignOut,
+} from '@clerk/types';
+import type { Store, StoreValue } from 'nanostores';
 import { useCallback, useSyncExternalStore } from 'react';
-import { $authStore } from '../../stores/internal';
+import { $authStore, $clerk, $csrState } from '../../stores/internal';
 import { getClerkAuthInitState } from 'clerk:astro';
 
 type CheckAuthorizationSignedOut = undefined;
 type CheckAuthorizationWithoutOrgOrUser = (params?: Parameters<CheckAuthorizationWithCustomPermissions>[0]) => false;
+
+/**
+ * @internal
+ */
+const clerkLoaded = () => {
+  return new Promise<Clerk>((resolve) => {
+    $csrState.subscribe(({ isLoaded }) => {
+      if (isLoaded) resolve($clerk.get()!);
+    });
+  });
+};
+
+/**
+ * @internal
+ */
+const createGetToken = () => {
+  return async (options: any) => {
+    const clerk = await clerkLoaded();
+    if (!clerk.session) {
+      return null;
+    }
+    return clerk.session.getToken(options);
+  };
+};
+
+/**
+ * @internal
+ */
+const createSignOut = () => {
+  return async (...args: any) => {
+    const clerk = await clerkLoaded();
+    return clerk.signOut(...args);
+  };
+};
 
 type UseAuthReturn =
   | {
@@ -18,6 +60,8 @@ type UseAuthReturn =
       orgRole: undefined;
       orgSlug: undefined;
       has: CheckAuthorizationSignedOut;
+      signOut: SignOut;
+      getToken: GetToken;
     }
   | {
       isLoaded: true;
@@ -29,6 +73,8 @@ type UseAuthReturn =
       orgRole: null;
       orgSlug: null;
       has: CheckAuthorizationWithoutOrgOrUser;
+      signOut: SignOut;
+      getToken: GetToken;
     }
   | {
       isLoaded: true;
@@ -40,6 +86,8 @@ type UseAuthReturn =
       orgRole: null;
       orgSlug: null;
       has: CheckAuthorizationWithoutOrgOrUser;
+      signOut: SignOut;
+      getToken: GetToken;
     }
   | {
       isLoaded: true;
@@ -51,6 +99,8 @@ type UseAuthReturn =
       orgRole: OrganizationCustomRoleKey;
       orgSlug: string | null;
       has: CheckAuthorizationWithCustomPermissions;
+      signOut: SignOut;
+      getToken: GetToken;
     };
 
 type UseAuth = () => UseAuthReturn;
@@ -63,13 +113,10 @@ type UseAuth = () => UseAuthReturn;
  * Once Clerk loads, `isLoaded` will be set to `true`, and you can
  * safely access the `userId` and `sessionId` variables.
  *
- * For projects using NextJs or Remix, you can have immediate access to this data during SSR
- * simply by using the `ClerkProvider`.
+ * For projects using a server, you can have immediate access to this data during SSR.
  *
  * @example
  * A simple example:
- *
- * import { useAuth } from '@clerk/clerk-react'
  *
  * function Hello() {
  *   const { isSignedIn, sessionId, userId } = useAuth();
@@ -81,9 +128,7 @@ type UseAuth = () => UseAuthReturn;
  * }
  *
  * @example
- * Basic example in a NextJs app. This page will be fully rendered during SSR:
- *
- * import { useAuth } from '@clerk/nextjs'
+ * This page will be fully rendered during SSR:
  *
  * export HelloPage = () => {
  *   const { isSignedIn, sessionId, userId } = useAuth();
@@ -93,6 +138,9 @@ type UseAuth = () => UseAuthReturn;
  */
 export const useAuth: UseAuth = () => {
   const { sessionId, userId, actor, orgId, orgRole, orgSlug, orgPermissions } = useStore($authStore);
+
+  const getToken: GetToken = useCallback(createGetToken(), []);
+  const signOut: SignOut = useCallback(createSignOut(), []);
 
   const has = useCallback(
     (params: Parameters<CheckAuthorizationWithCustomPermissions>[0]) => {
@@ -130,6 +178,8 @@ export const useAuth: UseAuth = () => {
       orgRole: undefined,
       orgSlug: undefined,
       has: undefined,
+      signOut,
+      getToken,
     };
   }
 
@@ -144,6 +194,8 @@ export const useAuth: UseAuth = () => {
       orgRole: null,
       orgSlug: null,
       has: () => false,
+      signOut,
+      getToken,
     };
   }
 
@@ -158,6 +210,8 @@ export const useAuth: UseAuth = () => {
       orgRole,
       orgSlug: orgSlug || null,
       has,
+      signOut,
+      getToken,
     };
   }
 
@@ -172,6 +226,8 @@ export const useAuth: UseAuth = () => {
       orgRole: null,
       orgSlug: null,
       has: () => false,
+      signOut,
+      getToken,
     };
   }
 
@@ -182,10 +238,10 @@ export const useAuth: UseAuth = () => {
  * This implementation of `useStore` is an alternative solution to the hook exported by nanostores
  * Reference: https://github.com/nanostores/react/blob/main/index.js
  */
-function useStore(store: Store) {
+function useStore<T extends Store, SV extends StoreValue<T>>(store: T): SV {
   let get = store.get.bind(store);
 
-  return useSyncExternalStore(store.listen, get, () => {
+  return useSyncExternalStore<SV>(store.listen, get, () => {
     // Per react docs
     /**
      * optional getServerSnapshot:
@@ -195,6 +251,6 @@ function useStore(store: Store) {
      * If you omit this argument, rendering the component on the server will throw an error.
      */
 
-    return getClerkAuthInitState();
+    return getClerkAuthInitState() as SV;
   });
 }
