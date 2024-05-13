@@ -1,5 +1,11 @@
 # astro-clerk-auth
 
+## 0.6.1
+
+### Patch Changes
+
+- 7604ec4: Add `signOut` and `getToken` to useAuth
+
 ## 0.6.0
 
 ### Minor Changes
