@@ -1,5 +1,11 @@
 # astro-clerk-auth
 
+## 0.6.3
+
+### Patch Changes
+
+- d87c55a: Revert the usage of virtual modules as it was breaking the applications in development
+
 ## 0.6.2
 
 ### Patch Changes
