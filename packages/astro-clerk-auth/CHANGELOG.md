@@ -1,5 +1,11 @@
 # astro-clerk-auth
 
+## 0.6.2
+
+### Patch Changes
+
+- 9fef697: Bug fix: Use unique names for the plugins inside the integration
+
 ## 0.6.1
 
 ### Patch Changes
