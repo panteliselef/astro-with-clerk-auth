@@ -14,7 +14,7 @@ import { APIContext } from 'astro';
 import { createCurrentUser } from './current-user';
 import { isRedirect, setHeader } from './utils';
 import { serverRedirectWithAuth } from './server-redirect-with-auth';
-import { authAls } from 'virtual:astro-clerk/internal/als';
+import { authAsyncStorage } from './async-local-storage';
 import { buildClerkHotloadScript } from './build-clerk-hotload-script';
 
 const CONTROL_FLOW_ERROR = {
@@ -80,7 +80,7 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
      * For React component, in order to avoid hydration errors populate SSR store and do not depend on the component being wrapped ClerkLayout.
      * For now this is only needed for control components like SignedIn/SignedOut
      */
-    return authAls.run(context.locals.auth(), async () => {
+    return authAsyncStorage.run(context.locals.auth(), async () => {
       /**
        * Generate SSR page
        */
