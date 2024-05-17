@@ -16,3 +16,11 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+declare module 'virtual:astro-clerk/internal/als' {
+  export const authAls: import('node:async_hooks').AsyncLocalStorage<import('astro-clerk-auth/server').GetAuthReturn>;
+}
+
+declare module 'clerk:astro' {
+  export const getClerkAuthInitState: () => import('astro-clerk-auth/server').GetAuthReturn;
+}
