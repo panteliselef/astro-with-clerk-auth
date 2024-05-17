@@ -1,5 +1,13 @@
 # astro-clerk-auth
 
+## 0.6.6
+
+### Patch Changes
+
+- 1b270da: Revert:
+  - Avoid using virtual module when injecting a script
+  - Experiment with virtual modules
+
 ## 0.6.5
 
 ### Patch Changes
