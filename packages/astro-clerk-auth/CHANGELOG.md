@@ -1,5 +1,11 @@
 # astro-clerk-auth
 
+## 0.6.4
+
+### Patch Changes
+
+- cc48696: Experiment with virtual modules
+
 ## 0.6.3
 
 ### Patch Changes
