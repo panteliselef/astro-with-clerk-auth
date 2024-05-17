@@ -18,10 +18,9 @@ export default function virtualImport({
   context: string;
 }): Plugin {
   const resolvedVirtualModuleId = '\0' + virtualModuleId;
-  const name = `astro-clerk-${nameCount}`
 
   return {
-    name, // required, will show up in warnings and errors
+    name: `astro-clerk-${nameCount}`, // required, will show up in warnings and errors
     resolveId(id) {
       if (id === virtualModuleId) {
         return resolvedVirtualModuleId;
