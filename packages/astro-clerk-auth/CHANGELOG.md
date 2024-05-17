@@ -1,5 +1,11 @@
 # astro-clerk-auth
 
+## 0.6.5
+
+### Patch Changes
+
+- 2048a82: Avoid using virtual module when injecting a script
+
 ## 0.6.4
 
 ### Patch Changes
