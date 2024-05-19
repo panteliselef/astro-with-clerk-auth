@@ -1,43 +1,6 @@
 import type { AstroClerkIntegrationParams } from '../types';
 import type { AstroIntegration } from 'astro';
 import { name as packageName, version as packageVersion } from '../../package.json';
-import type { Plugin } from 'vite';
-
-const VI_INTERNAL_ALS_ID = 'virtual:astro-clerk/internal/als';
-const VI_ID = 'clerk:astro';
-
-export default function virtualImport({
-  nameCount,
-  id: virtualModuleId,
-  content,
-  context,
-}: {
-  nameCount: number;
-  id: string;
-  content: string;
-  context: string;
-}): Plugin {
-  const resolvedVirtualModuleId = '\0' + virtualModuleId;
-
-  return {
-    name: `astro-clerk-${nameCount}`, // required, will show up in warnings and errors
-    resolveId(id) {
-      if (id === virtualModuleId) {
-        return resolvedVirtualModuleId;
-      }
-    },
-    load(id, options) {
-      if (id === resolvedVirtualModuleId) {
-        const _context = options?.ssr ? 'server' : 'client';
-
-        if (context === _context) {
-          return content;
-        }
-      }
-      return;
-    },
-  };
-}
 
 const buildEnvVarFromOption = (valueToBeStored: unknown, envName: string) => {
   return valueToBeStored ? { [`import.meta.env.${envName}`]: JSON.stringify(valueToBeStored) } : {};
@@ -96,29 +59,6 @@ function createIntegration<P extends { mode: 'hotload' | 'bundled' }>({ mode }: 
                 ...buildEnvVarFromOption(clerkJSVersion, 'PUBLIC_ASTRO_APP_CLERK_JS_VERSION'),
                 __HOTLOAD__: mode === 'hotload',
               },
-              plugins: [
-                virtualImport({
-                  nameCount: 1,
-                  id: VI_INTERNAL_ALS_ID,
-                  content: `import { AsyncLocalStorage } from "node:async_hooks"; export const authAls = new AsyncLocalStorage();`,
-                  context: 'server',
-                }),
-                virtualImport({
-                  nameCount: 2,
-                  id: VI_ID,
-                  content: `import { authAls } from ${JSON.stringify(VI_INTERNAL_ALS_ID)};
-  export const getClerkAuthInitState = () => authAls.getStore();`,
-                  context: 'server',
-                }),
-                virtualImport({
-                  nameCount: 3,
-                  id: VI_ID,
-                  content: `
-                  const auth = JSON.parse(document.getElementById('__CLERK_ASTRO_DATA__')?.textContent || '{}');
-  export const getClerkAuthInitState = () => auth`,
-                  context: 'client',
-                }),
-              ],
 
               // We need this for top-level await
               optimizeDeps: {
@@ -140,9 +80,8 @@ function createIntegration<P extends { mode: 'hotload' | 'bundled' }>({ mode }: 
             'before-hydration',
             `
             ${command === 'dev' ? 'console.log("astro-clerk-auth","Initialize Clerk: before-hydration")' : ''}
-            import { getClerkAuthInitState } from ${JSON.stringify(VI_ID)}
             import { runInjectionScript } from "${buildImportPath}";
-            await runInjectionScript(getClerkAuthInitState(),${JSON.stringify(params)});`,
+            await runInjectionScript(${JSON.stringify(params)});`,
           );
 
           /**
@@ -155,9 +94,8 @@ function createIntegration<P extends { mode: 'hotload' | 'bundled' }>({ mode }: 
             'page',
             `
             ${command === 'dev' ? 'console.log("astro-clerk-auth","Initialize Clerk: page")' : ''}
-            import { getClerkAuthInitState } from ${JSON.stringify(VI_ID)}
             import { runInjectionScript } from "${buildImportPath}";
-            await runInjectionScript(getClerkAuthInitState(),${JSON.stringify(params)});`,
+            await runInjectionScript(${JSON.stringify(params)});`,
           );
         },
       },

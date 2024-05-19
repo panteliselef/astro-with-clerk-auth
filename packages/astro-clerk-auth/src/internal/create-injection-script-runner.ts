@@ -4,10 +4,11 @@ import { AstroClerkIntegrationParams } from '../types';
 import { mergeEnvVarsWithParams } from './merge-env-vars-with-params';
 
 function createInjectionScriptRunner(creator: CreateClerkInstanceInternalFn) {
-  async function runner(initial: any, astroClerkOptions?: AstroClerkIntegrationParams) {
-    // Sync SSR initState to the store
-    // @ts-ignore missing user, organization, session objects but this is expected
-    $initialState.set(initial);
+  async function runner(astroClerkOptions?: AstroClerkIntegrationParams) {
+    const ssrDataContainer = document.getElementById('__CLERK_ASTRO_DATA__');
+    if (ssrDataContainer) {
+      $initialState.set(JSON.parse(ssrDataContainer.textContent || '{}'));
+    }
 
     await creator(mergeEnvVarsWithParams(astroClerkOptions));
   }
