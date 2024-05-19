@@ -10,7 +10,7 @@ import type {
 import type { Store, StoreValue } from 'nanostores';
 import { useCallback, useSyncExternalStore } from 'react';
 import { $authStore, $clerk, $csrState } from '../../stores/internal';
-import { getClerkAuthInitState } from 'clerk:astro';
+import { authAsyncStorage } from '../../server/async-local-storage';
 
 type CheckAuthorizationSignedOut = undefined;
 type CheckAuthorizationWithoutOrgOrUser = (params?: Parameters<CheckAuthorizationWithCustomPermissions>[0]) => false;
@@ -251,6 +251,16 @@ function useStore<T extends Store, SV extends StoreValue<T>>(store: T): SV {
      * If you omit this argument, rendering the component on the server will throw an error.
      */
 
-    return getClerkAuthInitState() as SV;
+    /**
+     * When this runs on the server we want to grab the content from the async-local-storage.
+     */
+    if (typeof window === 'undefined') {
+      return authAsyncStorage.getStore();
+    }
+
+    /**a
+     * When this runs on the client, during hydration, we want to grab the content the store.
+     */
+    return get();
   });
 }
