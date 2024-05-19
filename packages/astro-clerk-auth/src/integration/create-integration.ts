@@ -140,9 +140,8 @@ function createIntegration<P extends { mode: 'hotload' | 'bundled' }>({ mode }: 
             'before-hydration',
             `
             ${command === 'dev' ? 'console.log("astro-clerk-auth","Initialize Clerk: before-hydration")' : ''}
-            import { getClerkAuthInitState } from ${JSON.stringify(VI_ID)}
             import { runInjectionScript } from "${buildImportPath}";
-            await runInjectionScript(getClerkAuthInitState(),${JSON.stringify(params)});`,
+            await runInjectionScript(${JSON.stringify(params)});`,
           );
 
           /**
@@ -155,9 +154,8 @@ function createIntegration<P extends { mode: 'hotload' | 'bundled' }>({ mode }: 
             'page',
             `
             ${command === 'dev' ? 'console.log("astro-clerk-auth","Initialize Clerk: page")' : ''}
-            import { getClerkAuthInitState } from ${JSON.stringify(VI_ID)}
             import { runInjectionScript } from "${buildImportPath}";
-            await runInjectionScript(getClerkAuthInitState(),${JSON.stringify(params)});`,
+            await runInjectionScript(${JSON.stringify(params)});`,
           );
         },
       },
