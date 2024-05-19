@@ -1,5 +1,11 @@
 # astro-clerk-auth
 
+## 0.6.8
+
+### Patch Changes
+
+- 8c6537f: Revert: Use vite's virtual modules in order to avoid leaking node:async_hooks into a browser module.
+
 ## 0.6.7
 
 ### Patch Changes
