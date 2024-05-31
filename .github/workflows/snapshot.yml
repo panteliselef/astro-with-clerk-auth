@@ -39,7 +39,8 @@ jobs:
         id: version-packages
         run: |
           touch .changeset/snap.md && echo -e "---\n'astro-clerk-auth': patch\n---\n\nSnapshot release" > .changeset/snap.md
-          npm run version:snapshot | tail -1 >> "$GITHUB_OUTPUT"
+          cat .changeset/snap.md
+          npm run version:snapshot
 
       - name: Build astro-clerk-auth
         if: steps.version-packages.outputs.success == '1'
