@@ -43,12 +43,10 @@ jobs:
           npm run version:snapshot
 
       - name: Build astro-clerk-auth
-        if: steps.version-packages.outputs.success == '1'
         timeout-minutes: 5
         run: npx turbo build --filter='astro-clerk-auth'
 
       - name: Snapshot release
-        if: steps.version-packages.outputs.success == '1'
         run: npm run release:snapshot
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
