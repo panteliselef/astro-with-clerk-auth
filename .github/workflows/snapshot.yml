@@ -11,13 +11,9 @@ concurrency:
 
 jobs:
   snapshot-release:
-    if: ${{ startsWith(github.event.comment.body, '!snapshot') && github.repository == 'clerk/javascript' && github.event.issue.pull_request }}
+    if: ${{ startsWith(github.event.comment.body, '!snapshot') && github.repository == 'panteliselef/astro-with-clerk-auth' && github.event.issue.pull_request }}
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ vars.TIMEOUT_MINUTES_NORMAL && fromJSON(vars.TIMEOUT_MINUTES_NORMAL) || 10 }}
-  
-  permissions:
-    contents: read
-    id-token: write
+    timeout-minutes: 10
 
   steps:
     - name: Setup NodeJS
