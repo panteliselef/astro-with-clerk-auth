@@ -1,8 +1,0 @@
-{
-  "imports": {
-    "#async-local-storage": {
-      "node": "./async-local-storage.server.js",
-      "default": "./async-local-storage.client.js"
-    }
-  }
-}

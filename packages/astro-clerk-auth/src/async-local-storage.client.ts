@@ -27,7 +27,7 @@ class FakeAsyncLocalStorage<Store extends {}> implements AsyncLocalStorage<Store
   }
 }
 
-export function createAsyncLocalStorage<Store extends {}>(): AsyncLocalStorage<Store> {
+function createAsyncLocalStorage<Store extends {}>(): AsyncLocalStorage<Store> {
   return new FakeAsyncLocalStorage();
 }
 
