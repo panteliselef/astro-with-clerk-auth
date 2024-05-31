@@ -13,7 +13,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "changeset": "changeset",
     "release": "changeset publish && git push --follow-tags",
-    "version:snapshot": "changeset version --snapshot",
+    "version:snapshot": "changeset version --snapshot snapshot",
     "release:snapshot": "changeset publish --tag snapshot --no-git-tag"
   },
   "devDependencies": {
