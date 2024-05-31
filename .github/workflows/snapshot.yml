@@ -14,10 +14,6 @@ jobs:
     if: ${{ startsWith(github.event.comment.body, '!snapshot') && github.repository == 'panteliselef/astro-with-clerk-auth' && github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
-  
-    permissions:
-      contents: read
-      id-token: write
 
     steps:
       - name: Setup NodeJS
