@@ -20,7 +20,8 @@ jobs:
     id-token: write
 
   steps:
-    - uses: actions/setup-node@v4
+    - name: Setup NodeJS
+      uses: actions/setup-node@v4
       with:
         node-version: 18.x
         cache: 'npm'
