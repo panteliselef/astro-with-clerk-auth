@@ -1,0 +1,52 @@
+name: Snapshot release
+run-name: Snapshot release by ${{ github.actor }}
+
+on:
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.actor }}
+  cancel-in-progress: true
+
+jobs:
+  snapshot-release:
+    if: ${{ startsWith(github.event.comment.body, '!snapshot') && github.repository == 'panteliselef/astro-with-clerk-auth' && github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+  
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: 'npm'
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          ref: refs/pull/${{ github.event.issue.number }}/head
+
+      - name: Install NPM Dependencies
+        run: npm ci --audit=false --fund=false --prefer-offline
+        shell: bash
+
+      - name: Version packages for snapshot
+        id: version-packages
+        run: npm run version:snapshot | tail -1 >> "$GITHUB_OUTPUT"
+
+      - name: Build astro-clerk-auth
+        if: steps.version-packages.outputs.success == '1'
+        timeout-minutes: 5
+        run: npx turbo build --filter='astro-clerk-auth'
+
+      - name: Snapshot release
+        if: steps.version-packages.outputs.success == '1'
+        run: npm run release:snapshot
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true

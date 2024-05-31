@@ -12,7 +12,9 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "changeset": "changeset",
-    "release": "changeset publish && git push --follow-tags"
+    "release": "changeset publish && git push --follow-tags",
+    "version:snapshot": "changeset version --snapshot",
+    "release:snapshot": "changeset publish --tag snapshot --no-git-tag"
   },
   "devDependencies": {
     "eslint-config-custom": "*",
