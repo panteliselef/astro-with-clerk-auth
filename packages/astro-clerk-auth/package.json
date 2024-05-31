@@ -104,8 +104,8 @@
   },
   "imports": {
     "#async-local-storage": {
-      "node": "./async-local-storage.server.js",
-      "default": "./async-local-storage.client.js"
+      "node": "./dist/async-local-storage.server.js",
+      "default": "./dist/async-local-storage.client.js"
     }
   },
   "dependencies": {
