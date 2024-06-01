@@ -237,7 +237,7 @@ async function decorateRequest(
               ),
             );
 
-            if (__HOTLOAD__) {
+            if (import.meta.env.__HOTLOAD__) {
               controller.enqueue(encoder.encode(buildClerkHotloadScript()));
             }
 

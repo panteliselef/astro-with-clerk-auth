@@ -57,7 +57,7 @@ function createIntegration<P extends { mode: 'hotload' | 'bundled' }>({ mode }: 
                 ...buildEnvVarFromOption(clerkJSUrl, 'PUBLIC_ASTRO_APP_CLERK_JS_URL'),
                 ...buildEnvVarFromOption(clerkJSVariant, 'PUBLIC_ASTRO_APP_CLERK_JS_VARIANT'),
                 ...buildEnvVarFromOption(clerkJSVersion, 'PUBLIC_ASTRO_APP_CLERK_JS_VERSION'),
-                __HOTLOAD__: mode === 'hotload',
+                ...buildEnvVarFromOption(mode === 'hotload', '__HOTLOAD__'),
               },
 
               // We need this for top-level await
