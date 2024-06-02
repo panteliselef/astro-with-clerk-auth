@@ -6,6 +6,9 @@ import type {
   OrganizationCustomRoleKey,
   Without,
 } from '@clerk/types';
+
+export type AstroClerkUpdateOptions = Pick<ClerkOptions, 'appearance' | 'localization'>;
+
 export type AstroClerkIntegrationParams = Without<
   ClerkOptions,
   'isSatellite' | 'sdkMetadata' | 'telemetry' | 'standardBrowser' | 'selectInitialSession'
