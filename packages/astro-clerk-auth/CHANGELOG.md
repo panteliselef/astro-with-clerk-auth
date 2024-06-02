@@ -1,5 +1,11 @@
 # astro-clerk-auth
 
+## 0.7.0
+
+### Minor Changes
+
+- 4deb5f6: Support runtime env variables for Cloudflare workers.
+
 ## 0.6.8
 
 ### Patch Changes
