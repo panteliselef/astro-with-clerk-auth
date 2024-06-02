@@ -1,8 +1,9 @@
+import type { APIContext } from 'astro';
 import { createDevOrStagingUrlCache, parsePublishableKey } from '@clerk/shared/keys';
 import { isValidProxyUrl, proxyUrlToAbsoluteURL } from '@clerk/shared/proxy';
 import { addClerkPrefix } from '@clerk/shared/url';
 import { versionSelector } from '../internal/utils/versionSelector';
-import { CLERK_JS_URL, CLERK_JS_VARIANT, CLERK_JS_VERSION, DOMAIN, PROXY_URL, PUBLISHABLE_KEY } from '../v0/constants';
+import { getSafeEnv } from './get-safe-env';
 
 const { isDevOrStagingUrl } = createDevOrStagingUrlCache();
 
@@ -36,23 +37,27 @@ const clerkJsScriptUrl = (opts: BuildClerkJsScriptOptions) => {
   return `https://${scriptHost}/npm/@clerk/clerk-js@${version}/dist/clerk.${variant}browser.js`;
 };
 
-function buildClerkHotloadScript() {
+function buildClerkHotloadScript(locals: APIContext['locals']) {
+  const publishableKey = getSafeEnv(locals).pk!;
+  const proxyUrl = getSafeEnv(locals).proxyUrl!;
+  const domain = getSafeEnv(locals).domain!;
   const scriptSrc = clerkJsScriptUrl({
-    clerkJSUrl: CLERK_JS_URL,
-    clerkJSVariant: CLERK_JS_VARIANT,
-    clerkJSVersion: CLERK_JS_VERSION,
-    domain: DOMAIN,
-    proxyUrl: PROXY_URL,
-    publishableKey: PUBLISHABLE_KEY,
+    clerkJSUrl: getSafeEnv(locals).clerkJsUrl,
+    // @ts-ignore
+    clerkJSVariant: getSafeEnv(locals).clerkJsVariant,
+    clerkJSVersion: getSafeEnv(locals).clerkJsVersion,
+    domain,
+    proxyUrl,
+    publishableKey,
   });
   return `
   <script src="${scriptSrc}" 
   data-clerk-script 
   async 
   crossOrigin='anonymous' 
-  ${PUBLISHABLE_KEY ? `data-clerk-publishable-key="${PUBLISHABLE_KEY}"` : ``}
-  ${PROXY_URL ? `data-clerk-proxy-url="${PROXY_URL}"` : ``}
-  ${DOMAIN ? `data-clerk-domain="${DOMAIN}"` : ``}
+  ${publishableKey ? `data-clerk-publishable-key="${publishableKey}"` : ``}
+  ${proxyUrl ? `data-clerk-proxy-url="${proxyUrl}"` : ``}
+  ${domain ? `data-clerk-domain="${domain}"` : ``}
   ></script>\n`;
 }
 

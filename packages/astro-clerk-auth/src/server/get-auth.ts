@@ -8,8 +8,8 @@ import {
 } from '@clerk/backend/internal';
 import type { APIContext } from 'astro';
 import { getAuthKeyFromRequest } from './utils';
-import { SECRET_KEY, API_URL, API_VERSION } from '../v0/constants';
 import { decodeJwt } from '@clerk/backend/jwt';
+import { getSafeEnv } from './get-safe-env';
 
 type AuthObjectWithoutResources<T extends AuthObject> = Omit<T, 'user' | 'organization' | 'session'>;
 
@@ -37,10 +37,10 @@ export const createGetAuth = ({ noAuthStatusMessage }: { noAuthStatusMessage: st
 
     const options = {
       authStatus,
-      apiUrl: API_URL,
-      apiVersion: API_VERSION,
+      apiUrl: getSafeEnv(locals).apiUrl,
+      apiVersion: getSafeEnv(locals).apiVersion,
       authMessage,
-      secretKey: opts?.secretKey || SECRET_KEY,
+      secretKey: opts?.secretKey || getSafeEnv(locals).sk,
       authReason,
     };
 

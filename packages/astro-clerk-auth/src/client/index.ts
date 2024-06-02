@@ -1,7 +1,6 @@
 import { Clerk } from '@clerk/clerk-js';
 import type { AstroClerkIntegrationParams } from '../types';
 import { $clerk, $csrState } from '../stores/internal';
-import { publishableKey } from '../v0/constants';
 import type { CreateClerkInstanceInternalFn } from './types';
 import { runOnce } from './run-once';
 import { mountAllClerkAstroJSComponents } from './mount-clerk-astro-js-components';
@@ -16,7 +15,7 @@ export const createClerkInstance: CreateClerkInstanceInternalFn = runOnce(create
 export function createClerkInstanceInternal(options?: AstroClerkIntegrationParams) {
   let clerkJSInstance = window.Clerk as Clerk;
   if (!clerkJSInstance) {
-    clerkJSInstance = new Clerk(publishableKey);
+    clerkJSInstance = new Clerk(options?.publishableKey!);
     $clerk.set(clerkJSInstance);
     window.Clerk = clerkJSInstance;
   }

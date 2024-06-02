@@ -2,8 +2,8 @@
 import type { AuthenticateRequestOptions, ClerkRequest } from '@clerk/backend/internal';
 import { constants } from '@clerk/backend/internal';
 import { DEV_BROWSER_JWT_KEY, isDevelopmentFromSecretKey, setDevBrowserJWTInURL } from '@clerk/shared';
-import { SECRET_KEY } from '../v0/constants';
 import { AstroMiddlewareContextParam } from './types';
+import { getSafeEnv } from './get-safe-env';
 
 /**
  * Grabs the dev browser JWT from cookies and appends it to the redirect URL when redirecting to cross-origin.
@@ -20,7 +20,7 @@ export const serverRedirectWithAuth = (
   if (
     shouldAppendDevBrowser &&
     !!location &&
-    isDevelopmentFromSecretKey(opts.secretKey || SECRET_KEY) &&
+    isDevelopmentFromSecretKey(opts.secretKey || getSafeEnv(context).sk!) &&
     clerkRequest.clerkUrl.isCrossOrigin(location)
   ) {
     const dbJwt = clerkRequest.cookies.get(DEV_BROWSER_JWT_KEY) || '';

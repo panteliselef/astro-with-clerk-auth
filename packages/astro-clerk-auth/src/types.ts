@@ -10,7 +10,10 @@ export type AstroClerkIntegrationParams = Without<
   ClerkOptions,
   'isSatellite' | 'sdkMetadata' | 'telemetry' | 'standardBrowser' | 'selectInitialSession'
 > &
-  MultiDomainAndOrProxyPrimitives;
+  MultiDomainAndOrProxyPrimitives & {
+    /** Clerk Publishable Key string. */
+    publishableKey: string;
+  };
 
 declare global {
   interface Window {
