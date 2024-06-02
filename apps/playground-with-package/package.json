@@ -20,7 +20,7 @@
     "@clerk/localizations": "2.3.0",
     "@nanostores/react": "0.7.1",
     "astro": "^3.5.5",
-    "astro-clerk-auth": "0.6.8",
+    "astro-clerk-auth": "0.7.0",
     "nanostores": "^0.9.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
