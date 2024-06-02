@@ -1,5 +1,5 @@
 import type { Clerk } from '@clerk/clerk-js';
-import type { AstroClerkIntegrationParams } from '../types';
+import type { AstroClerkIntegrationParams, AstroClerkUpdateOptions } from '../types';
 import { $clerk, $csrState } from '../stores/internal';
 import { waitForClerkScript } from '../internal/utils/loadClerkJSScript';
 import { runOnce } from './run-once';
@@ -22,8 +22,8 @@ export async function createClerkInstanceInternal(options?: AstroClerkIntegratio
     }
     clerkJSInstance = window.Clerk;
   }
-  
-  if(!$clerk.get()) {
+
+  if (!$clerk.get()) {
     $clerk.set(clerkJSInstance);
   }
 
@@ -45,7 +45,7 @@ export async function createClerkInstanceInternal(options?: AstroClerkIntegratio
     .catch(() => {});
 }
 
-export function updateClerkOptions(options: AstroClerkIntegrationParams) {
+export function updateClerkOptions(options: AstroClerkUpdateOptions) {
   const clerk = $clerk.get();
   if (!clerk) {
     throw new Error('Missing clerk instance');

@@ -1,22 +1,21 @@
 import { Clerk } from '@clerk/clerk-js';
-import type { AstroClerkIntegrationParams } from '../types';
+import type { AstroClerkCreateInstanceParams, AstroClerkUpdateOptions } from '../types';
 import { $clerk, $csrState } from '../stores/internal';
-import { publishableKey } from '../v0/constants';
 import type { CreateClerkInstanceInternalFn } from './types';
 import { runOnce } from './run-once';
 import { mountAllClerkAstroJSComponents } from './mount-clerk-astro-js-components';
 
-let initOptions: AstroClerkIntegrationParams | undefined;
+let initOptions: AstroClerkCreateInstanceParams | undefined;
 
 /**
  * Prevents firing clerk.load multiple times
  */
 export const createClerkInstance: CreateClerkInstanceInternalFn = runOnce(createClerkInstanceInternal);
 
-export function createClerkInstanceInternal(options?: AstroClerkIntegrationParams) {
+export function createClerkInstanceInternal(options?: AstroClerkCreateInstanceParams) {
   let clerkJSInstance = window.Clerk as Clerk;
   if (!clerkJSInstance) {
-    clerkJSInstance = new Clerk(publishableKey);
+    clerkJSInstance = new Clerk(options?.publishableKey!);
     $clerk.set(clerkJSInstance);
     window.Clerk = clerkJSInstance;
   }
@@ -39,7 +38,7 @@ export function createClerkInstanceInternal(options?: AstroClerkIntegrationParam
     .catch(() => {});
 }
 
-export function updateClerkOptions(options: AstroClerkIntegrationParams) {
+export function updateClerkOptions(options: AstroClerkUpdateOptions) {
   const clerk = $clerk.get();
   if (!clerk) {
     throw new Error('Missing clerk instance');

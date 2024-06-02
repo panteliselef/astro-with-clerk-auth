@@ -6,11 +6,16 @@ import type {
   OrganizationCustomRoleKey,
   Without,
 } from '@clerk/types';
-export type AstroClerkIntegrationParams = Without<
+
+type AstroClerkUpdateOptions = Pick<ClerkOptions, 'appearance' | 'localization'>;
+
+type AstroClerkIntegrationParams = Without<
   ClerkOptions,
   'isSatellite' | 'sdkMetadata' | 'telemetry' | 'standardBrowser' | 'selectInitialSession'
 > &
   MultiDomainAndOrProxyPrimitives;
+
+type AstroClerkCreateInstanceParams = AstroClerkIntegrationParams & { publishableKey: string };
 
 declare global {
   interface Window {
@@ -18,7 +23,7 @@ declare global {
   }
 }
 
-export type ProtectComponentDefaultProps =
+type ProtectComponentDefaultProps =
   | {
       condition?: never;
       role: OrganizationCustomRoleKey;
@@ -40,4 +45,9 @@ export type ProtectComponentDefaultProps =
       permission?: never;
     };
 
-export {};
+export type {
+  AstroClerkUpdateOptions,
+  AstroClerkIntegrationParams,
+  AstroClerkCreateInstanceParams,
+  ProtectComponentDefaultProps,
+};
