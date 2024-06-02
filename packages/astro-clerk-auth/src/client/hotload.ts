@@ -1,5 +1,5 @@
 import type { Clerk } from '@clerk/clerk-js';
-import { AstroClerkIntegrationParams, AstroClerkUpdateOptions } from '../types';
+import type { AstroClerkIntegrationParams, AstroClerkUpdateOptions } from '../types';
 import { $clerk, $csrState } from '../stores/internal';
 import { waitForClerkScript } from '../internal/utils/loadClerkJSScript';
 import { runOnce } from './run-once';

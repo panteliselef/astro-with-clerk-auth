@@ -43,7 +43,6 @@ function buildClerkHotloadScript(locals: APIContext['locals']) {
   const domain = getSafeEnv(locals).domain!;
   const scriptSrc = clerkJsScriptUrl({
     clerkJSUrl: getSafeEnv(locals).clerkJsUrl,
-    // @ts-ignore
     clerkJSVariant: getSafeEnv(locals).clerkJsVariant,
     clerkJSVersion: getSafeEnv(locals).clerkJsVersion,
     domain,

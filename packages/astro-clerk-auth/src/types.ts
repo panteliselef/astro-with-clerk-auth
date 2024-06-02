@@ -7,16 +7,15 @@ import type {
   Without,
 } from '@clerk/types';
 
-export type AstroClerkUpdateOptions = Pick<ClerkOptions, 'appearance' | 'localization'>;
+type AstroClerkUpdateOptions = Pick<ClerkOptions, 'appearance' | 'localization'>;
 
-export type AstroClerkIntegrationParams = Without<
+type AstroClerkIntegrationParams = Without<
   ClerkOptions,
   'isSatellite' | 'sdkMetadata' | 'telemetry' | 'standardBrowser' | 'selectInitialSession'
 > &
-  MultiDomainAndOrProxyPrimitives & {
-    /** Clerk Publishable Key string. */
-    publishableKey: string;
-  };
+  MultiDomainAndOrProxyPrimitives;
+
+type AstroClerkCreateInstanceParams = AstroClerkIntegrationParams & { publishableKey: string };
 
 declare global {
   interface Window {
@@ -24,7 +23,7 @@ declare global {
   }
 }
 
-export type ProtectComponentDefaultProps =
+type ProtectComponentDefaultProps =
   | {
       condition?: never;
       role: OrganizationCustomRoleKey;
@@ -46,4 +45,9 @@ export type ProtectComponentDefaultProps =
       permission?: never;
     };
 
-export {};
+export type {
+  AstroClerkUpdateOptions,
+  AstroClerkIntegrationParams,
+  AstroClerkCreateInstanceParams,
+  ProtectComponentDefaultProps,
+};

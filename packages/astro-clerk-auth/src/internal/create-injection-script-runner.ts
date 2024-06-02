@@ -16,7 +16,6 @@ function createInjectionScriptRunner(creator: CreateClerkInstanceInternalFn) {
       clientSafeVars = JSON.parse(clientSafeVarsContainer.textContent || '{}');
     }
 
-    // @ts-ignore
     await creator(mergeEnvVarsWithParams({ ...astroClerkOptions, ...clientSafeVars }));
   }
 
