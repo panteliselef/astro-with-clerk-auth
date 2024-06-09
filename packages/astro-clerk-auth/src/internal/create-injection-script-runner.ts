@@ -10,7 +10,13 @@ function createInjectionScriptRunner(creator: CreateClerkInstanceInternalFn) {
       $initialState.set(JSON.parse(ssrDataContainer.textContent || '{}'));
     }
 
-    await creator(mergeEnvVarsWithParams(astroClerkOptions));
+    const clientSafeVarsContainer = document.getElementById('__CLERK_ASTRO_SAFE_VARS__');
+    let clientSafeVars = {};
+    if (clientSafeVarsContainer) {
+      clientSafeVars = JSON.parse(clientSafeVarsContainer.textContent || '{}');
+    }
+
+    await creator(mergeEnvVarsWithParams({ ...astroClerkOptions, ...clientSafeVars }));
   }
 
   return runner;

@@ -1,7 +1,6 @@
 import type { AuthenticateRequestOptions, AuthObject, ClerkRequest, RequestState } from '@clerk/backend/internal';
 import { AuthStatus, constants, createClerkRequest, createRedirect } from '@clerk/backend/internal';
 import { clerkClient } from '../v0/clerkClient';
-import { DOMAIN, IS_SATELLITE, PROXY_URL, PUBLISHABLE_KEY, SECRET_KEY, SIGN_IN_URL } from '../v0/constants';
 import type {
   AstroMiddleware,
   AstroMiddlewareNextParam,
@@ -17,6 +16,7 @@ import { serverRedirectWithAuth } from './server-redirect-with-auth';
 // @ts-ignore
 import { authAsyncStorage } from "#async-local-storage";
 import { buildClerkHotloadScript } from './build-clerk-hotload-script';
+import { getClientSafeEnv, getSafeEnv } from './get-safe-env';
 
 const CONTROL_FLOW_ERROR = {
   REDIRECT_TO_SIGN_IN: 'CLERK_PROTECT_REDIRECT_TO_SIGN_IN',
@@ -59,7 +59,7 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
 
     const requestState = await clerkClient.authenticateRequest(
       clerkRequest,
-      createAuthenticateRequestOptions(clerkRequest, options),
+      createAuthenticateRequestOptions(clerkRequest, options, context),
     );
 
     const locationHeader = requestState.headers.get(constants.Headers.Location);
@@ -89,7 +89,7 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
       try {
         handlerResult = (await handler?.(() => authObjWithMethods, context, next)) || ((await next()) as Response);
       } catch (e: any) {
-        handlerResult = handleControlFlowErrors(e, clerkRequest, requestState);
+        handlerResult = handleControlFlowErrors(e, clerkRequest, requestState, context);
       }
 
       if (isRedirect(handlerResult!)) {
@@ -119,12 +119,16 @@ const parseHandlerAndOptions = (args: unknown[]) => {
 };
 
 // Duplicate from '@clerk/nextjs'
-export const createAuthenticateRequestOptions = (clerkRequest: ClerkRequest, options: ClerkAstroMiddlewareOptions) => {
+export const createAuthenticateRequestOptions = (
+  clerkRequest: ClerkRequest,
+  options: ClerkAstroMiddlewareOptions,
+  context: AstroMiddlewareContextParam,
+) => {
   return {
     ...options,
-    secretKey: options.secretKey || SECRET_KEY,
-    publishableKey: options.publishableKey || PUBLISHABLE_KEY,
-    ...handleMultiDomainAndProxy(clerkRequest, options),
+    secretKey: options.secretKey || getSafeEnv(context).sk,
+    publishableKey: options.publishableKey || getSafeEnv(context).pk,
+    ...handleMultiDomainAndProxy(clerkRequest, options, context),
   };
 };
 
@@ -137,8 +141,16 @@ export const decorateResponseWithObservabilityHeaders = (res: Response, requestS
 };
 
 // Duplicate from '@clerk/nextjs'
-export const handleMultiDomainAndProxy = (clerkRequest: ClerkRequest, opts: AuthenticateRequestOptions) => {
-  const relativeOrAbsoluteProxyUrl = handleValueOrFn(opts?.proxyUrl, clerkRequest.clerkUrl, PROXY_URL);
+export const handleMultiDomainAndProxy = (
+  clerkRequest: ClerkRequest,
+  opts: AuthenticateRequestOptions,
+  context: AstroMiddlewareContextParam,
+) => {
+  const relativeOrAbsoluteProxyUrl = handleValueOrFn(
+    opts?.proxyUrl,
+    clerkRequest.clerkUrl,
+    getSafeEnv(context).proxyUrl,
+  );
 
   let proxyUrl;
   if (!!relativeOrAbsoluteProxyUrl && !isHttpOrHttps(relativeOrAbsoluteProxyUrl)) {
@@ -147,15 +159,19 @@ export const handleMultiDomainAndProxy = (clerkRequest: ClerkRequest, opts: Auth
     proxyUrl = relativeOrAbsoluteProxyUrl;
   }
 
-  const isSatellite = handleValueOrFn(opts.isSatellite, new URL(clerkRequest.url), IS_SATELLITE);
-  const domain = handleValueOrFn(opts.domain, new URL(clerkRequest.url), DOMAIN);
-  const signInUrl = opts?.signInUrl || SIGN_IN_URL;
+  const isSatellite = handleValueOrFn(opts.isSatellite, new URL(clerkRequest.url), getSafeEnv(context).isSatellite);
+  const domain = handleValueOrFn(opts.domain, new URL(clerkRequest.url), getSafeEnv(context).domain);
+  const signInUrl = opts?.signInUrl || getSafeEnv(context).signInUrl;
 
   if (isSatellite && !proxyUrl && !domain) {
     throw new Error(missingDomainAndProxy);
   }
 
-  if (isSatellite && !isHttpOrHttps(signInUrl) && isDevelopmentFromSecretKey(opts.secretKey || SECRET_KEY)) {
+  if (
+    isSatellite &&
+    !isHttpOrHttps(signInUrl) &&
+    isDevelopmentFromSecretKey(opts.secretKey || getSafeEnv(context).sk!)
+  ) {
     throw new Error(missingSignInUrlInDev);
   }
 
@@ -238,8 +254,14 @@ async function decorateRequest(
               ),
             );
 
+            controller.enqueue(
+              encoder.encode(
+                `<script id="__CLERK_ASTRO_SAFE_VARS__" type="application/json">${JSON.stringify(getClientSafeEnv(locals))}</script>\n`,
+              ),
+            );
+
             if (__HOTLOAD__) {
-              controller.enqueue(encoder.encode(buildClerkHotloadScript()));
+              controller.enqueue(encoder.encode(buildClerkHotloadScript(locals)));
             }
 
             controller.enqueue(encoder.encode('</head>'));
@@ -294,7 +316,12 @@ const createMiddlewareRedirectToSignIn = (
 // especially when copy-pasting code from one place to another.
 // This function handles the known errors thrown by the APIs described above,
 // and returns the appropriate response.
-const handleControlFlowErrors = (e: any, clerkRequest: ClerkRequest, requestState: RequestState): Response => {
+const handleControlFlowErrors = (
+  e: any,
+  clerkRequest: ClerkRequest,
+  requestState: RequestState,
+  context: AstroMiddlewareContextParam,
+): Response => {
   switch (e.message) {
     case CONTROL_FLOW_ERROR.REDIRECT_TO_SIGN_IN:
       return createRedirect({
@@ -302,7 +329,7 @@ const handleControlFlowErrors = (e: any, clerkRequest: ClerkRequest, requestStat
         baseUrl: clerkRequest.clerkUrl,
         signInUrl: requestState.signInUrl,
         signUpUrl: requestState.signUpUrl,
-        publishableKey: PUBLISHABLE_KEY,
+        publishableKey: getSafeEnv(context).pk!,
       }).redirectToSignIn({ returnBackUrl: e.returnBackUrl });
     default:
       throw e;

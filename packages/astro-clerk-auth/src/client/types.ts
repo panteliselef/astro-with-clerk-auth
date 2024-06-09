@@ -1,5 +1,5 @@
-import { AstroClerkIntegrationParams } from '../types';
+import type { AstroClerkCreateInstanceParams } from '../types';
 
-type CreateClerkInstanceInternalFn = (options?: AstroClerkIntegrationParams) => Promise<unknown>;
+type CreateClerkInstanceInternalFn = (options?: AstroClerkCreateInstanceParams) => Promise<unknown>;
 
 export type { CreateClerkInstanceInternalFn };

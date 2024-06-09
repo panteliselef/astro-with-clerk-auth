@@ -46,6 +46,9 @@ jobs:
         timeout-minutes: 5
         run: npx turbo build --filter='astro-clerk-auth'
 
+      - name: Create .npmrc
+        run: touch .npmrc && echo -e "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}\n" >> .npmrc
+
       - name: Snapshot release
         run: npm run release:snapshot
         env:
