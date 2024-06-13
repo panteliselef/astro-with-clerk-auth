@@ -1,5 +1,11 @@
 # astro-clerk-auth
 
+## 0.8.0
+
+### Minor Changes
+
+- cc3081e: Use conditional imports in order to avoid leaking `node:async_hooks` into the client bundle.
+
 ## 0.7.0
 
 ### Minor Changes
