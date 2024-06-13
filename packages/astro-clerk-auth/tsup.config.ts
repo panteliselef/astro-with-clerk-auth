@@ -17,6 +17,8 @@ export default defineConfig(() => {
       './src/v0/index.ts',
       './src/integration/index.ts',
       './src/integration/hotload.ts',
+      './src/async-local-storage.client.ts',
+      './src/async-local-storage.server.ts',
     ],
     dts: true,
     minify: false,
@@ -27,6 +29,6 @@ export default defineConfig(() => {
     bundle: true,
     sourcemap: true,
     format: ['esm'],
-    external: ['astro', 'react', 'react-dom', 'node:async_hooks'],
+    external: ['astro', 'react', 'react-dom', 'node:async_hooks','#async-local-storage'],
   };
 });

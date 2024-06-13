@@ -60,6 +60,10 @@ function createIntegration<P extends { mode: 'hotload' | 'bundled' }>({ mode }: 
                 __HOTLOAD__: mode === 'hotload',
               },
 
+              ssr: {
+                external: ['node:async_hooks'],
+              },
+
               // We need this for top-level await
               optimizeDeps: {
                 esbuildOptions: {

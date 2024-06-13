@@ -13,7 +13,8 @@ import { APIContext } from 'astro';
 import { createCurrentUser } from './current-user';
 import { isRedirect, setHeader } from './utils';
 import { serverRedirectWithAuth } from './server-redirect-with-auth';
-import { authAsyncStorage } from './async-local-storage';
+// @ts-ignore
+import { authAsyncStorage } from "#async-local-storage";
 import { buildClerkHotloadScript } from './build-clerk-hotload-script';
 import { getClientSafeEnv, getSafeEnv } from './get-safe-env';
 

@@ -10,7 +10,8 @@ import type {
 import type { Store, StoreValue } from 'nanostores';
 import { useCallback, useSyncExternalStore } from 'react';
 import { $authStore, $clerk, $csrState } from '../../stores/internal';
-import { authAsyncStorage } from '../../server/async-local-storage';
+// @ts-ignore
+import { authAsyncStorage } from '#async-local-storage';
 
 type CheckAuthorizationSignedOut = undefined;
 type CheckAuthorizationWithoutOrgOrUser = (params?: Parameters<CheckAuthorizationWithCustomPermissions>[0]) => false;
