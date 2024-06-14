@@ -296,9 +296,3 @@ export default defineConfig({
   }),
 });
 ```
-
-### Known issues
-- When building an Astro app you may see the following message in your terminal. This will not cause any performance issues and can be safely ignored.
-  ```sh
-  [plugin:vite:resolve] Module "async_hooks" has been externalized for browser compatibility, imported by "/Users/panteliselef/elef/astro-with-clerk-auth/apps/playground-with-package/node_modules/astro-clerk-auth/dist/chunk-RZAK3LLS.js".
-  ```
