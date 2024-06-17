@@ -123,11 +123,13 @@ export const createAuthenticateRequestOptions = (
   clerkRequest: ClerkRequest,
   options: ClerkAstroMiddlewareOptions,
   context: AstroMiddlewareContextParam,
-) => {
+): Parameters<typeof clerkClient.authenticateRequest>[1] => {
   return {
     ...options,
     secretKey: options.secretKey || getSafeEnv(context).sk,
     publishableKey: options.publishableKey || getSafeEnv(context).pk,
+    signInUrl: options.signInUrl || getSafeEnv(context).signInUrl,
+    signUpUrl: options.signUpUrl || getSafeEnv(context).signUpUrl,
     ...handleMultiDomainAndProxy(clerkRequest, options, context),
   };
 };
@@ -179,7 +181,6 @@ export const handleMultiDomainAndProxy = (
     proxyUrl,
     isSatellite,
     domain,
-    signInUrl,
   };
 };
 
