@@ -1,5 +1,11 @@
 # astro-clerk-auth
 
+## 0.8.1
+
+### Patch Changes
+
+- c925c6e: Correctly read signUpUrl from an environment variable in the server and pass it to the client.
+
 ## 0.8.0
 
 ### Minor Changes
