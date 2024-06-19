@@ -1,9 +1,10 @@
 import type { APIRoute } from "astro";
-import { clerkClient } from "astro-clerk-auth/v0";
+import { clerkClient } from "astro-clerk-auth/server";
 import { queryBuilder } from "../../db/planetscale";
 import { getGuestbook } from "../../utils";
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async (context) => {
+  const { request, locals } = context
   if (request.headers.get("Content-Type") !== "application/json") {
     return new Response(
       JSON.stringify({
@@ -24,7 +25,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     let user;
     try {
-      user = await clerkClient.users.getUser(auth.userId);
+      user = await clerkClient(context).users.getUser(auth.userId);
     } catch (e) {
       return new Response(
         JSON.stringify({

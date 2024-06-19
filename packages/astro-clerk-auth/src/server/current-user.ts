@@ -1,13 +1,13 @@
 import { User } from '@clerk/backend';
 import { APIContext } from 'astro';
 import { getAuth } from './get-auth';
-import { clerkClient } from '../v0/clerkClient';
+import { clerkClient } from './clerk-client';
 
-export const createCurrentUser = (req: Request, locals: APIContext['locals']) => {
+export const createCurrentUser = (req: Request, context: APIContext) => {
   return async (): Promise<User | null> => {
-    const { userId } = getAuth(req, locals);
+    const { userId } = getAuth(req, context.locals);
     if (!userId) return null;
 
-    return clerkClient.users.getUser(userId);
+    return clerkClient(context).users.getUser(userId);
   };
 };
