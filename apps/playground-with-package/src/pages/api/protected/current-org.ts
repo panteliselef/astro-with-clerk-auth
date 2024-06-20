@@ -1,9 +1,10 @@
 import type { APIRoute } from "astro";
-import { clerkClient } from "astro-clerk-auth/v0";
+import { clerkClient } from "astro-clerk-auth/server";
 
 const empty = () => new Response(null);
 
-export const GET: APIRoute = async ({ locals }) => {
+export const GET: APIRoute = async (context) => {
+  const { locals } = context;
   const { userId, orgId } = locals.auth();
   if (!userId) {
     // We are handling this at the middleware level
@@ -21,7 +22,7 @@ export const GET: APIRoute = async ({ locals }) => {
 
   return new Response(
     JSON.stringify(
-      await clerkClient.organizations.getOrganization({
+      await clerkClient(context).organizations.getOrganization({
         organizationId: orgId,
       }),
     ),

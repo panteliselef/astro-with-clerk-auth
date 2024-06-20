@@ -1,6 +1,9 @@
 import type { AuthenticateRequestOptions, AuthObject, ClerkRequest, RequestState } from '@clerk/backend/internal';
+import type { ClerkClient } from '@clerk/backend';
+import type { APIContext } from 'astro';
 import { AuthStatus, constants, createClerkRequest, createRedirect } from '@clerk/backend/internal';
-import { clerkClient } from '../v0/clerkClient';
+import { handleValueOrFn, isDevelopmentFromSecretKey, isHttpOrHttps } from '@clerk/shared';
+
 import type {
   AstroMiddleware,
   AstroMiddlewareNextParam,
@@ -8,15 +11,14 @@ import type {
   AstroMiddlewareReturn,
 } from './types';
 import { getAuth } from './get-auth';
-import { handleValueOrFn, isDevelopmentFromSecretKey, isHttpOrHttps } from '@clerk/shared';
-import { APIContext } from 'astro';
 import { createCurrentUser } from './current-user';
 import { isRedirect, setHeader } from './utils';
 import { serverRedirectWithAuth } from './server-redirect-with-auth';
 // @ts-ignore
-import { authAsyncStorage } from "#async-local-storage";
+import { authAsyncStorage } from '#async-local-storage';
 import { buildClerkHotloadScript } from './build-clerk-hotload-script';
 import { getClientSafeEnv, getSafeEnv } from './get-safe-env';
+import { clerkClient } from './clerk-client';
 
 const CONTROL_FLOW_ERROR = {
   REDIRECT_TO_SIGN_IN: 'CLERK_PROTECT_REDIRECT_TO_SIGN_IN',
@@ -57,7 +59,7 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
   const astroMiddleware: AstroMiddleware = async (context, next) => {
     const clerkRequest = createClerkRequest(context.request);
 
-    const requestState = await clerkClient.authenticateRequest(
+    const requestState = await clerkClient(context).authenticateRequest(
       clerkRequest,
       createAuthenticateRequestOptions(clerkRequest, options, context),
     );
@@ -75,7 +77,7 @@ export const clerkMiddleware: ClerkMiddleware = (...args: unknown[]): any => {
     const redirectToSignIn = createMiddlewareRedirectToSignIn(clerkRequest);
     const authObjWithMethods: ClerkMiddlewareAuthObject = Object.assign(authObject, { redirectToSignIn });
 
-    decorateAstroLocal(context.request, context.locals, requestState);
+    decorateAstroLocal(context.request, context, requestState);
 
     /**
      * For React component, in order to avoid hydration errors populate SSR store and do not depend on the component being wrapped ClerkLayout.
@@ -118,12 +120,14 @@ const parseHandlerAndOptions = (args: unknown[]) => {
   ] as [ClerkAstroMiddlewareHandler | undefined, ClerkAstroMiddlewareOptions];
 };
 
+type AuthenticateRequest = Pick<ClerkClient, 'authenticateRequest'>['authenticateRequest'];
+
 // Duplicate from '@clerk/nextjs'
 export const createAuthenticateRequestOptions = (
   clerkRequest: ClerkRequest,
   options: ClerkAstroMiddlewareOptions,
   context: AstroMiddlewareContextParam,
-): Parameters<typeof clerkClient.authenticateRequest>[1] => {
+): Parameters<AuthenticateRequest>[1] => {
   return {
     ...options,
     secretKey: options.secretKey || getSafeEnv(context).sk,
@@ -206,14 +210,14 @@ Check if signInUrl is missing from your configuration or if it is not an absolut
    NEXT_PUBLIC_CLERK_SIGN_IN_URL='SOME_URL'
    NEXT_PUBLIC_CLERK_IS_SATELLITE='true'`;
 
-function decorateAstroLocal(req: Request, locals: APIContext['locals'], requestState: RequestState) {
+function decorateAstroLocal(req: Request, context: APIContext, requestState: RequestState) {
   const { reason, message, status, token } = requestState;
-  locals.authToken = token;
-  locals.authStatus = status;
-  locals.authMessage = message;
-  locals.authReason = reason;
-  locals.auth = () => getAuth(req, locals);
-  locals.currentUser = createCurrentUser(req, locals);
+  context.locals.authToken = token;
+  context.locals.authStatus = status;
+  context.locals.authMessage = message;
+  context.locals.authReason = reason;
+  context.locals.auth = () => getAuth(req, context.locals);
+  context.locals.currentUser = createCurrentUser(req, context);
 }
 
 async function decorateRequest(
