@@ -131,25 +131,6 @@ export const onRequest = clerkMiddleware((auth, context, next) => {
 });
 ```
 
-## Wrap each page with `ClerkLayout` (Only required for SSR with React)
-In order to properly support SSR, you need to wrap each page in your app with the `ClerkLayout` Astro component.
-
-Example Page  `my-page.astro`
-```astro
----
-import Layout from "../layouts/Layout.astro";
-import { OrganizationList } from "astro-clerk-auth/components/interactive";
-import { ClerkLayout } from "astro-clerk-auth/components/control";
----
-
-<ClerkLayout>
-  <Layout title="Welcome to Astro.">
-    ...
-  </Layout>
-</ClerkLayout>
-
-```
-
 ## Use Clerk UI Components
 Supported components
 - [SignIn](https://clerk.com/docs/components/authentication/sign-in)
