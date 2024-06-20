@@ -1,5 +1,12 @@
 # astro-clerk-auth
 
+## 0.9.0
+
+### Minor Changes
+
+- 406aa57: Export `clerkClient` as a function for safer access in environment variables across runtimes.
+- 211f86b: Deprecate `ClerkLayout` Astro component. It's usage it is no longer needed as this is now handled my `clerkMiiddleware`.
+
 ## 0.8.1
 
 ### Patch Changes
