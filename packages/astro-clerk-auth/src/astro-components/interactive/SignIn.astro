@@ -2,14 +2,12 @@
 import type { SignInProps } from "@clerk/types";
 type Props = SignInProps;
 
-import { signUpUrl } from "astro-clerk-auth/v0";
 import { customAlphabet, urlAlphabet } from "nanoid";
 
 const safeId = customAlphabet(urlAlphabet, 10)();
 
 const props = {
-  ...Astro.props,
-  signUpUrl: Astro.props.signUpUrl || signUpUrl
+  ...Astro.props
 }
 ---
 
