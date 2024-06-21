@@ -2,12 +2,10 @@
 import type { SignInProps } from "@clerk/types";
 type Props = SignInProps
 
-import { signUpUrl } from "astro-clerk-auth/v0";
 import { SignIn as SignInReact } from "astro-clerk-auth/client/react";
 
 const props = {
-  ...Astro.props,
-  signUpUrl: Astro.props.signUpUrl || signUpUrl
+  ...Astro.props
 }
 ---
 
