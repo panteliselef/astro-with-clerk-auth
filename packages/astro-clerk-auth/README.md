@@ -193,13 +193,12 @@ export const GET: APIRoute = async ({ locals }) => {
 
 ## Use Astro.locals
 - Use `Astro.locals.auth()` to retrieve the [Authentication Object](https://clerk.com/docs/references/nextjs/authentication-object#authentication-object)
-- Use `await Astro.locals.currentUser()` to retrieve the backend User object
 
 
 ## Deep dive
 
 ### Use Clerk react hooks
-Example SignedIn React component that supports SSR
+Example SignedIn React component that **supports SSR**
 ```tsx
 import type { PropsWithChildren } from 'react';
 import { useAuth } from 'astro-clerk-auth/client/react';
@@ -214,8 +213,8 @@ export function SignedIn(props: PropsWithChildren) {
 }
 ```
 
-### Use the isomorphic authStore to build your custom logic
-Example SignedOut React component that supports SSR
+### Use a client store to build your custom logic
+Warning: **SSR not supported**
 ```tsx
 import type { PropsWithChildren } from 'react';
 import { useStore } from '@nanostores/react';
