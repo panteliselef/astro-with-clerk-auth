@@ -1,5 +1,11 @@
 # astro-clerk-auth
 
+## 0.9.1
+
+### Patch Changes
+
+- e48b79a: Drop url constants from Astro components.
+
 ## 0.9.0
 
 ### Minor Changes
