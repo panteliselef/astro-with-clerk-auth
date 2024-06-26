@@ -3,13 +3,13 @@ import type {
   CheckAuthorizationWithCustomPermissions,
   Clerk,
   GetToken,
-  LoadedClerk,
   OrganizationCustomRoleKey,
   SignOut,
 } from '@clerk/types';
 import type { Store, StoreValue } from 'nanostores';
 import { useCallback, useSyncExternalStore } from 'react';
-import { $authStore, $clerk, $csrState } from '../../stores/internal';
+import { $clerk, $csrState } from '../../stores/internal';
+import { $authStore } from '../../stores/external';
 // @ts-ignore
 import { authAsyncStorage } from '#async-local-storage';
 

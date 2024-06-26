@@ -219,7 +219,7 @@ Example SignedOut React component that supports SSR
 ```tsx
 import type { PropsWithChildren } from 'react';
 import { useStore } from '@nanostores/react';
-import { $authStore } from 'astro-clerk-auth/stores';
+import { $authStore } from 'astro-clerk-auth/client/stores';
 
 export function SignedOut(props: PropsWithChildren) {
   const { userId } = useStore($authStore);

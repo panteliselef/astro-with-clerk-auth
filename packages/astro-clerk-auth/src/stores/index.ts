@@ -1,2 +1,2 @@
-// TODO: Don't expose everything
+// TODO: Don't expose internal
 export * from './internal';
