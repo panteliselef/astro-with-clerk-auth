@@ -8,6 +8,7 @@ export default defineConfig(() => {
       './src/index.ts',
       './src/hotload.ts',
       './src/client/react/index.ts',
+      './src/client/stores/index.ts',
       './src/client/index.ts',
       './src/client/hotload.ts',
       './src/stores/index.ts',
