@@ -1,4 +1,4 @@
-import { computed } from 'nanostores/computed';
+import { computed } from 'nanostores';
 import { $clerk, $csrState, $initialState } from './internal';
 import { deriveState } from './utils';
 
