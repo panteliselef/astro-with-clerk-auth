@@ -1,7 +1,7 @@
 {
   "name": "astro-clerk-auth",
   "description": "Unofficial package Clerk SDK for Asto",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "type": "module",
   "private": false,
   "license": "MIT",

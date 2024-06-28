@@ -1,5 +1,18 @@
 # astro-clerk-auth
 
+## 0.10.0
+
+### Minor Changes
+
+- c69c349: Expose individual stores for client resources.
+  - $userStore
+  - $sessionStore
+  - $sessionListStore
+  - $clerkStore
+  - $clerkStore
+  - $signInStore
+  - $signUpStore
+
 ## 0.9.1
 
 ### Patch Changes
