@@ -82,6 +82,8 @@ export const onRequest = clerkMiddleware();
 
 **Supports chaining with `sequence`**
 ```ts
+import { clerkMiddleware } from "astro-clerk-auth/server";
+
 const greeting = defineMiddleware(async (context, next) => {
   console.log("greeting request");
   console.log(context.locals.auth());
@@ -98,6 +100,8 @@ export const onRequest = sequence(
 
 **Advanced use with handler**
 ```ts
+import { clerkMiddleware, createRouteMatcher } from "astro-clerk-auth/server";
+
 const isProtectedPage = createRouteMatcher(['/user(.*)', '/discover(.*)', /^\/organization/])
 
 export const onRequest = clerkMiddleware((auth, context, next) => {
