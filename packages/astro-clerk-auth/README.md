@@ -199,6 +199,31 @@ export const GET: APIRoute = async ({ locals }) => {
 - Use `Astro.locals.auth()` to retrieve the [Authentication Object](https://clerk.com/docs/references/nextjs/authentication-object#authentication-object)
 
 
+## Use `clerkClient` to access Backend API
+
+Use the `clerkClient` utility to get access to Clerk's Backend API and perform administrative actions. `clerkClient` is a function that accepts the astro context as its argument.
+
+**Endpoint**
+```tsx
+import type { APIRoute } from "astro";
+import { clerkClient } from "astro-clerk-auth/server"
+
+export const GET: APIRoute = async (context) => {
+  ...
+  clerkClient(context).users.getUser(...)
+  ...
+};
+```
+
+**Astro Page**
+```astro
+---
+import { clerkClient } from "astro-clerk-auth/server"
+...
+clerkClient(Astro).users.getUser(...)
+---
+```
+
 ## Deep dive
 
 ### Use Clerk react hooks
