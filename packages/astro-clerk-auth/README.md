@@ -1,6 +1,9 @@
 # astro-clerk-auth
 Community package that integrates [Clerk](https://clerk.com/) with [Astro](https://astro.build/)
 
+> [!IMPORTANT]
+> This project has graduated to an official Clerk SDK. Please proceed to [here](https://clerk.com/docs/references/astro/migrating-from-astro-community-sdk) for migration instructions.
+
 ## Live Demo
 [Online Demo](https://astro-clerk.elef.codes/)
 
@@ -281,9 +284,9 @@ export function Header() {
 
 ### Use Clerk in Headless Mode
 
-[Clerk Headless mode](https://clerk.com/docs/components/clerk-provider) (see `ClerkJSVariant` prop their docs) is a Clerk variant that is focused towards getting smaller bundle sizes. This variant does *not* include React or any client side components for Clerk (e.g. their signin component). Because of that the bundle size is drastically smaller. On top of that it also lazy loads the JavaScript client side. 
+[Clerk Headless mode](https://clerk.com/docs/components/clerk-provider) (see `ClerkJSVariant` prop their docs) is a Clerk variant that is focused towards getting smaller bundle sizes. This variant does *not* include React or any client side components for Clerk (e.g. their signin component). Because of that the bundle size is drastically smaller. On top of that it also lazy loads the JavaScript client side.
 
-In order to use headless mode with this package, change your Astro configuration file to: 
+In order to use headless mode with this package, change your Astro configuration file to:
 
 ```diff
 import { defineConfig } from "astro/config";
