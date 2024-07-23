@@ -27,6 +27,8 @@ function createIntegration<P extends { mode: 'hotload' | 'bundled' }>({ mode }: 
       name: '@astro-clerk-auth/integration',
       hooks: {
         'astro:config:setup': ({ config, injectScript, updateConfig, logger, command }) => {
+          logger.warn('This project has graduated to an official SDK. Please proceed to https://clerk.com/docs/references/astro/migrating-from-astro-community-sdk for migration instructions.');
+
           if (config.output === 'static')
             logger.error(`${packageName} requires SSR to be turned on. Please update output to "server"`);
 
