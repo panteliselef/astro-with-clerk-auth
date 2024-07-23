@@ -2,7 +2,7 @@
 Community package that integrates [Clerk](https://clerk.com/) with [Astro](https://astro.build/)
 
 > [!IMPORTANT]
-> This project has graduated to an official Clerk SDK. Please proceed to [here](https://clerk.com/docs/references/astro/migrating-from-astro-community-sdk) for migration instructions.
+> This project has graduated to an [official Clerk SDK](https://clerk.com/changelog/2024-07-18-clerk-astro). Please proceed [here](https://clerk.com/docs/references/astro/migrating-from-astro-community-sdk) for migration instructions.
 
 ## Live Demo
 [Online Demo](https://astro-clerk.elef.codes/)
