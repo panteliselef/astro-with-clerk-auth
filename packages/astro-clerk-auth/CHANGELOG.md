@@ -1,5 +1,11 @@
 # astro-clerk-auth
 
+## 0.11.0
+
+### Minor Changes
+
+- b6ebda7: Notify about the package beeing deprecated in favour of `@clerk/astro`.
+
 ## 0.10.0
 
 ### Minor Changes
