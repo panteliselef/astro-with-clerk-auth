@@ -1,5 +1,7 @@
 # Community Clerk + Astro starter `astro-clerk-auth`
 
+> [!IMPORTANT]
+> This project has graduated to an [official SDK](https://clerk.com/changelog/2024-07-18-clerk-astro). Please proceed [here](https://clerk.com/docs/references/astro/migrating-from-astro-community-sdk) for migration instructions.
 
 ## [Read the docs](./packages/astro-clerk-auth/README.md)
 
